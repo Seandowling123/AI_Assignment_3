@@ -41,6 +41,11 @@ class minimax_player:
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
+        # Speed up for first move
+        available_moves = get_available_moves(board)
+        if len(available_moves) == 9:
+            return 0, [1,1]
+        
         # Check if the game is over
         try:
             result = board.result()
@@ -54,7 +59,6 @@ class minimax_player:
             else: print(f"A minimax Error Occured: {e}")
         
         # Calculate value of moves
-        available_moves = get_available_moves(board)
         if is_maximising:
             #print("maximising")
             max_value = -math.inf
@@ -67,10 +71,10 @@ class minimax_player:
                 value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value > max_value:
+                if value >= max_value:
                     max_value = value
                     best_move = move
-
+                
                 # Prune search
                 if max_value > alpha:
                     alpha = max_value
@@ -81,7 +85,7 @@ class minimax_player:
         
         else:
             #print("minimising")
-            max_value = math.inf
+            min_value = math.inf
             best_move = None
             
             # Get value of each move
@@ -91,23 +95,24 @@ class minimax_player:
                 value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value < max_value:
-                    max_value = value
+                if value <= min_value:
+                    min_value = value
                     best_move = move
                 
                 # Prune search
-                if max_value < beta:
-                    beta = max_value
+                if min_value < beta:
+                    beta = min_value
                 if alpha >= beta:
                     break
                 
-            return max_value, best_move
+            return min_value, best_move
          
     # Return the next move for the player
     def get_next_move(self, board):
-        move = self.minimax(board, -math.inf, math.inf, False, 0)[1]
+        move = self.minimax(board, -math.inf, math.inf, True, 0)
+        print(move)
         print(f"Minimax move: {move[1]}, {move[0]}.")
-        return move
+        return move[1]
         
      
 def play_tictactoe(board, player1, player2):
@@ -116,6 +121,7 @@ def play_tictactoe(board, player1, player2):
     try:
         while board.result() == None:
             player1_move = player1.get_next_move(board)
+            print(player1_move)
             board.push(player1_move)
             player2_move = player2.get_next_move(board)
             board.push(player2_move)
