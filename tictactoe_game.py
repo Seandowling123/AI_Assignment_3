@@ -46,7 +46,7 @@ class minimax_player:
             result = board.result()
             if result == 1:
                 return 1, None
-            elif result == 1:
+            elif result == 2:
                 return -1, None
         except Exception as e:
             if str(e) == "Both X and O have 3 pieces in a row.":
