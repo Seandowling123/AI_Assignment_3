@@ -31,6 +31,7 @@ class human_player:
                 move = [row, col]
                 if move in available_moves:
                     return move
+                else: print("Invalid Move.")
             except Exception as e:
                 print("Invalid Move.")
 
@@ -110,8 +111,7 @@ class minimax_player:
     # Return the next move for the player
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
-        print(move)
-        print(f"Minimax move: {move[1]}, {move[0]}.")
+        print(f"Minimax move: {move[1][1]}, {move[1][0]}.")
         return move[1]
         
      
@@ -121,7 +121,6 @@ def play_tictactoe(board, player1, player2):
     try:
         while board.result() == None:
             player1_move = player1.get_next_move(board)
-            print(player1_move)
             board.push(player1_move)
             player2_move = player2.get_next_move(board)
             board.push(player2_move)
