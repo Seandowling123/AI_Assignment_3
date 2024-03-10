@@ -26,8 +26,8 @@ class human_player:
         while move not in available_moves or move == None:
             try:
                 move_input = input("Enter a row and column:").split(' ')
-                row = int(move_input[0])
-                col = int(move_input[1])
+                row = int(move_input[1])
+                col = int(move_input[0])
                 move = [row, col]
                 if move in available_moves:
                     return move
@@ -101,11 +101,13 @@ class minimax_player:
                 if alpha >= beta:
                     break
                 
-            return max_value, best_move     
-            
-    
+            return max_value, best_move
+         
+    # Return the next move for the player
     def get_next_move(self, board):
-        return self.minimax(board, -math.inf, math.inf, False, 0)[1]
+        move = self.minimax(board, -math.inf, math.inf, False, 0)[1]
+        print(f"Minimax move: {move[1]}, {move[0]}.")
+        return move
         
      
 def play_tictactoe(board, player1, player2):
@@ -114,21 +116,22 @@ def play_tictactoe(board, player1, player2):
     try:
         while board.result() == None:
             player1_move = player1.get_next_move(board)
-            print(player1_move)
             board.push(player1_move)
             player2_move = player2.get_next_move(board)
             board.push(player2_move)
             print(board)
         
-        print(f"Winner = {board.result()}")
+        if board.result() == 1:
+            print(f"Winner = {player1.name}")
+        else: print(f"Winner = {player2.name}")
     except Exception as e:
         if str(e) == "Both X and O have 3 pieces in a row.":
             print("Tie Game")
         else: print(e)
 
 tictactoe_board = Board(dimensions=(3, 3))
-#playa1 = minimax_player("minimax")
-playa1 = human_player("1")
-playa2 = human_player("2")
+playa1 = minimax_player("Minimax")
+#playa1 = human_player("1")
+playa2 = human_player("Sean")
 
 play_tictactoe(tictactoe_board, playa1, playa2)
