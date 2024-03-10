@@ -21,68 +21,83 @@ class human_player:
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
-        move_input = input("Enter a row and column:").split(' ')
-        row = int(move_input[0])
-        col = int(move_input[1])
-        move = [row, col]
-        if move in available_moves:
-            return move
+        move = None
+        
+        while move not in available_moves or move == None:
+            try:
+                move_input = input("Enter a row and column:").split(' ')
+                row = int(move_input[0])
+                col = int(move_input[1])
+                move = [row, col]
+                if move in available_moves:
+                    return move
+            except Exception as e:
+                print("Invalid Move.")
 
 # Player using minimax
 class minimax_player:
     def __init__(self, name):
         self.name = name
         
-    def minimax(self, board, alpha, beta, is_maximising):
-        # Check if the game is over
-        result = board.result()
-        if result == 1:
-            return 1, None
-        elif result == 1:
-            return -1, None
-        elif result == 0:
-            return 0, None
+    def minimax(self, board, alpha, beta, is_maximising, depth):
         
+        # Check if the game is over
+        try:
+            result = board.result()
+            if result == 1:
+                return 1, None
+            elif result == 1:
+                return -1, None
+        except Exception as e:
+            if str(e) == "Both X and O have 3 pieces in a row.":
+                return 0, None
+            else: print(f"A minimax Error Occured: {e}")
+        
+        # Calculate value of moves
         available_moves = get_available_moves(board)
         if is_maximising:
+            #print("maximising")
             max_value = -math.inf
             best_move = None
             
-            # Check moves
+            # get value of each move
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(move)
-                value, best_move = self.minimax(new_board, alpha, beta, not is_maximising)
+                value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
+                # Find the best move
                 if value > max_value:
                     max_value = value
                     best_move = move
-                
+
+                # Prune search
                 if max_value > alpha:
                     alpha = max_value
-                    
                 if alpha >= beta:
                     break
-                
+                    
             return max_value, best_move
         
         else:
+            #print("minimising")
             max_value = math.inf
             best_move = None
             
-            # Check moves
+            # Get value of each move
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(move)
-                value, best_move = self.minimax(new_board, alpha, beta, not is_maximising)
+                value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
+                # Find the best move
                 if value < max_value:
                     max_value = value
                     best_move = move
                 
+                # Prune search
                 if max_value < beta:
                     beta = max_value
-                    
                 if alpha >= beta:
                     break
                 
@@ -90,23 +105,29 @@ class minimax_player:
             
     
     def get_next_move(self, board):
-        self.minimax(self, board, -math.inf, math.inf, False)
+        return self.minimax(board, -math.inf, math.inf, False, 0)[1]
         
      
 def play_tictactoe(board, player1, player2):
     
     # While the game is not over let each player move
-    while board.result() == None:
-        available_moves = get_available_moves(board)
-        player1_move = player1.get_next_move(available_moves)
-        board.push(player1_move)
-        player2_move = player2.get_next_move(available_moves)
-        board.push(player2_move)
-        print(board)
-    
-    print(f"Winner = {board.result()}")
+    try:
+        while board.result() == None:
+            player1_move = player1.get_next_move(board)
+            print(player1_move)
+            board.push(player1_move)
+            player2_move = player2.get_next_move(board)
+            board.push(player2_move)
+            print(board)
+        
+        print(f"Winner = {board.result()}")
+    except Exception as e:
+        if str(e) == "Both X and O have 3 pieces in a row.":
+            print("Tie Game")
+        else: print(e)
 
 tictactoe_board = Board(dimensions=(3, 3))
+#playa1 = minimax_player("minimax")
 playa1 = human_player("1")
 playa2 = human_player("2")
 
