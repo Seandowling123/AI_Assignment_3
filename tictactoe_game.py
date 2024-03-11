@@ -201,6 +201,7 @@ class Qlearning_player:
                 value = Q_table[get_board_hash(new_board)]
             else:
                 value = 0
+                Q_table[get_board_hash(new_board)] = 0
             
             # Select the highest value move
             if value > max_value:
@@ -226,19 +227,18 @@ def update_policies(board, agent1, agent2):
                 
 # Train the agent
 def train_Qlearning_agents(iterations, agent1, agent2):
-    iteration = 0
     Q_table1 = agent1.policy
     Q_table2 = agent2.policy
-    for i in range(iterations):
+    
+    # Generate a new board for each iteration
+    for iteration in range(iterations):
         iteration = iteration+1
         if iteration % 10 == 0:
             print(iteration)
-        
-        # Play each game and update the policy
         board = Board(dimensions=(3, 3))
         available_moves = get_available_moves(board)
         while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-            #print(board, "\n")
+            print(board, "\n")
             
             # play Agent 1's move and update past states
             agent1_move = agent1.get_next_move(board)
