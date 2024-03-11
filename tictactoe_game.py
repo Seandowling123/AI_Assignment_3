@@ -167,7 +167,10 @@ class Qlearning_player:
                 return 0
             else: print(f"A Q Learning state reward Error Occured: {e}")
         return None
-
+    
+    def delete_prev_states(self):
+        self.prev_states = []
+        
     # Update Q-values 
     def update_policy(self, reward):
         for prev_state in reversed(self.prev_states):
@@ -244,9 +247,9 @@ def train_Qlearning_agents(iterations, agent1, agent2):
             
             # Check if the game is over
             if board.result() != None:
-                for prev_state in agent1.prev_states:
-                    print(prev_state, "\n")
                 update_policies(board, agent1, agent2)
+                agent1.delete_prev_states()
+                agent2.delete_prev_states()
                 break
             
             # play Agent 2's move and update past states
@@ -258,6 +261,8 @@ def train_Qlearning_agents(iterations, agent1, agent2):
             # Check if the game is over
             if board.result() != None:
                 update_policies(board, agent1, agent2)
+                agent1.delete_prev_states()
+                agent2.delete_prev_states()
                 break
             
     print(Q_table1)
@@ -291,6 +296,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa2 = random_player()
 player1 = Qlearning_player()
 player2 = Qlearning_player(is_player_1=False)
-train_Qlearning_agents(1, player1, player2)
+train_Qlearning_agents(10, player1, player2)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
