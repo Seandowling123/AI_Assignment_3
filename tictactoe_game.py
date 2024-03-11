@@ -3,8 +3,7 @@ import pickle
 import math
 import random
 
-# board.possible_moves()
-# board.board
+agent1_wins = 0
 
 # Get all available moves
 def get_available_moves(board):
@@ -137,9 +136,9 @@ class Qlearning_player:
         else: self.policy = {}
     
     # Save Qtable
-    def save_policy(policy, policy_name):
+    def save_policy(self, policy_name):
         filehandler = open(policy_name,"wb")
-        pickle.dump(policy,filehandler)
+        pickle.dump(self.policy, filehandler)
         filehandler.close()
     
     # Load a Qtable
@@ -224,13 +223,19 @@ def update_policies(board, agent1, agent2):
     else:
         agent1.update_policy(0)
         agent2.update_policy(0)
-                
-# Train the agent
-def train_Qlearning_agents(iterations, agent1, agent2):
-    Q_table1 = agent1.policy
-    Q_table2 = agent2.policy
+
+def merge_policies(policy1, policy2):
+    merged_policy = policy1.copy()
+    merged_policy.update(policy2)
+    return merged_policy
+
+# Train Q learning agent
+def train_Qlearning_agent(iterations, agent1, name):
     
-    # Generate a new board for each iteration
+    # Create an agent to compete against
+    agent2 = Qlearning_player(is_player_1=False)
+    
+    # Play a new game for each iteration
     for iteration in range(iterations):
         iteration = iteration+1
         if iteration % 10 == 0:
@@ -238,7 +243,6 @@ def train_Qlearning_agents(iterations, agent1, agent2):
         board = Board(dimensions=(3, 3))
         available_moves = get_available_moves(board)
         while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-            print(board, "\n")
             
             # play Agent 1's move and update past states
             agent1_move = agent1.get_next_move(board)
@@ -264,8 +268,12 @@ def train_Qlearning_agents(iterations, agent1, agent2):
                 agent1.delete_prev_states()
                 agent2.delete_prev_states()
                 break
-            
-    print(Q_table1)
+    for key in agent1.policy:
+        if key in agent2.policy:
+            print("yes!")
+    # Merge & save the policies
+    agent1.policy = merge_policies(agent1.policy, agent2.policy)
+    agent1.save_policy(name)
         
      
 def play_tictactoe(board, player1, player2):
@@ -295,7 +303,7 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
 player1 = Qlearning_player()
-player2 = Qlearning_player(is_player_1=False)
-train_Qlearning_agents(100, player1, player2)
+
+train_Qlearning_agent(100, player1, "Q_learning_agent")
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
