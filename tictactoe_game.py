@@ -154,17 +154,12 @@ class Qlearning_player:
     
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
-        is_player_1 = self.is_player_1
         try:
             result = board_state.result()
-            if result == 1 and is_player_1:
+            if result == 1:
                 return 1
-            elif result == 1 and not is_player_1:
+            elif result == 2:
                 return -1
-            elif result == 2 and is_player_1:
-                return -1
-            elif result == 2 and not is_player_1:
-                return 1
         except Exception as e:
             if str(e) == "Both X and O have 3 pieces in a row.":
                 return 0
@@ -178,6 +173,17 @@ class Qlearning_player:
         else: old_value = 0
         new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(value))
         self.policy[self.get_board_hash(state)] = new_value
+        
+    def swap_values(board):
+        swap_board = board.board
+        for i in range(len(swap_board)):
+            for j in range(len(swap_board[i])):
+                if swap_board[i][j] == 1:
+                    swap_board[i][j] = 2
+                elif swap_board[i][j] == 2:
+                    swap_board[i][j] = 1
+        board.board = swap_board
+        return board
     
     # Train the agent
     def train(self, iterations):
@@ -228,6 +234,10 @@ class Qlearning_player:
                 if self.get_state_reward(board) == None or len(available_moves) > 0:
                     break
                 
+                # swap the board for the other player
+                board = swap_values(board)
+                
+                # Train for the other player
                 value = None
                 max_value = -math.inf
                 best_move = None
@@ -308,6 +318,20 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
 player2 = Qlearning_player()
-player2.train(1000)
+#player2.train(1000)
+
+def swap_values(lst_2d):
+    for i in range(len(lst_2d)):
+        for j in range(len(lst_2d[i])):
+            if lst_2d[i][j] == 1:
+                lst_2d[i][j] = 2
+            elif lst_2d[i][j] == 2:
+                lst_2d[i][j] = 1
+    return lst_2d
+
+tictactoe_board.push([1, 1])
+tictactoe_board.board = swap_values(tictactoe_board.board)
+tictactoe_board.board = swap_values(tictactoe_board.board)
+print(tictactoe_board)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
