@@ -125,10 +125,14 @@ class minimax_player:
         return move[1]
     
 class Qlearning_player:
-    def __init__(self, policy_name):
+    def __init__(self, policy_name=None, alpha=.2, gamma=.9):
         self.name = "Minimax"
+        self.alpha = alpha
+        self.gamma = gamma
         self.policy_name = policy_name
-        self.policy = self.load_policy(policy_name)
+        if policy_name != None:
+            self.policy = self.load_policy(policy_name)
+        else: self.policy = {}
     
     # Save Qtable
     def save_policy(policy, policy_name):
@@ -156,9 +160,54 @@ class Qlearning_player:
                 return 0
             else: print(f"A Q Learning state reward Error Occured: {e}")
         return None
+
+    # Update Q-values 
+    def update_policy(self, state, value):
+        old_value = self.policy[state]
+        new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(value))
+        self.policy[state] = new_value
+    
+    # Train the agent
+    def train(self, iterations):
+        Q_table = self.policy
+        for i in range(iterations):
+            
+            board = Board(dimensions=(3, 3))
+            while self.get_state_reward(board) != None:
+                print(board)
+                    
+                value = None
+                max_value = -math.inf
+                best_move = None
+
+                # Get the best move from the policy
+                available_moves = get_available_moves(board)
+                for move in available_moves:
+                    new_board = board.copy()
+                    new_board.push(move)
+                    
+                    # Check if move leads to a terminal state
+                    if self.get_state_reward(new_board) != None:
+                        value = self.get_state_reward(new_board)
+                        
+                    # Check if state is in table
+                    elif new_board.board in Q_table:
+                        value = Q_table[new_board.board]
+                    else:
+                        value = 0
+                        Q_table[new_board.board] = value
+                    
+                    # Execute the highest value move
+                    if value > max_value:
+                        max_value = value
+                        best_move = move
+                        
+                # Update policy 
+                self.update_policy(board, max_value)
+                board.push(best_move)
+                
     
     def get_next_move(self, board):
-        
         value = -math.inf
         Q_table = self.policy
         available_moves = get_available_moves(board)
@@ -174,8 +223,8 @@ class Qlearning_player:
             elif move in Q_table:
                 value = Q_table[move]
             else:
-                value = 0 
-                Q_table[move] = value
+                value = 0
+                
         
         
      
@@ -203,7 +252,9 @@ def play_tictactoe(board, player1, player2):
         else: print(e)
 
 tictactoe_board = Board(dimensions=(3, 3))
-playa1 = minimax_player()
-playa2 = random_player()
+#playa1 = minimax_player()
+#playa2 = random_player()
+player2 = Qlearning_player()
+player2.train
 
-play_tictactoe(tictactoe_board, playa1, playa2)
+#play_tictactoe(tictactoe_board, playa1, playa2)
