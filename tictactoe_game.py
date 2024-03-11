@@ -147,6 +147,10 @@ class Qlearning_player:
         file.close()
         return policy
     
+    def get_board_hash(board):
+        hash = str(board.board.flatten())
+        return hash
+    
     # Get the reward for taking an action
     def get_state_reward(board_state):
         try:
@@ -165,7 +169,7 @@ class Qlearning_player:
     def update_policy(self, state, value):
         old_value = self.policy[state]
         new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(value))
-        self.policy[state] = new_value
+        self.policy[self.get_board_hash(state)] = new_value
     
     # Train the agent
     def train(self, iterations):
@@ -191,11 +195,11 @@ class Qlearning_player:
                         value = self.get_state_reward(new_board)
                         
                     # Check if state is in table
-                    elif new_board.board in Q_table:
-                        value = Q_table[new_board.board]
+                    elif self.get_board_hash(new_board) in Q_table:
+                        value = Q_table[self.get_board_hash(new_board)]
                     else:
                         value = 0
-                        Q_table[new_board.board] = value
+                        Q_table[self.get_board_hash(new_board)] = value
                     
                     # Execute the highest value move
                     if value > max_value:
@@ -255,6 +259,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
 player2 = Qlearning_player()
-player2.train
+player2.train(10)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
