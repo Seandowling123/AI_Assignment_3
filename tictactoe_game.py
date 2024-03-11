@@ -174,7 +174,7 @@ class Qlearning_player:
         new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(value))
         self.policy[self.get_board_hash(state)] = new_value
         
-    def swap_values(board):
+    def swap_values(self, board):
         swap_board = board.board
         for i in range(len(swap_board)):
             for j in range(len(swap_board[i])):
@@ -199,7 +199,7 @@ class Qlearning_player:
             board = Board(dimensions=(3, 3))
             available_moves = get_available_moves(board)
             while self.get_state_reward(board) == None and len(available_moves) > 0:
-                    
+                #print(board, "\n")
                 value = None
                 max_value = -math.inf
                 best_move = None
@@ -208,6 +208,10 @@ class Qlearning_player:
                 for move in available_moves:
                     new_board = board.copy()
                     new_board.push(move)
+                    
+                    print(self.get_board_hash(board))
+                    if self.get_board_hash(new_board) in Q_table:
+                        print(Q_table[self.get_board_hash(board)])
                     
                     # Check if move leads to a terminal state
                     if self.get_state_reward(new_board) != None:
@@ -225,17 +229,17 @@ class Qlearning_player:
                         max_value = value
                         best_move = move
                         
-                # Update policy 
+                # Update policy & play best move
                 self.update_policy(board, max_value)
                 board.push(best_move)
-                available_moves = get_available_moves(board)
                 
                 # Check if the game is over
-                if self.get_state_reward(board) == None or len(available_moves) > 0:
+                if self.get_state_reward(board) != None or len(get_available_moves(board)) == 0:
                     break
                 
                 # swap the board for the other player
-                board = swap_values(board)
+                board = self.swap_values(board)
+                available_moves = get_available_moves(board)
                 
                 # Train for the other player
                 value = None
@@ -263,8 +267,9 @@ class Qlearning_player:
                         max_value = value
                         best_move = move
                         
-                # Update policy 
+                # Update policy & play best move
                 self.update_policy(board, max_value)
+                board = self.swap_values(board)
                 board.push(best_move)
                 available_moves = get_available_moves(board)
                 
@@ -318,20 +323,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
 player2 = Qlearning_player()
-#player2.train(1000)
-
-def swap_values(lst_2d):
-    for i in range(len(lst_2d)):
-        for j in range(len(lst_2d[i])):
-            if lst_2d[i][j] == 1:
-                lst_2d[i][j] = 2
-            elif lst_2d[i][j] == 2:
-                lst_2d[i][j] = 1
-    return lst_2d
-
-tictactoe_board.push([1, 1])
-tictactoe_board.board = swap_values(tictactoe_board.board)
-tictactoe_board.board = swap_values(tictactoe_board.board)
-print(tictactoe_board)
+player2.train(10)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
