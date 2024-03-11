@@ -148,18 +148,19 @@ class Qlearning_player:
         file.close()
         return policy
     
-    def get_board_hash(self, board):
-        hash = str(board.board.flatten())
-        return hash
-    
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
+        is_player1 = self.is_player1
         try:
             result = board_state.result()
-            if result == 1:
+            if result == 1 and is_player1:
                 return 1
-            elif result == 2:
+            elif result == 1 and not is_player1:
                 return -1
+            elif result == 2 and is_player1:
+                return -1
+            elif result == 2 and not is_player1:
+                return 1
         except Exception as e:
             if str(e) == "Both X and O have 3 pieces in a row.":
                 return 0
@@ -168,11 +169,11 @@ class Qlearning_player:
 
     # Update Q-values 
     def update_policy(self, state, value):
-        if self.get_board_hash(state) in self.policy:
-            old_value = self.policy[self.get_board_hash(state)]
+        if get_board_hash(state) in self.policy:
+            old_value = self.policy[get_board_hash(state)]
         else: old_value = 0
         new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(value))
-        self.policy[self.get_board_hash(state)] = new_value
+        self.policy[get_board_hash(state)] = new_value
         
     def swap_values(self, board):
         swap_board = board.board
@@ -184,96 +185,6 @@ class Qlearning_player:
                     swap_board[i][j] = 1
         board.board = swap_board
         return board
-    
-    # Train the agent
-    def train(self, iterations):
-        iteration = 0
-        Q_table = self.policy
-        for i in range(iterations):
-            
-            iteration = iteration+1
-            if iteration % 10 == 0:
-                print(iteration)
-            
-            # Play each game and update the policy
-            board = Board(dimensions=(3, 3))
-            available_moves = get_available_moves(board)
-            while self.get_state_reward(board) == None and len(available_moves) > 0:
-                #print(board, "\n")
-                value = None
-                max_value = -math.inf
-                best_move = None
-
-                # Check the value of each available move
-                for move in available_moves:
-                    new_board = board.copy()
-                    new_board.push(move)
-                    
-                    print(self.get_board_hash(board))
-                    if self.get_board_hash(new_board) in Q_table:
-                        print(Q_table[self.get_board_hash(board)])
-                    
-                    # Check if move leads to a terminal state
-                    if self.get_state_reward(new_board) != None:
-                        value = self.get_state_reward(new_board)
-                        
-                    # Check if state is in table
-                    elif self.get_board_hash(new_board) in Q_table:
-                        value = Q_table[self.get_board_hash(new_board)]
-                    else:
-                        value = 0
-                        Q_table[self.get_board_hash(new_board)] = value
-                    
-                    # Select the highest value move
-                    if value > max_value:
-                        max_value = value
-                        best_move = move
-                        
-                # Update policy & play best move
-                self.update_policy(board, max_value)
-                board.push(best_move)
-                
-                # Check if the game is over
-                if self.get_state_reward(board) != None or len(get_available_moves(board)) == 0:
-                    break
-                
-                # swap the board for the other player
-                board = self.swap_values(board)
-                available_moves = get_available_moves(board)
-                
-                # Train for the other player
-                value = None
-                max_value = -math.inf
-                best_move = None
-
-                # Check the value of each available move
-                for move in available_moves:
-                    new_board = board.copy()
-                    new_board.push(move)
-                    
-                    # Check if move leads to a terminal state
-                    if self.get_state_reward(new_board) != None:
-                        value = self.get_state_reward(new_board)
-                        
-                    # Check if state is in table
-                    elif self.get_board_hash(new_board) in Q_table:
-                        value = Q_table[self.get_board_hash(new_board)]
-                    else:
-                        value = 0
-                        Q_table[self.get_board_hash(new_board)] = value
-                    
-                    # Select the highest value move
-                    if value > max_value:
-                        max_value = value
-                        best_move = move
-                        
-                # Update policy & play best move
-                self.update_policy(board, max_value)
-                board = self.swap_values(board)
-                board.push(best_move)
-                available_moves = get_available_moves(board)
-                
-        print(Q_table)
     
     def get_next_move(self, board):
         value = -math.inf
@@ -292,8 +203,99 @@ class Qlearning_player:
                 value = Q_table[move]
             else:
                 value = 0
+
+# Get a string representation of the board
+def get_board_hash(board):
+        hash = str(board.board.flatten())
+        return hash
                 
+# Train the agent
+def train_Qlearning_agents(iterations, agent1, agent2):
+    iteration = 0
+    Q_table1 = agent1.policy
+    Q_table2 = agent2.policy
+    for i in range(iterations):
         
+        iteration = iteration+1
+        if iteration % 10 == 0:
+            print(iteration)
+        
+        # Play each game and update the policy
+        board = Board(dimensions=(3, 3))
+        available_moves = get_available_moves(board)
+        while agent1.get_state_reward(board) == None and len(available_moves) > 0:
+            #print(board, "\n")
+            value = None
+            max_value = -math.inf
+            best_move = None
+
+            # Check the value of each available move
+            for move in available_moves:
+                new_board = board.copy()
+                new_board.push(move)
+                
+                print(get_board_hash(board))
+                if get_board_hash(new_board) in Q_table1:
+                    print(Q_table1[get_board_hash(board)])
+                
+                # Check if move leads to a terminal state
+                if Q_table1.get_state_reward(new_board) != None:
+                    value = Q_table1.get_state_reward(new_board)
+                    
+                # Check if state is in table
+                elif get_board_hash(new_board) in Q_table1:
+                    value = Q_table1[get_board_hash(new_board)]
+                else:
+                    value = 0
+                    Q_table1[get_board_hash(new_board)] = value
+                
+                # Select the highest value move
+                if value > max_value:
+                    max_value = value
+                    best_move = move
+                    
+            # Update policy & play best move
+            Q_table1.update_policy(board, max_value)
+            board.push(best_move)
+            
+            # Check if the game is over
+            if Q_table2.get_state_reward(board) != None or len(get_available_moves(board)) == 0:
+                break
+            
+            available_moves = get_available_moves(board)
+            
+            # Train for the other player
+            value = None
+            max_value = -math.inf
+            best_move = None
+
+            # Check the value of each available move
+            for move in available_moves:
+                new_board = board.copy()
+                new_board.push(move)
+                
+                # Check if move leads to a terminal state
+                if Q_table2.get_state_reward(new_board) != None:
+                    value = Q_table2.get_state_reward(new_board)
+                    
+                # Check if state is in table
+                elif get_board_hash(new_board) in Q_table2:
+                    value = Q_table2[get_board_hash(new_board)]
+                else:
+                    value = 0
+                    Q_table2[get_board_hash(new_board)] = value
+                
+                # Select the highest value move
+                if value > max_value:
+                    max_value = value
+                    best_move = move
+                    
+            # Update policy & play best move
+            Q_table2.update_policy(board, max_value)
+            board.push(best_move)
+            available_moves = get_available_moves(board)
+            
+    print(Q_table1)
         
      
 def play_tictactoe(board, player1, player2):
