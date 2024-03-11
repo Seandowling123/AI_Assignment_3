@@ -169,13 +169,13 @@ class Qlearning_player:
         return None
 
     # Update Q-values 
-    def update_policy(self, state, value):
+    def update_policy(self, reward):
         for prev_state in reversed(self.prev_states):
-            if get_board_hash(state) in self.policy:
-                old_value = self.policy[get_board_hash(state)]
+            if get_board_hash(prev_state) in self.policy:
+                old_value = self.policy[get_board_hash(prev_state)]
             else: old_value = 0
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
-            self.policy[get_board_hash(state)] = new_value
+            self.policy[get_board_hash(prev_state)] = new_value
             reward = self.Q_table[prev_state]
     
     def get_next_move(self, board):
