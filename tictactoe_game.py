@@ -55,18 +55,18 @@ class minimax_player:
         # Speed up for first move
         available_moves = get_available_moves(board)
         if len(available_moves) == 9:
-            return 0, [1,1]
+            return [1,1], 0
         
         # Check if the game is over
         try:
             result = board.result()
             if result == 1:
-                return 1, None
+                return None, 1
             elif result == 2:
-                return -1, None
+                return None, -1
         except Exception as e:
             if str(e) == "Both X and O have 3 pieces in a row.":
-                return 0, None
+                return None, 0
             else: print(f"A minimax Error Occured: {e}")
         
         # Calculate move for maximiser
@@ -78,7 +78,7 @@ class minimax_player:
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(move)
-                value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
+                best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
                 if value > max_value:
@@ -91,7 +91,7 @@ class minimax_player:
                 if alpha >= beta:
                     break
                     
-            return max_value, best_move
+            return best_move, max_value
         
         # Calculate move for minimiser
         else:
@@ -102,7 +102,7 @@ class minimax_player:
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(move)
-                value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
+                best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
                 if value < min_value:
@@ -115,13 +115,13 @@ class minimax_player:
                 if alpha >= beta:
                     break
                 
-            return min_value, best_move
+            return best_move, min_value
          
     # Return the next move for the player
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
-        print(move)
-        return move[1]
+        #print(move)
+        return move[0]
     
 class Qlearning_player:
     def __init__(self, policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
@@ -299,4 +299,4 @@ player1 = minimax_player()
 playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 
-play_tictactoe(tictactoe_board, playa2, player1)
+play_tictactoe(tictactoe_board, player1, playa2)
