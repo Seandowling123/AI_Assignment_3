@@ -171,6 +171,7 @@ class Qlearning_player:
     # Update Q-values 
     def update_policy(self, reward):
         for prev_state in reversed(self.prev_states):
+            print(get_board_hash(prev_state))
             if get_board_hash(prev_state) in self.policy:
                 old_value = self.policy[get_board_hash(prev_state)]
             else: old_value = 0
@@ -198,7 +199,6 @@ class Qlearning_player:
                 value = Q_table[get_board_hash(new_board)]
             else:
                 value = 0
-                Q_table[get_board_hash(new_board)] = value
             
             # Select the highest value move
             if value > max_value:
@@ -236,28 +236,29 @@ def train_Qlearning_agents(iterations, agent1, agent2):
         board = Board(dimensions=(3, 3))
         available_moves = get_available_moves(board)
         while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-            print(board, "\n")
+            #print(board, "\n")
             
             # play Agent 1's move and update past states
             agent1_move = agent1.get_next_move(board)
-            print(agent1_move)
             board.push(agent1_move)
             agent1.prev_states.append(board)
             
             # Check if the game is over
             if board.result() != None:
+                print(agent1.prev_states)
                 update_policies(board, agent1, agent2)
+                break
             
             # play Agent 2's move and update past states
             available_moves = get_available_moves(board)
             agent2_move = agent2.get_next_move(board)
-            print(agent2_move)
             board.push(agent2_move)
             agent2.prev_states.append(board)
             
             # Check if the game is over
             if board.result() != None:
                 update_policies(board, agent1, agent2)
+                break
             
     print(Q_table1)
         
@@ -290,6 +291,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa2 = random_player()
 player1 = Qlearning_player()
 player2 = Qlearning_player(is_player_1=False)
-train_Qlearning_agents(10, player1, player2)
+train_Qlearning_agents(1, player1, player2)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
