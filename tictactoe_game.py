@@ -250,10 +250,10 @@ def train_Qlearning_agents(iterations, agent1, agent2):
             
             # play Agent 2's move and update past states
             available_moves = get_available_moves(board)
-            agent1_move = agent1.get_next_move(board)
-            print(agent1_move)
-            board.push(agent1_move)
-            agent1.prev_states.append(board)
+            agent2_move = agent2.get_next_move(board)
+            print(agent2_move)
+            board.push(agent2_move)
+            agent2.prev_states.append(board)
             
             # Check if the game is over
             if board.result() != None:
