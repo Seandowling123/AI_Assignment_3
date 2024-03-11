@@ -255,8 +255,8 @@ class Qlearning_player:
 
 # Get a string representation of the board
 def get_board_hash(board):
-        hash = str(board.board.flatten())
-        return hash
+    hash = str(board.board.flatten())
+    return hash
     
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
@@ -275,6 +275,7 @@ def merge_policies(policy1, policy2):
     return merged_policy
         
 def play_tictactoe(board, player1, player2):
+    print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
     
     # While the game is not over let each player move
     while board.result() == None:
