@@ -1,4 +1,5 @@
 from tictactoe import Board
+import pickle
 import math
 import random
 
@@ -14,15 +15,25 @@ def get_available_moves(board):
                 zero_indices.append([i, j])
     return zero_indices
 
+class random_player:
+    def __init__(self):
+        self.name = "Random Player"
+        
+    def get_next_move(self, board):
+        available_moves = get_available_moves(board)
+        move = random.choice(available_moves)
+        return move
+
 # Human contolled player
 class human_player:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = "Sean"
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
         move = None
-        
+
+        # Get user input
         while move not in available_moves or move == None:
             try:
                 move_input = input("Enter a row and column:").split(' ')
@@ -37,8 +48,8 @@ class human_player:
 
 # Player using minimax
 class minimax_player:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = "Minimax"
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
@@ -59,9 +70,8 @@ class minimax_player:
                 return 0, None
             else: print(f"A minimax Error Occured: {e}")
         
-        # Calculate value of moves
+        # Calculate move for maximiser
         if is_maximising:
-            #print("maximising")
             max_value = -math.inf
             best_move = None
             
@@ -84,8 +94,8 @@ class minimax_player:
                     
             return max_value, best_move
         
+        # Calculate move for minimiser
         else:
-            #print("minimising")
             min_value = math.inf
             best_move = None
             
@@ -113,6 +123,27 @@ class minimax_player:
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         print(f"Minimax move: {move[1][1]}, {move[1][0]}.")
         return move[1]
+    
+class Qlearning_player:
+    def __init__(self, policy_name):
+        self.name = "Minimax"
+        self.policy_name = policy_name
+        self.policy = self.load_policy(policy_name)
+        
+    def save_policy(policy, policy_name):
+        filehandler = open(policy_name,"wb")
+        pickle.dump(policy,filehandler)
+        filehandler.close()
+        
+    def load_policy(policy_name):
+        file = open(policy_name,'rb')
+        policy = pickle.load(file)
+        file.close()
+        return policy
+    
+    def get_next_move(self, board):
+        available_moves = get_available_moves(board)
+        
         
      
 def play_tictactoe(board, player1, player2):
@@ -122,10 +153,14 @@ def play_tictactoe(board, player1, player2):
         while board.result() == None:
             player1_move = player1.get_next_move(board)
             board.push(player1_move)
+            if board.result():
+                print(board)
+                break
             player2_move = player2.get_next_move(board)
             board.push(player2_move)
             print(board)
-        
+            
+        # Print the winner
         if board.result() == 1:
             print(f"Winner = {player1.name}")
         else: print(f"Winner = {player2.name}")
@@ -135,8 +170,7 @@ def play_tictactoe(board, player1, player2):
         else: print(e)
 
 tictactoe_board = Board(dimensions=(3, 3))
-playa1 = minimax_player("Minimax")
-#playa1 = human_player("1")
-playa2 = human_player("Sean")
+playa1 = minimax_player()
+playa2 = random_player()
 
 play_tictactoe(tictactoe_board, playa1, playa2)
