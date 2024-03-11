@@ -125,7 +125,7 @@ class minimax_player:
     
 class Qlearning_player:
     def __init__(self, policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
-        self.name = "Minimax"
+        self.name = "Q_learning_agent"
         self.alpha = alpha
         self.gamma = gamma
         self.policy_name = policy_name
@@ -179,6 +179,51 @@ class Qlearning_player:
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
             self.policy[prev_state] = new_value
             reward = self.policy[prev_state]
+            
+    # Train Q-learning agent
+    def train_Qlearning_agent(self, iterations):
+        
+        # Create an agent to compete against
+        agent1 = self
+        agent2 = Qlearning_player(is_player_1=False)
+        
+        # Play a new game for each iteration
+        for iteration in range(iterations):
+            iteration = iteration+1
+            if iteration % 10 == 0:
+                print(iteration)
+            board = Board(dimensions=(3, 3))
+            available_moves = get_available_moves(board)
+            while agent1.get_state_reward(board) == None and len(available_moves) > 0:
+                
+                # play Agent 1's move and update past states
+                agent1_move = agent1.get_next_move(board)
+                board.push(agent1_move)
+                agent1.prev_states.append(get_board_hash(board))
+                
+                # Check if the game is over
+                if board.result() != None:
+                    update_policies(board, agent1, agent2)
+                    agent1.delete_prev_states()
+                    agent2.delete_prev_states()
+                    break
+                
+                # play Agent 2's move and update past states
+                available_moves = get_available_moves(board)
+                agent2_move = agent2.get_next_move(board)
+                board.push(agent2_move)
+                agent2.prev_states.append(get_board_hash(board))
+                
+                # Check if the game is over
+                if board.result() != None:
+                    update_policies(board, agent1, agent2)
+                    agent1.delete_prev_states()
+                    agent2.delete_prev_states()
+                    break
+                
+        # Merge & save the policies
+        agent1.policy = merge_policies(agent1.policy, agent2.policy)
+        agent1.save_policy(self.name)
     
     def get_next_move(self, board):
         value = None
@@ -228,54 +273,7 @@ def merge_policies(policy1, policy2):
     merged_policy = policy1.copy()
     merged_policy.update(policy2)
     return merged_policy
-
-# Train Q learning agent
-def train_Qlearning_agent(iterations, agent1, name):
-    
-    # Create an agent to compete against
-    agent2 = Qlearning_player(is_player_1=False)
-    
-    # Play a new game for each iteration
-    for iteration in range(iterations):
-        iteration = iteration+1
-        if iteration % 10 == 0:
-            print(iteration)
-        board = Board(dimensions=(3, 3))
-        available_moves = get_available_moves(board)
-        while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-            
-            # play Agent 1's move and update past states
-            agent1_move = agent1.get_next_move(board)
-            board.push(agent1_move)
-            agent1.prev_states.append(get_board_hash(board))
-            
-            # Check if the game is over
-            if board.result() != None:
-                update_policies(board, agent1, agent2)
-                agent1.delete_prev_states()
-                agent2.delete_prev_states()
-                break
-            
-            # play Agent 2's move and update past states
-            available_moves = get_available_moves(board)
-            agent2_move = agent2.get_next_move(board)
-            board.push(agent2_move)
-            agent2.prev_states.append(get_board_hash(board))
-            
-            # Check if the game is over
-            if board.result() != None:
-                update_policies(board, agent1, agent2)
-                agent1.delete_prev_states()
-                agent2.delete_prev_states()
-                break
-    for key in agent1.policy:
-        if key in agent2.policy:
-            print("yes!")
-    # Merge & save the policies
-    agent1.policy = merge_policies(agent1.policy, agent2.policy)
-    agent1.save_policy(name)
         
-     
 def play_tictactoe(board, player1, player2):
     
     # While the game is not over let each player move
@@ -303,7 +301,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
 player1 = Qlearning_player()
-
-train_Qlearning_agent(100, player1, "Q_learning_agent")
+player1.train_Qlearning_agent(100)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
