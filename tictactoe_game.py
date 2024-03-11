@@ -142,7 +142,7 @@ class Qlearning_player:
         filehandler.close()
     
     # Load a Qtable
-    def load_policy(policy_name):
+    def load_policy(self, policy_name):
         file = open(policy_name,'rb')
         policy = pickle.load(file)
         file.close()
@@ -277,30 +277,26 @@ def merge_policies(policy1, policy2):
 def play_tictactoe(board, player1, player2):
     
     # While the game is not over let each player move
-    try:
-        while board.result() == None:
-            player1_move = player1.get_next_move(board)
-            board.push(player1_move)
-            if board.result() != None:
-                print(board)
-                break
-            player2_move = player2.get_next_move(board)
-            board.push(player2_move)
+    while board.result() == None:
+        player1_move = player1.get_next_move(board)
+        board.push(player1_move)
+        if board.result() != None:
             print(board)
-            
-        # Print the winner
-        if board.result() == 1:
-            print(f"Winner = {player1.name}")
-        else: print(f"Winner = {player2.name}")
-    except Exception as e:
-        if str(e) == "Both X and O have 3 pieces in a row.":
-            print("Tie Game")
-        else: print(e)
+            break
+        player2_move = player2.get_next_move(board)
+        board.push(player2_move)
+        print(board)
+        
+    # Print the winner
+    if board.result() == 1:
+        print(f"Winner = {player1.name}")
+    elif board.result() == 2: print(f"Winner = {player2.name}")
+    else: print("Tie Game")
 
 tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
-#playa2 = random_player()
-player1 = Qlearning_player()
-player1.train_Qlearning_agent(10000)
+playa2 = random_player()
+player1 = Qlearning_player(policy_name='Q_learning_agent')
+#player1.train_Qlearning_agent(10000)
 
-#play_tictactoe(tictactoe_board, playa1, playa2)
+play_tictactoe(tictactoe_board, player1, playa2)
