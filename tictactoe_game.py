@@ -81,7 +81,7 @@ class minimax_player:
                 value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value >= max_value:
+                if value > max_value:
                     max_value = value
                     best_move = move
                 
@@ -105,7 +105,7 @@ class minimax_player:
                 value, best_move = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value <= min_value:
+                if value < min_value:
                     min_value = value
                     best_move = move
                 
@@ -120,7 +120,7 @@ class minimax_player:
     # Return the next move for the player
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
-        print(f"Minimax move: {move[1][1]}, {move[1][0]}.")
+        print(move)
         return move[1]
     
 class Qlearning_player:
@@ -281,11 +281,11 @@ def play_tictactoe(board, player1, player2):
         player1_move = player1.get_next_move(board)
         board.push(player1_move)
         if board.result() != None:
-            print(board)
+            print(board, "\n")
             break
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
-        print(board)
+        print(board, "\n")
         
     # Print the winner
     if board.result() == 1:
@@ -294,9 +294,9 @@ def play_tictactoe(board, player1, player2):
     else: print("Tie Game")
 
 tictactoe_board = Board(dimensions=(3, 3))
-#playa1 = minimax_player()
-playa2 = random_player()
-player1 = Qlearning_player(policy_name='Q_learning_agent')
+player1 = minimax_player()
+#playa2 = random_player()
+playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 
-play_tictactoe(tictactoe_board, player1, playa2)
+play_tictactoe(tictactoe_board, playa2, player1)
