@@ -125,12 +125,12 @@ class minimax_player:
         return move[1]
     
 class Qlearning_player:
-    def __init__(self, policy_name=None, alpha=.2, gamma=.9):
+    def __init__(self, policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
         self.name = "Minimax"
         self.alpha = alpha
         self.gamma = gamma
         self.policy_name = policy_name
-        self.is_player_1 = True
+        self.is_player_1 = is_player_1
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
         else: self.policy = {}
@@ -150,16 +150,16 @@ class Qlearning_player:
     
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
-        is_player1 = self.is_player1
+        is_player_1 = self.is_player_1
         try:
             result = board_state.result()
-            if result == 1 and is_player1:
+            if result == 1 and is_player_1:
                 return 1
-            elif result == 1 and not is_player1:
+            elif result == 1 and not is_player_1:
                 return -1
-            elif result == 2 and is_player1:
+            elif result == 2 and is_player_1:
                 return -1
-            elif result == 2 and not is_player1:
+            elif result == 2 and not is_player_1:
                 return 1
         except Exception as e:
             if str(e) == "Both X and O have 3 pieces in a row.":
@@ -215,7 +215,7 @@ def train_Qlearning_agents(iterations, agent1, agent2):
     Q_table1 = agent1.policy
     Q_table2 = agent2.policy
     for i in range(iterations):
-        
+        print(Q_table1)
         iteration = iteration+1
         if iteration % 10 == 0:
             print(iteration)
@@ -234,16 +234,19 @@ def train_Qlearning_agents(iterations, agent1, agent2):
                 new_board = board.copy()
                 new_board.push(move)
                 
-                print(get_board_hash(board))
-                if get_board_hash(new_board) in Q_table1:
-                    print(Q_table1[get_board_hash(board)])
+                #print(get_board_hash(board))
+                if '[1 2 1 2 1 2 0 0 0]' == get_board_hash(board):
+                    print(get_board_hash(new_board))
+                    print(new_board)
                 
                 # Check if move leads to a terminal state
-                if Q_table1.get_state_reward(new_board) != None:
-                    value = Q_table1.get_state_reward(new_board)
+                if agent1.get_state_reward(new_board) != None:
+                    value = agent1.get_state_reward(new_board)
                     
                 # Check if state is in table
                 elif get_board_hash(new_board) in Q_table1:
+                    if '[1 2 1 2 1 2 2 1 0]' == get_board_hash(new_board):
+                        print(print(Q_table1['[1 2 1 2 1 2 2 1 0]']))
                     value = Q_table1[get_board_hash(new_board)]
                 else:
                     value = 0
@@ -255,16 +258,15 @@ def train_Qlearning_agents(iterations, agent1, agent2):
                     best_move = move
                     
             # Update policy & play best move
-            Q_table1.update_policy(board, max_value)
+            agent1.update_policy(board, max_value)
             board.push(best_move)
             
             # Check if the game is over
-            if Q_table2.get_state_reward(board) != None or len(get_available_moves(board)) == 0:
+            if agent2.get_state_reward(board) != None or len(get_available_moves(board)) == 0:
                 break
             
+            # Train for the other agent
             available_moves = get_available_moves(board)
-            
-            # Train for the other player
             value = None
             max_value = -math.inf
             best_move = None
@@ -275,8 +277,8 @@ def train_Qlearning_agents(iterations, agent1, agent2):
                 new_board.push(move)
                 
                 # Check if move leads to a terminal state
-                if Q_table2.get_state_reward(new_board) != None:
-                    value = Q_table2.get_state_reward(new_board)
+                if agent1.get_state_reward(new_board) != None:
+                    value = agent1.get_state_reward(new_board)
                     
                 # Check if state is in table
                 elif get_board_hash(new_board) in Q_table2:
@@ -291,11 +293,11 @@ def train_Qlearning_agents(iterations, agent1, agent2):
                     best_move = move
                     
             # Update policy & play best move
-            Q_table2.update_policy(board, max_value)
+            agent1.update_policy(board, max_value)
             board.push(best_move)
             available_moves = get_available_moves(board)
             
-    print(Q_table1)
+    #print(Q_table1)
         
      
 def play_tictactoe(board, player1, player2):
@@ -324,7 +326,8 @@ def play_tictactoe(board, player1, player2):
 tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
-player2 = Qlearning_player()
-player2.train(10)
+player1 = Qlearning_player()
+player2 = Qlearning_player(is_player_1=False)
+train_Qlearning_agents(10, player1, player2)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
