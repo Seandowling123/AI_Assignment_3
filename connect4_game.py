@@ -27,7 +27,7 @@ class random_player:
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
         move = random.choice(available_moves)
-        return move
+        return get_placement(board, move)
 
 # Human contolled player
 class human_player:
@@ -41,12 +41,10 @@ class human_player:
         # Get user input
         while move not in available_moves or move == None:
             try:
-                move_input = input("Enter a row and column:").split(' ')
-                row = int(move_input[1])
-                col = int(move_input[0])
-                move = [row, col]
+                move_input = input("Enter a column to place a counter:")
+                move = int(move_input)
                 if move in available_moves:
-                    return move
+                    return get_placement(board, move)
                 else: print("Invalid Move.")
             except Exception as e:
                 print("Invalid Move.")
@@ -72,7 +70,6 @@ def play_tictactoe(board, player1, player2):
     else: print("Tie Game")
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
-tictactoe_board.push(get_placement(tictactoe_board, 3))
 print(get_available_moves(tictactoe_board))
 player1 = human_player()
 playa2 = random_player()
