@@ -3,13 +3,21 @@ import pickle
 import math
 import random
 
+# Place the counter at the bottom of the selected column
+def get_placement(board, index):
+    column = board.board[index]
+    max_index = -1
+    for i in range(len(column)):
+        if column[i] == 0:
+            max_index = i
+    return [index, max_index]
+
 # Get all available moves
 def get_available_moves(board):
     zero_indices = []
-    for i, row in enumerate(board.board):
-        for j, value in enumerate(row):
-            if value == 0:
-                zero_indices.append([i, j])
+    for i in range(len(board.board)):
+        if 0 in board.board[i]:
+            zero_indices.append(i)
     return zero_indices
 
 class random_player:
@@ -63,3 +71,12 @@ def play_tictactoe(board, player1, player2):
     elif board.result() == 2: print(f"Winner = {player2.name}")
     else: print("Tie Game")
     
+tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
+tictactoe_board.push(get_placement(tictactoe_board, 3))
+print(get_available_moves(tictactoe_board))
+player1 = human_player()
+playa2 = random_player()
+#playa2 = Qlearning_player(policy_name='Q_learning_agent')
+#player1.train_Qlearning_agent(10000)
+
+play_tictactoe(tictactoe_board, player1, playa2)
