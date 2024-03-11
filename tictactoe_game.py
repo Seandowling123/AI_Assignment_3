@@ -129,20 +129,53 @@ class Qlearning_player:
         self.name = "Minimax"
         self.policy_name = policy_name
         self.policy = self.load_policy(policy_name)
-        
+    
+    # Save Qtable
     def save_policy(policy, policy_name):
         filehandler = open(policy_name,"wb")
         pickle.dump(policy,filehandler)
         filehandler.close()
-        
+    
+    # Load a Qtable
     def load_policy(policy_name):
         file = open(policy_name,'rb')
         policy = pickle.load(file)
         file.close()
         return policy
     
+    # Get the reward for taking an action
+    def get_state_reward(board_state):
+        try:
+            result = board_state.result()
+            if result == 2:
+                return 1
+            elif result == 1:
+                return -1
+        except Exception as e:
+            if str(e) == "Both X and O have 3 pieces in a row.":
+                return 0
+            else: print(f"A Q Learning state reward Error Occured: {e}")
+        return None
+    
     def get_next_move(self, board):
+        
+        value = -math.inf
+        Q_table = self.policy
         available_moves = get_available_moves(board)
+        for move in available_moves:
+            new_board = board.copy()
+            new_board.push(move)
+            
+            # Check if move leads to a terminal state
+            if self.get_state_reward(new_board) != None:
+                value = self.get_state_reward(new_board)
+                
+            # Check if state is in table
+            elif move in Q_table:
+                value = Q_table[move]
+            else:
+                value = 0 
+                Q_table[move] = value
         
         
      
