@@ -176,7 +176,7 @@ class Qlearning_player:
             else: old_value = 0
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
             self.policy[get_board_hash(prev_state)] = new_value
-            reward = self.Q_table[prev_state]
+            reward = self.policy[prev_state]
     
     def get_next_move(self, board):
         value = None
