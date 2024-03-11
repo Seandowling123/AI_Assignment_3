@@ -274,7 +274,7 @@ def merge_policies(policy1, policy2):
     merged_policy.update(policy2)
     return merged_policy
         
-def play_connect_four(board, player1, player2):
+def play_tictactoe(board, player1, player2):
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
     
     # While the game is not over let each player move
@@ -294,10 +294,10 @@ def play_connect_four(board, player1, player2):
     elif board.result() == 2: print(f"Winner = {player2.name}")
     else: print("Tie Game")
 
-connect_four_board = Board(dimensions=(3, 3), x_in_a_row=4)
+tictactoe_board = Board(dimensions=(3, 3))
 player1 = minimax_player()
 #playa2 = random_player()
 playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 
-play_connect_four(connect_four_board, player1, playa2)
+play_tictactoe(tictactoe_board, player1, playa2)
