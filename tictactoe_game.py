@@ -170,22 +170,13 @@ class Qlearning_player:
 
     # Update Q-values 
     def update_policy(self, state, value):
-        if get_board_hash(state) in self.policy:
-            old_value = self.policy[get_board_hash(state)]
-        else: old_value = 0
-        new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(value))
-        self.policy[get_board_hash(state)] = new_value
-        
-    def swap_values(self, board):
-        swap_board = board.board
-        for i in range(len(swap_board)):
-            for j in range(len(swap_board[i])):
-                if swap_board[i][j] == 1:
-                    swap_board[i][j] = 2
-                elif swap_board[i][j] == 2:
-                    swap_board[i][j] = 1
-        board.board = swap_board
-        return board
+        for prev_state in reversed(self.prev_states):
+            if get_board_hash(state) in self.policy:
+                old_value = self.policy[get_board_hash(state)]
+            else: old_value = 0
+            new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
+            self.policy[get_board_hash(state)] = new_value
+            reward = self.Q_table[prev_state]
     
     def get_next_move(self, board):
         value = None
@@ -219,6 +210,17 @@ class Qlearning_player:
 def get_board_hash(board):
         hash = str(board.board.flatten())
         return hash
+    
+def update_policies(board, agent1, agent2):
+    if board.result() == 1:
+        agent1.update_policy(1)
+        agent1.update_policy(-1)
+    elif board.result() == 2:
+        agent1.update_policy(-1)
+        agent1.update_policy(1)
+    else:
+        agent1.update_policy(0)
+        agent1.update_policy(0)
                 
 # Train the agent
 def train_Qlearning_agents(iterations, agent1, agent2):
