@@ -214,13 +214,13 @@ def get_board_hash(board):
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
         agent1.update_policy(1)
-        agent1.update_policy(-1)
+        agent2.update_policy(-1)
     elif board.result() == 2:
         agent1.update_policy(-1)
-        agent1.update_policy(1)
+        agent2.update_policy(1)
     else:
         agent1.update_policy(0)
-        agent1.update_policy(0)
+        agent2.update_policy(0)
                 
 # Train the agent
 def train_Qlearning_agents(iterations, agent1, agent2):
@@ -236,53 +236,28 @@ def train_Qlearning_agents(iterations, agent1, agent2):
         board = Board(dimensions=(3, 3))
         available_moves = get_available_moves(board)
         while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-            #print(board, "\n")
+            print(board, "\n")
             
+            # play Agent 1's move and update past states
             agent1_move = agent1.get_next_move(board)
             print(agent1_move)
-                
-            # play move and update past states
             board.push(agent1_move)
             agent1.prev_states.append(board)
             
+            # Check if the game is over
             if board.result() != None:
-                
+                update_policies(board, agent1, agent2)
+            
+            # play Agent 2's move and update past states
+            available_moves = get_available_moves(board)
+            agent1_move = agent1.get_next_move(board)
+            print(agent1_move)
+            board.push(agent1_move)
+            agent1.prev_states.append(board)
             
             # Check if the game is over
-            if agent2.get_state_reward(board) != None or len(get_available_moves(board)) == 0:
-                break
-            
-            # Train for the other agent
-            available_moves = get_available_moves(board)
-            value = None
-            max_value = -math.inf
-            best_move = None
-
-            # Check the value of each available move
-            for move in available_moves:
-                new_board = board.copy()
-                new_board.push(move)
-                
-                # Check if move leads to a terminal state
-                if agent1.get_state_reward(new_board) != None:
-                    value = agent1.get_state_reward(new_board)
-                    
-                # Check if state is in table
-                elif get_board_hash(new_board) in Q_table2:
-                    value = Q_table2[get_board_hash(new_board)]
-                else:
-                    value = 0
-                    Q_table2[get_board_hash(new_board)] = value
-                
-                # Select the highest value move
-                if value > max_value:
-                    max_value = value
-                    best_move = move
-                    
-            # Update policy & play best move
-            agent1.update_policy(board, max_value)
-            board.push(best_move)
-            available_moves = get_available_moves(board)
+            if board.result() != None:
+                update_policies(board, agent1, agent2)
             
     print(Q_table1)
         
