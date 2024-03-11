@@ -296,6 +296,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa2 = random_player()
 player1 = Qlearning_player()
 player2 = Qlearning_player(is_player_1=False)
-train_Qlearning_agents(10, player1, player2)
+train_Qlearning_agents(100, player1, player2)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
