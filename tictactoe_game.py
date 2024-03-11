@@ -189,9 +189,9 @@ class Qlearning_player:
         
         # Play a new game for each iteration
         for iteration in range(iterations):
-            iteration = iteration+1
-            if iteration % 10 == 0:
-                print(iteration)
+            progress = "{:.2f}".format((iteration/iterations)*100)
+            if (iteration % 10) == 0:
+                print(f"Trainging Q-learning Agent: {progress}%\r", end='', flush=True)
             board = Board(dimensions=(3, 3))
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
@@ -301,6 +301,6 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = minimax_player()
 #playa2 = random_player()
 player1 = Qlearning_player()
-player1.train_Qlearning_agent(100)
+player1.train_Qlearning_agent(10000)
 
 #play_tictactoe(tictactoe_board, playa1, playa2)
