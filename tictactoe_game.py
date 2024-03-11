@@ -171,13 +171,12 @@ class Qlearning_player:
     # Update Q-values 
     def update_policy(self, reward):
         for prev_state in reversed(self.prev_states):
-            print(get_board_hash(prev_state))
-            if get_board_hash(prev_state) in self.policy:
-                old_value = self.policy[get_board_hash(prev_state)]
+            if prev_state in self.policy:
+                old_value = self.policy[prev_state]
             else: old_value = 0
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
-            self.policy[get_board_hash(prev_state)] = new_value
-            reward = self.policy[get_board_hash(prev_state)]
+            self.policy[prev_state] = new_value
+            reward = self.policy[prev_state]
     
     def get_next_move(self, board):
         value = None
@@ -241,11 +240,12 @@ def train_Qlearning_agents(iterations, agent1, agent2):
             # play Agent 1's move and update past states
             agent1_move = agent1.get_next_move(board)
             board.push(agent1_move)
-            agent1.prev_states.append(board)
+            agent1.prev_states.append(get_board_hash(board))
             
             # Check if the game is over
             if board.result() != None:
-                print(agent1.prev_states)
+                for prev_state in agent1.prev_states:
+                    print(prev_state, "\n")
                 update_policies(board, agent1, agent2)
                 break
             
