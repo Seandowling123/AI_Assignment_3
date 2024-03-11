@@ -265,7 +265,7 @@ def train_Qlearning_agents(iterations, agent1, agent2):
                 agent2.delete_prev_states()
                 break
             
-    print(Q_table2)
+    print(Q_table1)
         
      
 def play_tictactoe(board, player1, player2):
@@ -275,7 +275,7 @@ def play_tictactoe(board, player1, player2):
         while board.result() == None:
             player1_move = player1.get_next_move(board)
             board.push(player1_move)
-            if board.result():
+            if board.result() != None:
                 print(board)
                 break
             player2_move = player2.get_next_move(board)
