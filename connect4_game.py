@@ -1,4 +1,5 @@
 from tictactoe import Board
+import numpy as np
 import pickle
 import math
 import random
@@ -49,31 +50,48 @@ class human_player:
             except Exception as e:
                 print("Invalid Move.")
 
+# Flip the x and y axes of the board
+def transpose_board(board):
+    transposed_board = [[0 for _ in range(len(board.board))] for _ in range(len(board.board[0]))]
+    for i in range(len(board.board)):
+        for j in range(len(board.board[0])):
+            transposed_board[j][i] = board.board[i][j]
+    return transposed_board
+
 def compute_value(unbroken_pieces, unbroken_spaces):
     if unbroken_pieces >= 3:
         if unbroken_spaces >= 1:
             return .9
         else: return 0
-    
     if unbroken_pieces >= 2:
         if unbroken_spaces >= 2:
             return .5
-        
     else: return 0
+    
+# Check for three in a row with open spaces to either side
+def double_open_three(col):
+    pattern = [0, 1, 1, 1, 0]
+    for i in range(len(col) - len(pattern) + 1):
+        if tuple(col[i:i+len(pattern)]) == tuple(pattern):
+            return True
+    return False
             
-            
-def check_horizontal(board, player1=True):
-    unbroken_pieces = 0
-    unbroken_spaces = 0
+def check_verticals(board, player1=True):
     available_moves = get_available_moves(board)
     scores = []
     
-    for col in range(len(board.board)):
-        for space in col:
+    for i in range(len(board.board)):
+        unbroken_pieces = 0
+        unbroken_spaces = 0
+
+        # Check all heuritics
+        if double_open_three(board.board[i]):
+            return math.inf
+        for space in board.board[i]:
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
-                if col in available_moves:
+                if i in available_moves:
                     unbroken_spaces = unbroken_spaces + 1
                 else: 
                     scores.append(compute_value(unbroken_pieces, unbroken_spaces))
@@ -83,19 +101,25 @@ def check_horizontal(board, player1=True):
                 scores.append(compute_value(unbroken_pieces, unbroken_spaces))
                 unbroken_pieces = 0
                 unbroken_spaces = 0
+    return np.sum(scores)
         
-def check_vertical(board, player1=True):
-    unbroken_pieces = 0
-    unbroken_spaces = 0
+def check_horizontals(board, player1=True):
+    transposed_board = transpose_board(board)
     available_moves = get_available_moves(board)
     scores = []
     
-    for col in range(len(board.board)):
-        for space in col:
+    for i in range(len(board.board)):
+        unbroken_pieces = 0
+        unbroken_spaces = 0
+
+        # Check all heuritics
+        if double_open_three(board.board[i]):
+            return math.inf
+        for space in board.board[i]:
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
-                if col in available_moves:
+                if i in available_moves:
                     unbroken_spaces = unbroken_spaces + 1
                 else: 
                     scores.append(compute_value(unbroken_pieces, unbroken_spaces))
@@ -105,13 +129,14 @@ def check_vertical(board, player1=True):
                 scores.append(compute_value(unbroken_pieces, unbroken_spaces))
                 unbroken_pieces = 0
                 unbroken_spaces = 0
-            
+    return np.sum(scores)
+
 # Player using minimax
 class minimax_player:
     def __init__(self):
         self.name = "Minimax"
         
-    def get_state_heuristics(board):
+    #def get_state_heuristics(board):
         
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
@@ -133,7 +158,7 @@ class minimax_player:
             else: print(f"A minimax Error Occured: {e}")
         
         # If max depth is reached, check heuristics
-        if depth == 5:
+        #if depth == 5:
             
                 
         # Calculate move for maximiser
@@ -211,10 +236,18 @@ def play_tictactoe(board, player1, player2):
     else: print("Tie Game")
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
-print(get_available_moves(tictactoe_board))
-player1 = human_player()
-playa2 = random_player()
+#print(get_available_moves(tictactoe_board))
+#player1 = human_player()
+#playa2 = random_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 5))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 5))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+print(tictactoe_board.board)
+print(check_horizontal(tictactoe_board))
 
-play_tictactoe(tictactoe_board, player1, playa2)
+#play_tictactoe(tictactoe_board, player1, playa2)
