@@ -68,17 +68,6 @@ def compute_value(unbroken_pieces, unbroken_spaces):
             return .5
         else: return 0
     else: return 0
-    
-# Check for three in a row with open spaces to either side
-def double_open_three(board, col, index, available_moves):
-    pattern = [0, 1, 1, 1, 0]
-    for i in range(len(col) - len(pattern) + 1):
-        if tuple(col[i:i+len(pattern)]) == tuple(pattern):
-            if i in available_moves:
-                print(i, i+len(pattern)-1, index)
-                if get_placement(board, i)[1] == index and get_placement(board, i+len(pattern)-1)[1] == index:
-                    return True
-    return False
             
 def check_verticals(board, player1=True):
     available_moves = get_available_moves(board)
@@ -103,25 +92,40 @@ def check_verticals(board, player1=True):
                 unbroken_pieces = 0
                 unbroken_spaces = 0
         scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-    return np.sum(scores)
         
-def check_horizontals(board, player1=True):
+    if scores.count(0.9) > 1:
+        return math.inf
+    return np.sum(scores)
+
+# Check for three in a row with open spaces to either side
+def double_open_three(board, col, row, available_moves):
+    pattern = [0, 1, 1, 1, 0]
+    for i in range(len(col) - len(pattern) + 1):
+        if tuple(col[i:i+len(pattern)]) == tuple(pattern):
+            if i in available_moves:
+                if get_placement(board, i)[1] == row and get_placement(board, i+len(pattern)-1)[1] == row:
+                    return True
+    return False
+
+def check_horizontals(board):
     transposed_board = transpose_board(board)
     available_moves = get_available_moves(board)
-    scores = []
+    x_scores = []
+    y_scores
     
     for i in range(len(transposed_board)):
-        unbroken_pieces = 0
-        unbroken_spaces = 0
+        unbroken_x_pieces = 0
+        unbroken_x_spaces = 0
+        unbroken_y_pieces = 0
+        unbroken_y_spaces = 0
 
-        # Check all heuritics
+        # Calculate the value of each row
         if double_open_three(board, transposed_board[i], i, available_moves):
             return math.inf
         for index, space in enumerate(transposed_board[i]):
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
-                # Check if the space is available
                 if i in available_moves:
                     if get_placement(board, index)[1] == i:
                         unbroken_spaces = unbroken_spaces + 1
@@ -134,6 +138,9 @@ def check_horizontals(board, player1=True):
                 unbroken_pieces = 0
                 unbroken_spaces = 0
         scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+    
+    if scores.count(0.9) > 1:
+        return math.inf
     return np.sum(scores)
 
 # Check for connections in diagonals
@@ -187,6 +194,9 @@ def check_diagonals(board, player1=True):
                 unbroken_pieces = 0
                 unbroken_spaces = 0
         scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+    
+    if scores.count(0.9) > 1:
+        return math.inf
     return np.sum(scores)
             
 # Player using minimax
@@ -194,7 +204,7 @@ class minimax_player:
     def __init__(self):
         self.name = "Minimax"
         
-    #def get_state_heuristics(board):
+    def get_state_heuristic(board):
         
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
@@ -300,16 +310,16 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 tictactoe_board.push(get_placement(tictactoe_board, 0))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
+tictactoe_board.push(get_placement(tictactoe_board, 0))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
+tictactoe_board.push(get_placement(tictactoe_board, 0))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 4))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
-tictactoe_board.push(get_placement(tictactoe_board, 0))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 0))
-tictactoe_board.push(get_placement(tictactoe_board, 3))
-tictactoe_board.push(get_placement(tictactoe_board, 4))
-tictactoe_board.push(get_placement(tictactoe_board, 4))
-tictactoe_board.push(get_placement(tictactoe_board, 5))
-tictactoe_board.push(get_placement(tictactoe_board, 4))
 print(tictactoe_board)
 print("vert score: ", check_verticals(tictactoe_board))
 print("horz score: ", check_horizontals(tictactoe_board))
