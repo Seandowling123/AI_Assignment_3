@@ -48,11 +48,71 @@ class human_player:
                 else: print("Invalid Move.")
             except Exception as e:
                 print("Invalid Move.")
-                
+
+def compute_value(unbroken_pieces, unbroken_spaces):
+    if unbroken_pieces >= 3:
+        if unbroken_spaces >= 1:
+            return .9
+        else: return 0
+    
+    if unbroken_pieces >= 2:
+        if unbroken_spaces >= 2:
+            return .5
+        
+    else: return 0
+            
+            
+def check_horizontal(board, player1=True):
+    unbroken_pieces = 0
+    unbroken_spaces = 0
+    available_moves = get_available_moves(board)
+    scores = []
+    
+    for col in range(len(board.board)):
+        for space in col:
+            if space == 1:
+                unbroken_pieces = unbroken_pieces + 1 
+            if space == 0:
+                if col in available_moves:
+                    unbroken_spaces = unbroken_spaces + 1
+                else: 
+                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                    unbroken_pieces = 0
+                    unbroken_spaces = 0
+            if space == 2:
+                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                unbroken_pieces = 0
+                unbroken_spaces = 0
+        
+def check_vertical(board, player1=True):
+    unbroken_pieces = 0
+    unbroken_spaces = 0
+    available_moves = get_available_moves(board)
+    scores = []
+    
+    for col in range(len(board.board)):
+        for space in col:
+            if space == 1:
+                unbroken_pieces = unbroken_pieces + 1 
+            if space == 0:
+                if col in available_moves:
+                    unbroken_spaces = unbroken_spaces + 1
+                else: 
+                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                    unbroken_pieces = 0
+                    unbroken_spaces = 0
+            if space == 2:
+                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                unbroken_pieces = 0
+                unbroken_spaces = 0
+            
 # Player using minimax
 class minimax_player:
     def __init__(self):
         self.name = "Minimax"
+        
+    def get_state_heuristics(board):
+        
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
@@ -71,6 +131,10 @@ class minimax_player:
             if str(e) == "Both X and O have 3 pieces in a row.":
                 return None, 0
             else: print(f"A minimax Error Occured: {e}")
+        
+        # If max depth is reached, check heuristics
+        if depth == 5:
+            
                 
         # Calculate move for maximiser
         if is_maximising:
