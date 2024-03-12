@@ -66,6 +66,7 @@ def compute_value(unbroken_pieces, unbroken_spaces):
     if unbroken_pieces >= 2:
         if unbroken_spaces >= 2:
             return .5
+        else: return 0
     else: return 0
     
 # Check for three in a row with open spaces to either side
@@ -147,6 +148,7 @@ def check_diagonals(board, player1=True):
         
         for j in range(max(0, i - cols + 1), min(rows, i + 1)):
             space = board.board[j][cols - i + j - 1]
+            #print(space)
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
