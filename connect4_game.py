@@ -102,7 +102,6 @@ def check_verticals(board, player1=True):
                 unbroken_pieces = 0
                 unbroken_spaces = 0
         scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-    print(scores)
     return np.sum(scores)
         
 def check_horizontals(board, player1=True):
@@ -134,6 +133,36 @@ def check_horizontals(board, player1=True):
         scores.append(compute_value(unbroken_pieces, unbroken_spaces))
     return np.sum(scores)
 
+# Check for connections in diagonals
+def check_diagonals(board, player1=True):
+    rows = len(board.board)
+    cols = len(board.board[0])
+    available_moves = get_available_moves(board)
+    scores = []
+
+    # Check first diagonal direction 
+    for i in range(rows + cols - 1):
+        unbroken_pieces = 0
+        unbroken_spaces = 0
+        
+        for j in range(max(0, i - cols + 1), min(rows, i + 1)):
+            space = board.board[j][cols - i + j - 1]
+            if space == 1:
+                unbroken_pieces = unbroken_pieces + 1 
+            if space == 0:
+                if i in available_moves:
+                    unbroken_spaces = unbroken_spaces + 1
+                else: 
+                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                    unbroken_pieces = 0
+                    unbroken_spaces = 0
+            if space == 2:
+                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                unbroken_pieces = 0
+                unbroken_spaces = 0
+        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+    return np.sum(scores)
+            
 # Player using minimax
 class minimax_player:
     def __init__(self):
@@ -244,13 +273,19 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa2 = random_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
+tictactoe_board.push(get_placement(tictactoe_board, 4))
+tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
+tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 3))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 5))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 5))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-print(tictactoe_board.board)
-print(check_verticals(tictactoe_board))
-print(check_horizontals(tictactoe_board))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
+tictactoe_board.push(get_placement(tictactoe_board, 4))
+tictactoe_board.push(get_placement(tictactoe_board, 4))
+print(tictactoe_board)
+print("vert score: ", check_verticals(tictactoe_board))
+print("horz score: ", check_horizontals(tictactoe_board))
+print("diag score: ", check_diagonals(tictactoe_board))
 
 #play_tictactoe(tictactoe_board, player1, playa2)
