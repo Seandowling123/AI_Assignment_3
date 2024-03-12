@@ -93,7 +93,7 @@ def check_verticals(board, player1=True):
             if space == 0:
                 if i in available_moves:
                     unbroken_spaces = unbroken_spaces + 1
-                else: 
+                else:
                     scores.append(compute_value(unbroken_pieces, unbroken_spaces))
                     unbroken_pieces = 0
                     unbroken_spaces = 0
@@ -101,6 +101,8 @@ def check_verticals(board, player1=True):
                 scores.append(compute_value(unbroken_pieces, unbroken_spaces))
                 unbroken_pieces = 0
                 unbroken_spaces = 0
+        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+    print(scores)
     return np.sum(scores)
         
 def check_horizontals(board, player1=True):
@@ -108,14 +110,14 @@ def check_horizontals(board, player1=True):
     available_moves = get_available_moves(board)
     scores = []
     
-    for i in range(len(board.board)):
+    for i in range(len(transposed_board)):
         unbroken_pieces = 0
         unbroken_spaces = 0
 
         # Check all heuritics
-        if double_open_three(board.board[i]):
+        if double_open_three(transposed_board[i]):
             return math.inf
-        for space in board.board[i]:
+        for space in transposed_board[i]:
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
@@ -129,6 +131,7 @@ def check_horizontals(board, player1=True):
                 scores.append(compute_value(unbroken_pieces, unbroken_spaces))
                 unbroken_pieces = 0
                 unbroken_spaces = 0
+        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
     return np.sum(scores)
 
 # Player using minimax
@@ -246,8 +249,8 @@ tictactoe_board.push(get_placement(tictactoe_board, 5))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 5))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
 print(tictactoe_board.board)
-print(check_horizontal(tictactoe_board))
+print(check_verticals(tictactoe_board))
+print(check_horizontals(tictactoe_board))
 
 #play_tictactoe(tictactoe_board, player1, playa2)
