@@ -84,7 +84,7 @@ def check_verticals(board, player1=True):
         for index, space in enumerate(board.board[i]):
             if space == 1:
                 unbroken_x_pieces = unbroken_x_pieces + 1
-                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                 unbroken_y_pieces = 0
                 unbroken_y_spaces = 0
             if space == 0:
@@ -93,19 +93,19 @@ def check_verticals(board, player1=True):
                         unbroken_x_spaces = unbroken_x_spaces + 1
                         unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                     unbroken_x_pieces = 0
                     unbroken_x_spaces = 0
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
                 unbroken_y_pieces = unbroken_y_pieces + 1
-                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
-        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
     
     # Get total score
     if x_scores.count(0.9) > 1:
@@ -143,7 +143,7 @@ def check_horizontals(board):
         for index, space in enumerate(transposed_board[i]):
             if space == 1:
                 unbroken_x_pieces = unbroken_x_pieces + 1
-                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                 unbroken_y_pieces = 0
                 unbroken_y_spaces = 0
             if space == 0:
@@ -152,25 +152,27 @@ def check_horizontals(board):
                         unbroken_x_spaces = unbroken_x_spaces + 1
                         unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                     unbroken_x_pieces = 0
                     unbroken_x_spaces = 0
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
                 unbroken_y_pieces = unbroken_y_pieces + 1
-                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                print()
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
-        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
     
     # Get total score
     if x_scores.count(0.9) > 1:
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
+    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 # Get heuristics for diagonal connections
@@ -192,7 +194,7 @@ def check_diagonals(board, player1=True):
             space = board.board[j][cols - i + j - 1]
             if space == 1:
                 unbroken_x_pieces = unbroken_x_pieces + 1
-                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                 unbroken_y_pieces = 0
                 unbroken_y_spaces = 0
             if space == 0:
@@ -201,19 +203,19 @@ def check_diagonals(board, player1=True):
                         unbroken_x_spaces = unbroken_x_spaces + 1
                         unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                     unbroken_x_pieces = 0
                     unbroken_x_spaces = 0
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
                 unbroken_y_pieces = unbroken_y_pieces + 1
-                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
-        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
         
     # Check second diagonal direction 
     for i in range(rows + cols - 1):
@@ -366,16 +368,13 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 tictactoe_board.push(get_placement(tictactoe_board, 0))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
-tictactoe_board.push(get_placement(tictactoe_board, 0))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
-tictactoe_board.push(get_placement(tictactoe_board, 0))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 4))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
+tictactoe_board.push(get_placement(tictactoe_board, 5))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 5))
+tictactoe_board.push(get_placement(tictactoe_board, 0))
+tictactoe_board.push(get_placement(tictactoe_board, 4))
 print(tictactoe_board)
 print("vert score: ", check_verticals(tictactoe_board))
 print("horz score: ", check_horizontals(tictactoe_board))
