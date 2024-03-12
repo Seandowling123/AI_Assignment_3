@@ -70,7 +70,7 @@ def compute_value(unbroken_pieces, unbroken_spaces):
     else: return 0
 
 # Get heuristics for vertical connections   
-def check_verticals(board, player1=True):
+def check_verticals(board):
     available_moves = get_available_moves(board)
     x_scores = []
     y_scores = []
@@ -160,7 +160,6 @@ def check_horizontals(board):
                     unbroken_y_spaces = 0
             if space == 2:
                 unbroken_y_pieces = unbroken_y_pieces + 1
-                print()
                 x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
@@ -172,11 +171,10 @@ def check_horizontals(board):
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
-    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 # Get heuristics for diagonal connections
-def check_diagonals(board, player1=True):
+def check_diagonals(board):
     rows = len(board.board)
     cols = len(board.board[0])
     available_moves = get_available_moves(board)
@@ -256,14 +254,18 @@ def check_diagonals(board, player1=True):
     elif y_scores.count(0.9) > 1:
         return -math.inf
     return np.sum(x_scores) - np.sum(y_scores)
+
+def get_state_heuristic(board):
+    horizontal_score = check_horizontals(board)
+    vertical_score = check_verticals(board)
+    diagonal_score = check_diagonals(board)
+    total_score = np.sum(horizontal_score, vertical_score, diagonal_score)
+    return total_score
             
 # Player using minimax
 class minimax_player:
     def __init__(self):
         self.name = "Minimax"
-        
-    #def get_state_heuristic(board):
-        
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
