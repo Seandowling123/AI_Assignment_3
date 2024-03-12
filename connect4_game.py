@@ -85,7 +85,6 @@ def check_verticals(board, player1=True):
         unbroken_pieces = 0
         unbroken_spaces = 0
 
-        # Check all heuritics
         if double_open_three(board.board[i]):
             return math.inf
         for space in board.board[i]:
@@ -149,6 +148,28 @@ def check_diagonals(board, player1=True):
         for j in range(max(0, i - cols + 1), min(rows, i + 1)):
             space = board.board[j][cols - i + j - 1]
             #print(space)
+            if space == 1:
+                unbroken_pieces = unbroken_pieces + 1 
+            if space == 0:
+                if i in available_moves:
+                    unbroken_spaces = unbroken_spaces + 1
+                else: 
+                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                    unbroken_pieces = 0
+                    unbroken_spaces = 0
+            if space == 2:
+                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                unbroken_pieces = 0
+                unbroken_spaces = 0
+        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+        
+    # Check second diagonal direction 
+    for i in range(rows + cols - 1):
+        unbroken_pieces = 0
+        unbroken_spaces = 0
+        
+        for j in range(max(0, i - cols + 1), min(rows, i + 1)):
+            space = board.board[j][i - j]
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
@@ -275,14 +296,14 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa2 = random_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 3))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
-tictactoe_board.push(get_placement(tictactoe_board, 3))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
-tictactoe_board.push(get_placement(tictactoe_board, 3))
-tictactoe_board.push(get_placement(tictactoe_board, 3))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
 print(tictactoe_board)
