@@ -99,6 +99,7 @@ def check_verticals(board, player1=True):
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
+                unbroken_y_pieces = unbroken_y_pieces + 1
                 x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
@@ -155,12 +156,13 @@ def check_horizontals(board):
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
+                unbroken_y_pieces = unbroken_y_pieces + 1
                 x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
         x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
         y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
-    
+        print(y_scores)
     if x_scores.count(0.9) > 1:
         return math.inf
     elif y_scores.count(0.9) > 1:
@@ -202,6 +204,7 @@ def check_diagonals(board, player1=True):
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
+                unbroken_y_pieces = unbroken_y_pieces + 1
                 x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
@@ -252,7 +255,7 @@ class minimax_player:
     def __init__(self):
         self.name = "Minimax"
         
-    def get_state_heuristic(board):
+    #def get_state_heuristic(board):
         
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
