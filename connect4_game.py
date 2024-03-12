@@ -259,7 +259,7 @@ def get_state_heuristic(board):
     horizontal_score = check_horizontals(board)
     vertical_score = check_verticals(board)
     diagonal_score = check_diagonals(board)
-    total_score = np.sum(horizontal_score, vertical_score, diagonal_score)
+    total_score = np.sum([horizontal_score, vertical_score, diagonal_score])
     return total_score
             
 # Player using minimax
@@ -381,5 +381,6 @@ print(tictactoe_board)
 print("vert score: ", check_verticals(tictactoe_board))
 print("horz score: ", check_horizontals(tictactoe_board))
 print("diag score: ", check_diagonals(tictactoe_board))
+print("total score:", get_state_heuristic(tictactoe_board))
 
 #play_tictactoe(tictactoe_board, player1, playa2)
