@@ -71,31 +71,45 @@ def compute_value(unbroken_pieces, unbroken_spaces):
             
 def check_verticals(board, player1=True):
     available_moves = get_available_moves(board)
-    scores = []
+    x_scores = []
+    y_scores = []
     
     for i in range(len(board.board)):
-        unbroken_pieces = 0
-        unbroken_spaces = 0
+        unbroken_x_pieces = 0
+        unbroken_x_spaces = 0
+        unbroken_y_pieces = 0
+        unbroken_y_spaces = 0
         
-        for space in board.board[i]:
+        for index, space in enumerate(board.board[i]):
             if space == 1:
-                unbroken_pieces = unbroken_pieces + 1 
+                unbroken_x_pieces = unbroken_x_pieces + 1
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                unbroken_y_pieces = 0
+                unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    unbroken_spaces = unbroken_spaces + 1
-                else:
-                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                    unbroken_pieces = 0
-                    unbroken_spaces = 0
+                    if get_placement(board, index)[1] == i:
+                        unbroken_x_spaces = unbroken_x_spaces + 1
+                        unbroken_y_spaces = unbroken_y_spaces + 1
+                else: 
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    unbroken_x_pieces = 0
+                    unbroken_x_spaces = 0
+                    unbroken_y_pieces = 0
+                    unbroken_y_spaces = 0
             if space == 2:
-                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                unbroken_pieces = 0
-                unbroken_spaces = 0
-        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                unbroken_x_pieces = 0
+                unbroken_x_spaces = 0
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
         
-    if scores.count(0.9) > 1:
+    if x_scores.count(0.9) > 1:
         return math.inf
-    return np.sum(scores)
+    elif y_scores.count(0.9) > 1:
+        return -math.inf
+    return np.sum(x_scores) - np.sum(y_scores)
 
 # Check for three in a row with open spaces to either side
 def double_open_three(board, col, row, available_moves):
