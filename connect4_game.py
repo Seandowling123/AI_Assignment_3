@@ -68,7 +68,8 @@ def compute_value(unbroken_pieces, unbroken_spaces):
             return .5
         else: return 0
     else: return 0
-            
+
+# Get heuristics for vertical connections   
 def check_verticals(board, player1=True):
     available_moves = get_available_moves(board)
     x_scores = []
@@ -105,7 +106,8 @@ def check_verticals(board, player1=True):
                 unbroken_x_spaces = 0
         x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
         y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
-        
+    
+    # Get total score
     if x_scores.count(0.9) > 1:
         return math.inf
     elif y_scores.count(0.9) > 1:
@@ -122,6 +124,7 @@ def double_open_three(board, col, row, available_moves):
                     return True
     return False
 
+# Get heuristics for horizontal connections
 def check_horizontals(board):
     transposed_board = transpose_board(board)
     available_moves = get_available_moves(board)
@@ -162,14 +165,15 @@ def check_horizontals(board):
                 unbroken_x_spaces = 0
         x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
         y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
-        print(y_scores)
+    
+    # Get total score
     if x_scores.count(0.9) > 1:
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
     return np.sum(x_scores) - np.sum(y_scores)
 
-# Check for connections in diagonals
+# Get heuristics for diagonal connections
 def check_diagonals(board, player1=True):
     rows = len(board.board)
     cols = len(board.board[0])
@@ -244,6 +248,7 @@ def check_diagonals(board, player1=True):
         x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
         y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
     
+    # Get total score
     if x_scores.count(0.9) > 1:
         return math.inf
     elif y_scores.count(0.9) > 1:
