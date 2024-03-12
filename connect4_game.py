@@ -70,11 +70,13 @@ def compute_value(unbroken_pieces, unbroken_spaces):
     else: return 0
     
 # Check for three in a row with open spaces to either side
-def double_open_three(col):
+def double_open_three(board, col, available_moves):
     pattern = [0, 1, 1, 1, 0]
     for i in range(len(col) - len(pattern) + 1):
         if tuple(col[i:i+len(pattern)]) == tuple(pattern):
-            return True
+            if i in available_moves:
+                if get_placement(board, i)[1] == col:
+                    return True
     return False
             
 def check_verticals(board, player1=True):
@@ -84,9 +86,7 @@ def check_verticals(board, player1=True):
     for i in range(len(board.board)):
         unbroken_pieces = 0
         unbroken_spaces = 0
-
-        if double_open_three(board.board[i]):
-            return math.inf
+        
         for space in board.board[i]:
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
@@ -114,14 +114,16 @@ def check_horizontals(board, player1=True):
         unbroken_spaces = 0
 
         # Check all heuritics
-        if double_open_three(transposed_board[i]):
+        if double_open_three(board, transposed_board[i], available_moves):
             return math.inf
-        for space in transposed_board[i]:
+        for index, space in enumerate(transposed_board[i]):
             if space == 1:
                 unbroken_pieces = unbroken_pieces + 1 
             if space == 0:
+                # Check if the space is available
                 if i in available_moves:
-                    unbroken_spaces = unbroken_spaces + 1
+                    if get_placement(board, index)[1] == i:
+                        unbroken_spaces = unbroken_spaces + 1
                 else: 
                     scores.append(compute_value(unbroken_pieces, unbroken_spaces))
                     unbroken_pieces = 0
@@ -296,7 +298,7 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa2 = random_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
-tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 1))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
@@ -304,6 +306,7 @@ tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
+tictactoe_board.push(get_placement(tictactoe_board, 5))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
 print(tictactoe_board)
