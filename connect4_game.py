@@ -111,7 +111,7 @@ def check_horizontals(board):
     transposed_board = transpose_board(board)
     available_moves = get_available_moves(board)
     x_scores = []
-    y_scores
+    y_scores = []
     
     for i in range(len(transposed_board)):
         unbroken_x_pieces = 0
@@ -124,80 +124,114 @@ def check_horizontals(board):
             return math.inf
         for index, space in enumerate(transposed_board[i]):
             if space == 1:
-                unbroken_pieces = unbroken_pieces + 1 
+                unbroken_x_pieces = unbroken_x_pieces + 1
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                unbroken_y_pieces = 0
+                unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
                     if get_placement(board, index)[1] == i:
-                        unbroken_spaces = unbroken_spaces + 1
+                        unbroken_x_spaces = unbroken_x_spaces + 1
+                        unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                    unbroken_pieces = 0
-                    unbroken_spaces = 0
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    unbroken_x_pieces = 0
+                    unbroken_x_spaces = 0
+                    unbroken_y_pieces = 0
+                    unbroken_y_spaces = 0
             if space == 2:
-                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                unbroken_pieces = 0
-                unbroken_spaces = 0
-        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                unbroken_x_pieces = 0
+                unbroken_x_spaces = 0
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
     
-    if scores.count(0.9) > 1:
+    if x_scores.count(0.9) > 1:
         return math.inf
-    return np.sum(scores)
+    elif y_scores.count(0.9) > 1:
+        return -math.inf
+    return np.sum(x_scores) - np.sum(y_scores)
 
 # Check for connections in diagonals
 def check_diagonals(board, player1=True):
     rows = len(board.board)
     cols = len(board.board[0])
     available_moves = get_available_moves(board)
-    scores = []
+    x_scores = []
+    y_scores = []
 
     # Check first diagonal direction 
     for i in range(rows + cols - 1):
-        unbroken_pieces = 0
-        unbroken_spaces = 0
+        unbroken_x_pieces = 0
+        unbroken_x_spaces = 0
+        unbroken_y_pieces = 0
+        unbroken_y_spaces = 0
         
-        for j in range(max(0, i - cols + 1), min(rows, i + 1)):
+        for index, j in enumerate(range(max(0, i - cols + 1), min(rows, i + 1))):
             space = board.board[j][cols - i + j - 1]
-            #print(space)
             if space == 1:
-                unbroken_pieces = unbroken_pieces + 1 
+                unbroken_x_pieces = unbroken_x_pieces + 1
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                unbroken_y_pieces = 0
+                unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    unbroken_spaces = unbroken_spaces + 1
+                    if get_placement(board, index)[1] == i:
+                        unbroken_x_spaces = unbroken_x_spaces + 1
+                        unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                    unbroken_pieces = 0
-                    unbroken_spaces = 0
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    unbroken_x_pieces = 0
+                    unbroken_x_spaces = 0
+                    unbroken_y_pieces = 0
+                    unbroken_y_spaces = 0
             if space == 2:
-                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                unbroken_pieces = 0
-                unbroken_spaces = 0
-        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                unbroken_x_pieces = 0
+                unbroken_x_spaces = 0
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
         
     # Check second diagonal direction 
     for i in range(rows + cols - 1):
-        unbroken_pieces = 0
-        unbroken_spaces = 0
+        unbroken_x_pieces = 0
+        unbroken_x_spaces = 0
+        unbroken_y_pieces = 0
+        unbroken_y_spaces = 0
         
-        for j in range(max(0, i - cols + 1), min(rows, i + 1)):
+        for index, j in enumerate(range(max(0, i - cols + 1), min(rows, i + 1))):
             space = board.board[j][i - j]
             if space == 1:
-                unbroken_pieces = unbroken_pieces + 1 
+                unbroken_x_pieces = unbroken_x_pieces + 1
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                unbroken_y_pieces = 0
+                unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    unbroken_spaces = unbroken_spaces + 1
+                    if get_placement(board, index)[1] == i:
+                        unbroken_x_spaces = unbroken_x_spaces + 1
+                        unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                    unbroken_pieces = 0
-                    unbroken_spaces = 0
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    unbroken_x_pieces = 0
+                    unbroken_x_spaces = 0
+                    unbroken_y_pieces = 0
+                    unbroken_y_spaces = 0
             if space == 2:
-                scores.append(compute_value(unbroken_pieces, unbroken_spaces))
-                unbroken_pieces = 0
-                unbroken_spaces = 0
-        scores.append(compute_value(unbroken_pieces, unbroken_spaces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                unbroken_x_pieces = 0
+                unbroken_x_spaces = 0
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
     
-    if scores.count(0.9) > 1:
+    if x_scores.count(0.9) > 1:
         return math.inf
-    return np.sum(scores)
+    elif y_scores.count(0.9) > 1:
+        return -math.inf
+    return np.sum(x_scores) - np.sum(y_scores)
             
 # Player using minimax
 class minimax_player:
