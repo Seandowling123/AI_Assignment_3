@@ -70,12 +70,13 @@ def compute_value(unbroken_pieces, unbroken_spaces):
     else: return 0
     
 # Check for three in a row with open spaces to either side
-def double_open_three(board, col, available_moves):
+def double_open_three(board, col, index, available_moves):
     pattern = [0, 1, 1, 1, 0]
     for i in range(len(col) - len(pattern) + 1):
         if tuple(col[i:i+len(pattern)]) == tuple(pattern):
             if i in available_moves:
-                if get_placement(board, i)[1] == col:
+                print(i, i+len(pattern)-1, index)
+                if get_placement(board, i)[1] == index and get_placement(board, i+len(pattern)-1)[1] == index:
                     return True
     return False
             
@@ -114,7 +115,7 @@ def check_horizontals(board, player1=True):
         unbroken_spaces = 0
 
         # Check all heuritics
-        if double_open_three(board, transposed_board[i], available_moves):
+        if double_open_three(board, transposed_board[i], i, available_moves):
             return math.inf
         for index, space in enumerate(transposed_board[i]):
             if space == 1:
@@ -298,16 +299,16 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa2 = random_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
-tictactoe_board.push(get_placement(tictactoe_board, 1))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 0))
 tictactoe_board.push(get_placement(tictactoe_board, 2))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 0))
+tictactoe_board.push(get_placement(tictactoe_board, 2))
+tictactoe_board.push(get_placement(tictactoe_board, 0))
 tictactoe_board.push(get_placement(tictactoe_board, 3))
+tictactoe_board.push(get_placement(tictactoe_board, 4))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
 tictactoe_board.push(get_placement(tictactoe_board, 5))
-tictactoe_board.push(get_placement(tictactoe_board, 4))
 tictactoe_board.push(get_placement(tictactoe_board, 4))
 print(tictactoe_board)
 print("vert score: ", check_verticals(tictactoe_board))
