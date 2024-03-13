@@ -21,7 +21,7 @@ def get_available_moves(board):
             zero_indices.append(i)
     return zero_indices
 
-class random_player:
+class Random_player:
     def __init__(self):
         self.name = "Random Player"
         
@@ -31,7 +31,7 @@ class random_player:
         return get_placement(board, move)
 
 # Human contolled player
-class human_player:
+class Human_player:
     def __init__(self):
         self.name = "Sean"
     
@@ -147,10 +147,9 @@ def check_horizontals(board):
                 unbroken_y_pieces = 0
                 unbroken_y_spaces = 0
             if space == 0:
-                if i in available_moves:
-                    if i+1 >= len(transposed_board) or transposed_board[i+1][index] != 0:
-                        unbroken_x_spaces = unbroken_x_spaces + 1
-                        unbroken_y_spaces = unbroken_y_spaces + 1
+                if i in available_moves and (i+1 >= len(transposed_board) or transposed_board[i+1][index] != 0):
+                    unbroken_x_spaces = unbroken_x_spaces + 1
+                    unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
                     x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                     y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
@@ -171,6 +170,7 @@ def check_horizontals(board):
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
+    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 # Get heuristics for diagonal connections
@@ -196,10 +196,9 @@ def check_diagonals(board):
                 unbroken_y_pieces = 0
                 unbroken_y_spaces = 0
             if space == 0:
-                if i in available_moves:
-                    if (cols - i + j) >= len(board.board[j]) or board.board[j][cols - i + j] != 0:
-                        unbroken_x_spaces = unbroken_x_spaces + 1
-                        unbroken_y_spaces = unbroken_y_spaces + 1
+                if i in available_moves and ((cols - i + j) >= len(board.board[j]) or board.board[j][cols - i + j] != 0):
+                    unbroken_x_spaces = unbroken_x_spaces + 1
+                    unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
                     x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                     y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
@@ -226,33 +225,33 @@ def check_diagonals(board):
             space = board.board[j][i - j]
             if space == 1:
                 unbroken_x_pieces = unbroken_x_pieces + 1
-                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                 unbroken_y_pieces = 0
                 unbroken_y_spaces = 0
             if space == 0:
-                if i in available_moves:
-                    if (i - j + 1) >= len(board.board[j]) or board.board[j][i - j + 1] != 0:
-                        unbroken_x_spaces = unbroken_x_spaces + 1
-                        unbroken_y_spaces = unbroken_y_spaces + 1
+                if i in available_moves and ((i - j + 1) >= len(board.board[j]) or board.board[j][i - j + 1] != 0):
+                    unbroken_x_spaces = unbroken_x_spaces + 1
+                    unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
-                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+                    x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+                    y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
                     unbroken_x_pieces = 0
                     unbroken_x_spaces = 0
                     unbroken_y_pieces = 0
                     unbroken_y_spaces = 0
             if space == 2:
-                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
+                x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                 unbroken_x_pieces = 0
                 unbroken_x_spaces = 0
-        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_pieces))
-        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_pieces))
+        x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
+        y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
     
     # Get total score
     if x_scores.count(0.9) > 1:
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
+    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 def get_state_heuristic(board):
@@ -263,14 +262,15 @@ def get_state_heuristic(board):
     return total_score
             
 # Player using minimax
-class minimax_player:
+class Minimax_player:
     def __init__(self):
         self.name = "Minimax"
+        self.played_moves = 0
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
         # Speed up for first move
-        if depth == 0:
+        if self.played_moves == 0:
             return 3, 0
         
         # Check if the game is over
@@ -286,8 +286,8 @@ class minimax_player:
             else: print(f"A minimax Error Occured: {e}")
         
         # If max depth is reached, check heuristics
-        #if depth == 5:
-            
+        if depth == 5:
+            return None, get_state_heuristic(board)
                 
         # Calculate move for maximiser
         if is_maximising:
@@ -320,6 +320,7 @@ class minimax_player:
             best_move = None
             
             # Get value of each move
+            available_moves = get_available_moves(board)
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(get_placement(board, move))
@@ -341,7 +342,8 @@ class minimax_player:
     # Return the next move for the player
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
-        return move
+        self.played_moves = self.played_moves+1
+        return get_placement(board, move[0])
                 
 def play_connect_four(board, player1, player2):
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
@@ -355,7 +357,7 @@ def play_connect_four(board, player1, player2):
             break
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
-        print(board, "\n")
+        print(f"\n{board}\n")
         print("vert score: ", check_verticals(board))
         print("horz score: ", check_horizontals(board))
         print("diag score: ", check_diagonals(board))
@@ -368,15 +370,12 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-#player1 = human_player()
-playa1 = random_player()
-playa2 = random_player()
+#player1 = Human_player()
+playa1 = Random_player()
+playa2 = Random_player()
+#playa1 = Minimax_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
-print(tictactoe_board)
-print("vert score: ", check_verticals(tictactoe_board))
-print("horz score: ", check_horizontals(tictactoe_board))
-print("diag score: ", check_diagonals(tictactoe_board))
 #print("total score:", get_state_heuristic(tictactoe_board))
 
 play_connect_four(tictactoe_board, playa1, playa2)
