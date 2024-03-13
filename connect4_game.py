@@ -22,26 +22,52 @@ def get_available_moves(board):
     return zero_indices
 
 class Default_player:
-    def __init__(self, is_player_1 = True):
+    def __init__(self, optimality = 1, is_player_1 = True):
         self.name = "Default Player"
+        self.optimality = optimality
         self.is_player_1 = is_player_1
+        
+    # Get the reward for taking an action
+    def get_state_reward(self, board_state, opposing_player=False):
+        is_player_1 = self.is_player_1
+        if opposing_player:
+            is_player_1 = is_player_1
+        result = board_state.result()
+        if result == 1 and is_player_1:
+            return 1
+        elif result == 1 and not is_player_1:
+            return -1
+        elif result == 2 and is_player_1:
+            return -1
+        elif result == 2 and not is_player_1:
+            return 1
+        return 0
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
-        max_heuristic = -math.inf
         best_move = None
+        random_num = random.randint(0,int(1/self.optimality)-1)
         
-        # Find the best move based on the heuristics
+        # Check for winning moves
         for move in available_moves:
             new_board = board.copy()
-            new_board.push(get_placement(board, move))
-            heuristic = get_state_heuristic(new_board)
-            if not self.is_player_1:
-                heuristic*(-1)
-            if heuristic > max_heuristic:
-                max_heuristic = heuristic
-                best_move = move
-        return get_placement(board, best_move)
+            new_board.push(move)
+            result = self.get_state_reward(new_board)
+            if result > 0 and random_num==1:
+                return move
+            
+        # Block loosing moves
+        for move in available_moves:
+            new_board = board.copy()
+            if self.is_player_1:
+                new_board.turn = 2
+            else: new_board.turn = 1
+            new_board.push(move)
+            result = self.get_state_reward(new_board)
+            if result < 0 and random_num==1:
+                return move
+            else: best_move = move
+        return best_move
 
 class Random_player:
     def __init__(self):
@@ -553,8 +579,8 @@ def play_connect_four(board, player1, player2):
         player1_move = player1.get_next_move(board)
         #print(player1_move)
         board.push(player1_move)
+        print(f"\n{board}\n")
         if board.result() != None:
-            print(board, "\n")
             break
         player2_move = player2.get_next_move(board)
         board.push(player2_move)

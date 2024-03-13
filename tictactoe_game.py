@@ -168,7 +168,6 @@ class Minimax_player:
     # Return the next move for the player
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
-        print(move)
         return move[0]
     
 class Q_learning_player:
@@ -338,7 +337,6 @@ def play_tictactoe(board, player1, player2):
         board.push(player1_move)
         print(board, "\n")
         if board.result() != None:
-            print(board, "\n")
             break
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
