@@ -246,6 +246,10 @@ class Q_learning_player:
             if (iteration % 10) == 0:
                 self.print_progress_bar(iteration, iterations)
                 
+            # Save model training progress 
+            if (iteration % 100) == 0:
+                self.save_policy(self.name + str(iteration))
+                
             board = Board(dimensions=(3, 3))
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
@@ -350,10 +354,10 @@ def play_tictactoe(board, player1, player2):
 
 tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = Human_player()
-playa1 = Minimax_player()
+#playa1 = Minimax_player()
 #playa1 = Random_player()
-playa2 = Default_player(optimality=.25, is_player_1=False)
-#playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
-#playa2.train_Qlearning_agent(10000)
+#playa2 = Default_player(optimality=.25, is_player_1=False)
+playa2 = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
+playa2.train_Qlearning_agent(10000)
 
-play_tictactoe(tictactoe_board, playa1, playa2)
+#play_tictactoe(tictactoe_board, playa1, playa2)

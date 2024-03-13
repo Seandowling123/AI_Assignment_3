@@ -397,7 +397,7 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
+    def __init__(self, name="XXConnect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
         self.name = name
         self.alpha = alpha
         self.gamma = gamma
@@ -411,13 +411,13 @@ class Q_learning_player:
     
     # Save Qtable
     def save_policy(self, policy_name):
-        filehandler = open(policy_name,"wb")
+        filehandler = open(policy_name, 'wb')
         pickle.dump(self.policy, filehandler)
         filehandler.close()
     
     # Load a Qtable
     def load_policy(self, policy_name):
-        file = open(policy_name,'rb')
+        file = open(policy_name, 'rb')
         policy = pickle.load(file)
         file.close()
         return policy
@@ -472,7 +472,11 @@ class Q_learning_player:
         for iteration in range(iterations):
             if (iteration % 10) == 0:
                 self.print_progress_bar(iteration, iterations)
-                
+            
+            # Save model training progress 
+            if (iteration % 100) == 0:
+                self.save_policy(self.name + str(iteration))
+            
             board = Board(dimensions=(7, 6), x_in_a_row=4)
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
@@ -595,13 +599,13 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-playa2 = Default_player(is_player_1=False)
+#playa2 = Default_player(is_player_1=False)
 #playa1 = Human_player()
 #playa1 = Random_player()
 #playa1 = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent", is_player_1=True)
-#playa1.train_Qlearning_agent(500)
+playa1 = Q_learning_player()#(policy_name="Connect_Four_Q_learning_agent", is_player_1=True)
+playa1.train_Qlearning_agent(10000)
 #print(playa2.policy)
 
-play_connect_four(tictactoe_board, playa1, playa2)
+#play_connect_four(tictactoe_board, playa1, playa2)
