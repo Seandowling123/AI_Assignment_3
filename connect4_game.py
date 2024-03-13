@@ -31,16 +31,16 @@ class Default_player:
         max_heuristic = -math.inf
         best_move = None
         
+        # Find the best move based on the heuristics
         for move in available_moves:
             new_board = board.copy()
             new_board.push(move)
-            
-            heuristic = get_state_heuristic(board)
+            heuristic = get_state_heuristic(new_board)
             if not self.is_player_1:
                 heuristic*(-1)
             if heuristic > max_heuristic:
                 max_heuristic = heuristic
-                best_move =move
+                best_move = move
                 
         return get_placement(board, best_move)
 
