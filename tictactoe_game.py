@@ -20,37 +20,44 @@ class Default_player:
         self.is_player_1 = is_player_1
         
     # Get the reward for taking an action
-    def get_state_reward(self, board_state):
+    def get_state_reward(self, board_state, opposing_player=False):
         is_player_1 = self.is_player_1
-        try:
-            result = board_state.result()
-            if result == 1 and is_player_1:
-                return 1
-            elif result == 1 and not is_player_1:
-                return -1
-            elif result == 2 and is_player_1:
-                return -1
-            elif result == 2 and not is_player_1:
-                return 1
-        except Exception as e:
-            if str(e) == "Both X and O have 3 pieces in a row.":
-                return 0
-            else: print(f"A default player state reward Error Occured: {e}")
-        return None
+        if opposing_player:
+            is_player_1 = is_player_1
+        result = board_state.result()
+        if result == 1 and is_player_1:
+            return 1
+        elif result == 1 and not is_player_1:
+            return -1
+        elif result == 2 and is_player_1:
+            return -1
+        elif result == 2 and not is_player_1:
+            return 1
+        return 0
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
-        best_result = -math.inf
         best_move = None
         
-        # Find the best move based on the heuristics
+        # Check for winning moves
         for move in available_moves:
             new_board = board.copy()
             new_board.push(move)
             result = self.get_state_reward(new_board)
-            if result > best_result:
-                best_result = result
-                best_move = move
+            if result > 0:
+                return move
+        
+        # Block loosing moves
+        for move in available_moves:
+            new_board = board.copy()
+            if self.is_player_1:
+                new_board.turn = 2
+            else: new_board.turn = 1
+            new_board.push(move)
+            result = self.get_state_reward(new_board)
+            if result < 0:
+                return move
+            else: best_move = move
         return best_move
 
 class Random_player:
@@ -342,7 +349,8 @@ def play_tictactoe(board, player1, player2):
 
 tictactoe_board = Board(dimensions=(3, 3))
 #player1 = Minimax_player()
-playa1 = Random_player()
+#playa1 = Random_player()
+playa1 = Default_player()
 playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
 #playa2.train_Qlearning_agent(10000)
 
