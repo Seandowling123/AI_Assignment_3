@@ -595,12 +595,12 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-playa2 = Default_player(optimality=1, is_player_1=False)
+playa2 = Default_player(is_player_1=False)
 #playa1 = Human_player()
 #playa1 = Random_player()
-playa1 = Minimax_player()
+#playa1 = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-#playa2 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent", is_player_1=False)
+playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent", is_player_1=True)
 #playa1.train_Qlearning_agent(500)
 #print(playa2.policy)
 
