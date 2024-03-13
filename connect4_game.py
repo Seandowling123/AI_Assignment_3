@@ -58,6 +58,7 @@ def transpose_board(board):
             transposed_board[j][i] = board.board[i][j]
     return transposed_board
 
+# Get the score associated with a row of pieces
 def compute_value(unbroken_pieces, unbroken_spaces):
     if unbroken_pieces >= 3:
         if unbroken_spaces >= 1:
@@ -89,9 +90,8 @@ def check_verticals(board):
                 unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    if get_placement(board, index)[1] == i:
-                        unbroken_x_spaces = unbroken_x_spaces + 1
-                        unbroken_y_spaces = unbroken_y_spaces + 1
+                    unbroken_x_spaces = unbroken_x_spaces + 1
+                    unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
                     x_scores.append(compute_value(unbroken_x_pieces, unbroken_x_spaces))
                     y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
@@ -112,6 +112,7 @@ def check_verticals(board):
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
+    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 # Check for three in a row with open spaces to either side
@@ -382,6 +383,6 @@ print(tictactoe_board)
 print("vert score: ", check_verticals(tictactoe_board))
 print("horz score: ", check_horizontals(tictactoe_board))
 print("diag score: ", check_diagonals(tictactoe_board))
-print("total score:", get_state_heuristic(tictactoe_board))
+#print("total score:", get_state_heuristic(tictactoe_board))
 
 #play_tictactoe(tictactoe_board, player1, playa2)
