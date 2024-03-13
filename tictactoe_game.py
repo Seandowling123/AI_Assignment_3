@@ -193,7 +193,7 @@ class Q_learning_player:
         
         # Create an agent to compete against
         agent1 = self
-        agent2 = Qlearning_player(is_player_1=False)
+        agent2 = Q_learning_player(is_player_1=False)
         
         # Play a new game for each iteration
         for iteration in range(iterations):
@@ -304,8 +304,8 @@ def play_tictactoe(board, player1, player2):
 
 tictactoe_board = Board(dimensions=(3, 3))
 #player1 = Minimax_player()
-#playa2 = Random_player()
-playa2 = Q_learning_player()
-playa2.train_Qlearning_agent(10000)
+playa1 = Random_player()
+playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent")
+#playa2.train_Qlearning_agent(10000)
 
-#play_tictactoe(tictactoe_board, player1, playa2)
+play_tictactoe(tictactoe_board, playa1, playa2)
