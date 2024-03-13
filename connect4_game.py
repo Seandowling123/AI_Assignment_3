@@ -170,7 +170,6 @@ def check_horizontals(board):
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
-    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 # Get heuristics for diagonal connections
@@ -251,7 +250,6 @@ def check_diagonals(board):
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
-    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 def get_state_heuristic(board):
@@ -371,9 +369,9 @@ def play_connect_four(board, player1, player2):
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
 #player1 = Human_player()
-playa1 = Random_player()
+#playa1 = Random_player()
 playa2 = Random_player()
-#playa1 = Minimax_player()
+playa1 = Minimax_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 #print("total score:", get_state_heuristic(tictactoe_board))
