@@ -47,7 +47,6 @@ class Default_player:
         available_moves = get_available_moves(board)
         best_move = None
         random_num = random.randint(0,int(1/self.optimality)-1)
-        print(random_num)
         
         # Check for winning moves
         for move in available_moves:
