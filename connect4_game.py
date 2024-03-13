@@ -289,7 +289,7 @@ class Minimax_player:
             else: print(f"A minimax Error Occured: {e}")
         
         # If max depth is reached, check heuristics
-        if depth == 5:
+        if depth == 6:
             return None, get_state_heuristic(board)
                 
         # Calculate move for maximiser
@@ -500,7 +500,11 @@ class Q_learning_player:
 
 # Get a string representation of the board
 def get_board_hash(board):
-    hash = ''.join(map(str, board.board.flatten()))
+    horizontal_score = check_horizontals(board)
+    vertical_score = check_verticals(board)
+    diagonal_score = check_diagonals(board)
+    heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
+    hash = ','.join(map(str, heuristic_scores))
     return hash
     
 def update_policies(board, agent1, agent2):
@@ -543,11 +547,12 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-#playa1 = Human_player()
+playa1 = Human_player()
 #playa1 = Random_player()
-#playa1 = Random_player()
-playa1 = Minimax_player()
+#playa1 = Minimax_player()
+#playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
 playa2 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent", is_player_1=False)
-#playa2.train_Qlearning_agent(10000)
+#playa1.train_Qlearning_agent(500)
+#print(playa2.policy)
 
-#play_connect_four(tictactoe_board, playa1, playa2)
+play_connect_four(tictactoe_board, playa1, playa2)
