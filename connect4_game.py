@@ -280,9 +280,9 @@ class Minimax_player:
         try:
             result = board.result()
             if result == 1:
-                return None, 1
+                return None, math.inf
             elif result == 2:
-                return None, -1
+                return None, -math.inf
         except Exception as e:
             if str(e) == "Both X and O have 3 pieces in a row.":
                 return None, 0
