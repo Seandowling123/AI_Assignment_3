@@ -15,8 +15,9 @@ def get_available_moves(board):
     return zero_indices
 
 class Default_player:
-    def __init__(self, is_player_1 = True):
+    def __init__(self, optimality = 1, is_player_1 = True):
         self.name = "Default Player"
+        self.optimality = optimality
         self.is_player_1 = is_player_1
         
     # Get the reward for taking an action
@@ -38,7 +39,7 @@ class Default_player:
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
         best_move = None
-        random_num = random.randint(0,1)
+        random_num = random.randint(0,int(1/self.optimality)-1)
         
         # Check for winning moves
         for move in available_moves:
@@ -98,7 +99,7 @@ class Minimax_player:
         self.name = "Minimax"
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
-        print("here")
+        
         # Speed up for first move
         available_moves = get_available_moves(board)
         if len(available_moves) == 9:
@@ -353,7 +354,7 @@ tictactoe_board = Board(dimensions=(3, 3))
 #playa1 = Human_player()
 playa1 = Minimax_player()
 #playa1 = Random_player()
-playa2 = Default_player(is_player_1=False)
+playa2 = Default_player(optimality=.25, is_player_1=False)
 #playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
 #playa2.train_Qlearning_agent(10000)
 
