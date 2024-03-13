@@ -424,10 +424,10 @@ class Q_learning_player:
             if (iteration % 10) == 0:
                 self.print_progress_bar(iteration, iterations)
                 
-            board = Board(dimensions=(3, 3))
+            board = Board(dimensions=(7, 6), x_in_a_row=4)
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-                
+                print(board)
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
                 board.push(get_placement(board, agent1_move))
@@ -533,8 +533,7 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa1 = Random_player()
 playa2 = Random_player()
 playa1 = Minimax_player()
-#playa2 = Qlearning_player(policy_name='Q_learning_agent')
-#player1.train_Qlearning_agent(10000)
-#print("total score:", get_state_heuristic(tictactoe_board))
+playa1 = Q_learning_player()
+playa1.train_Qlearning_agent(1)
 
-play_connect_four(tictactoe_board, playa1, playa2)
+#play_connect_four(tictactoe_board, playa1, playa2)
