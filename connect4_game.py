@@ -431,7 +431,7 @@ class Q_learning_player:
                 
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
-                board.push(get_placement(board, agent1_move))
+                board.push(agent1_move)
                 agent1.prev_states.append(get_board_hash(board))
                 
                 # Check if the game is over
@@ -444,7 +444,7 @@ class Q_learning_player:
                 # play Agent 2's move and update past states
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
-                board.push(get_placement(board, agent2_move))
+                board.push(agent2_move)
                 agent2.prev_states.append(get_board_hash(board))
                 
                 # Check if the game is over
@@ -463,15 +463,18 @@ class Q_learning_player:
         max_value = -math.inf
         Q_table = self.policy
         available_moves = get_available_moves(board)
-        
         if self.played_moves == 0 and self.is_player_1:
-            return 3
+            self.played_moves = self.played_moves+1
+            return get_placement(board, 3)
         if self.played_moves == 0 and not self.is_player_1:
-            return 4
+            self.played_moves = self.played_moves+1
+            return get_placement(board, 4)
         if self.played_moves == 1 and self.is_player_1:
-            return 2
+            self.played_moves = self.played_moves+1
+            return get_placement(board, 2)
         if self.played_moves == 1 and not self.is_player_1:
-            return 3
+            self.played_moves = self.played_moves+1
+            return get_placement(board, 3)
         
         # Check the value of each available move
         for move in available_moves:
@@ -493,8 +496,7 @@ class Q_learning_player:
             if value > max_value:
                 max_value = value
                 best_move = move
-        self.played_moves = self.played_moves+1
-        return best_move
+        return get_placement(board, best_move)
 
 # Get a string representation of the board
 def get_board_hash(board):
@@ -523,6 +525,7 @@ def play_connect_four(board, player1, player2):
     # While the game is not over let each player move
     while board.result() == None:
         player1_move = player1.get_next_move(board)
+        #print(player1_move)
         board.push(player1_move)
         if board.result() != None:
             print(board, "\n")
@@ -543,8 +546,8 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #playa1 = Human_player()
 #playa1 = Random_player()
 playa2 = Random_player()
-playa1 = Minimax_player()
-playa1 = Q_learning_player()
-playa1.train_Qlearning_agent(10000)
+#playa1 = Minimax_player()
+playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
+#playa1.train_Qlearning_agent(10000)
 
-#play_connect_four(tictactoe_board, playa1, playa2)
+play_connect_four(tictactoe_board, playa1, playa2)
