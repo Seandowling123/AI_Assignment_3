@@ -34,14 +34,13 @@ class Default_player:
         # Find the best move based on the heuristics
         for move in available_moves:
             new_board = board.copy()
-            new_board.push(move)
+            new_board.push(get_placement(board, move))
             heuristic = get_state_heuristic(new_board)
             if not self.is_player_1:
                 heuristic*(-1)
             if heuristic > max_heuristic:
                 max_heuristic = heuristic
                 best_move = move
-                
         return get_placement(board, best_move)
 
 class Random_player:
@@ -570,11 +569,12 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-playa1 = Human_player()
+playa2 = Default_player(is_player_1=False)
+#playa1 = Human_player()
 #playa1 = Random_player()
-#playa1 = Minimax_player()
+playa1 = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-playa2 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent", is_player_1=False)
+#playa2 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent", is_player_1=False)
 #playa1.train_Qlearning_agent(500)
 #print(playa2.policy)
 

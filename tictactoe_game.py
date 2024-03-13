@@ -14,6 +14,45 @@ def get_available_moves(board):
                 zero_indices.append([i, j])
     return zero_indices
 
+class Default_player:
+    def __init__(self, is_player_1 = True):
+        self.name = "Default Player"
+        self.is_player_1 = is_player_1
+        
+    # Get the reward for taking an action
+    def get_state_reward(self, board_state):
+        is_player_1 = self.is_player_1
+        try:
+            result = board_state.result()
+            if result == 1 and is_player_1:
+                return 1
+            elif result == 1 and not is_player_1:
+                return -1
+            elif result == 2 and is_player_1:
+                return -1
+            elif result == 2 and not is_player_1:
+                return 1
+        except Exception as e:
+            if str(e) == "Both X and O have 3 pieces in a row.":
+                return 0
+            else: print(f"A default player state reward Error Occured: {e}")
+        return None
+    
+    def get_next_move(self, board):
+        available_moves = get_available_moves(board)
+        best_result = -math.inf
+        best_move = None
+        
+        # Find the best move based on the heuristics
+        for move in available_moves:
+            new_board = board.copy()
+            new_board.push(move)
+            result = self.get_state_reward(new_board)
+            if result > best_result:
+                best_result = result
+                best_move = move
+        return best_move
+
 class Random_player:
     def __init__(self):
         self.name = "Random Player"
