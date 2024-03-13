@@ -263,7 +263,7 @@ class Q_learning_player:
 
 # Get a string representation of the board
 def get_board_hash(board):
-    hash = ' '.join(map(str, board.board.flatten()))
+    hash = ''.join(map(str, board.board.flatten()))
     return hash
     
 def update_policies(board, agent1, agent2):
@@ -305,7 +305,7 @@ def play_tictactoe(board, player1, player2):
 tictactoe_board = Board(dimensions=(3, 3))
 #player1 = Minimax_player()
 playa1 = Random_player()
-playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent")
+playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
 #playa2.train_Qlearning_agent(10000)
 
 play_tictactoe(tictactoe_board, playa1, playa2)
