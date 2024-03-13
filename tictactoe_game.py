@@ -38,13 +38,14 @@ class Default_player:
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
         best_move = None
+        random_num = random.randint(0,1)
         
         # Check for winning moves
         for move in available_moves:
             new_board = board.copy()
             new_board.push(move)
             result = self.get_state_reward(new_board)
-            if result > 0:
+            if result > 0 and random_num==1:
                 return move
         
         # Block loosing moves
@@ -55,7 +56,7 @@ class Default_player:
             else: new_board.turn = 1
             new_board.push(move)
             result = self.get_state_reward(new_board)
-            if result < 0:
+            if result < 0 and random_num==1:
                 return move
             else: best_move = move
         return best_move
@@ -97,7 +98,7 @@ class Minimax_player:
         self.name = "Minimax"
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
-        
+        print("here")
         # Speed up for first move
         available_moves = get_available_moves(board)
         if len(available_moves) == 9:
@@ -127,7 +128,7 @@ class Minimax_player:
                 best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value > max_value:
+                if value >= max_value:
                     max_value = value
                     best_move = move
                 
@@ -151,7 +152,7 @@ class Minimax_player:
                 best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value < min_value:
+                if value <= min_value:
                     min_value = value
                     best_move = move
                 
@@ -166,7 +167,7 @@ class Minimax_player:
     # Return the next move for the player
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
-        #print(move)
+        print(move)
         return move[0]
     
 class Q_learning_player:
@@ -334,6 +335,7 @@ def play_tictactoe(board, player1, player2):
     while board.result() == None:
         player1_move = player1.get_next_move(board)
         board.push(player1_move)
+        print(board, "\n")
         if board.result() != None:
             print(board, "\n")
             break
@@ -348,10 +350,11 @@ def play_tictactoe(board, player1, player2):
     else: print("Tie Game")
 
 tictactoe_board = Board(dimensions=(3, 3))
-#player1 = Minimax_player()
+#playa1 = Human_player()
+playa1 = Minimax_player()
 #playa1 = Random_player()
-playa1 = Default_player()
-playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
+playa2 = Default_player(is_player_1=False)
+#playa2 = Q_learning_player(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
 #playa2.train_Qlearning_agent(10000)
 
 play_tictactoe(tictactoe_board, playa1, playa2)
