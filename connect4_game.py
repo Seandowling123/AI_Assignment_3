@@ -21,6 +21,29 @@ def get_available_moves(board):
             zero_indices.append(i)
     return zero_indices
 
+class Default_player:
+    def __init__(self, is_player_1 = True):
+        self.name = "Default Player"
+        self.is_player_1 = is_player_1
+    
+    def get_next_move(self, board):
+        available_moves = get_available_moves(board)
+        max_heuristic = -math.inf
+        best_move = None
+        
+        for move in available_moves:
+            new_board = board.copy()
+            new_board.push(move)
+            
+            heuristic = get_state_heuristic(board)
+            if not self.is_player_1:
+                heuristic*(-1)
+            if heuristic > max_heuristic:
+                max_heuristic = heuristic
+                best_move =move
+                
+        return get_placement(board, best_move)
+
 class Random_player:
     def __init__(self):
         self.name = "Random Player"
@@ -349,8 +372,8 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
-        self.name = "Connect_Four_Q_learning_agent"
+    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
+        self.name = name
         self.alpha = alpha
         self.gamma = gamma
         self.policy_name = policy_name
