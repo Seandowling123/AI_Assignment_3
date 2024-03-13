@@ -359,6 +359,7 @@ class Q_learning_player:
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
         else: self.policy = {}
+        self.played_moves = 0
     
     # Save Qtable
     def save_policy(self, policy_name):
@@ -427,7 +428,7 @@ class Q_learning_player:
             board = Board(dimensions=(7, 6), x_in_a_row=4)
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-                print(board)
+                
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
                 board.push(get_placement(board, agent1_move))
@@ -463,6 +464,15 @@ class Q_learning_player:
         Q_table = self.policy
         available_moves = get_available_moves(board)
         
+        if self.played_moves == 0 and self.is_player_1:
+            return 3
+        if self.played_moves == 0 and not self.is_player_1:
+            return 4
+        if self.played_moves == 1 and self.is_player_1:
+            return 2
+        if self.played_moves == 1 and not self.is_player_1:
+            return 3
+        
         # Check the value of each available move
         for move in available_moves:
             new_board = board.copy()
@@ -483,6 +493,7 @@ class Q_learning_player:
             if value > max_value:
                 max_value = value
                 best_move = move
+        self.played_moves = self.played_moves+1
         return best_move
 
 # Get a string representation of the board
@@ -534,6 +545,6 @@ tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 playa2 = Random_player()
 playa1 = Minimax_player()
 playa1 = Q_learning_player()
-playa1.train_Qlearning_agent(1)
+playa1.train_Qlearning_agent(10000)
 
 #play_connect_four(tictactoe_board, playa1, playa2)
