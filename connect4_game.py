@@ -82,7 +82,7 @@ def check_verticals(board):
         unbroken_y_pieces = 0
         unbroken_y_spaces = 0
         
-        for index, space in enumerate(board.board[i]):
+        for space in board.board[i]:
             if space == 1:
                 unbroken_x_pieces = unbroken_x_pieces + 1
                 y_scores.append(compute_value(unbroken_y_pieces, unbroken_y_spaces))
@@ -112,7 +112,6 @@ def check_verticals(board):
         return math.inf
     elif y_scores.count(0.9) > 1:
         return -math.inf
-    print(np.sum(x_scores), np.sum(y_scores))
     return np.sum(x_scores) - np.sum(y_scores)
 
 # Check for three in a row with open spaces to either side
@@ -149,7 +148,9 @@ def check_horizontals(board):
                 unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    if get_placement(board, index)[1] == i:
+                    if index+1 >= len(transposed_board[i]) or transposed_board[i][index+1] != 0:
+                    #if get_placement(board, index)[1] == i:
+                        print(index,i)
                         unbroken_x_spaces = unbroken_x_spaces + 1
                         unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
@@ -181,7 +182,7 @@ def check_diagonals(board):
     available_moves = get_available_moves(board)
     x_scores = []
     y_scores = []
-
+    
     # Check first diagonal direction 
     for i in range(rows + cols - 1):
         unbroken_x_pieces = 0
@@ -198,7 +199,7 @@ def check_diagonals(board):
                 unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    if get_placement(board, index)[1] == i:
+                    if (cols - i + j) >= len(board.board[j]) or board.board[j][cols - i + j] != 0:
                         unbroken_x_spaces = unbroken_x_spaces + 1
                         unbroken_y_spaces = unbroken_y_spaces + 1
                 else: 
@@ -344,7 +345,7 @@ class minimax_player:
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         return move
                 
-def play_tictactoe(board, player1, player2):
+def play_connect_four(board, player1, player2):
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
     
     # While the game is not over let each player move
@@ -357,6 +358,9 @@ def play_tictactoe(board, player1, player2):
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
         print(board, "\n")
+        print("vert score: ", check_verticals(board))
+        print("horz score: ", check_horizontals(board))
+        print("diag score: ", check_diagonals(board))
         
     # Print the winner
     if board.result() == 1:
@@ -367,22 +371,14 @@ def play_tictactoe(board, player1, player2):
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
 #player1 = human_player()
-#playa2 = random_player()
+playa1 = random_player()
+playa2 = random_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
-tictactoe_board.push(get_placement(tictactoe_board, 0))
-tictactoe_board.push(get_placement(tictactoe_board, 3))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
-tictactoe_board.push(get_placement(tictactoe_board, 5))
-tictactoe_board.push(get_placement(tictactoe_board, 2))
-tictactoe_board.push(get_placement(tictactoe_board, 5))
-tictactoe_board.push(get_placement(tictactoe_board, 0))
-tictactoe_board.push(get_placement(tictactoe_board, 4))
-tictactoe_board.push(get_placement(tictactoe_board, 1))
 print(tictactoe_board)
 print("vert score: ", check_verticals(tictactoe_board))
 print("horz score: ", check_horizontals(tictactoe_board))
 print("diag score: ", check_diagonals(tictactoe_board))
 #print("total score:", get_state_heuristic(tictactoe_board))
 
-#play_tictactoe(tictactoe_board, player1, playa2)
+play_connect_four(tictactoe_board, playa1, playa2)
