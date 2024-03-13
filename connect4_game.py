@@ -148,8 +148,7 @@ def check_horizontals(board):
                 unbroken_y_spaces = 0
             if space == 0:
                 if i in available_moves:
-                    if index+1 >= len(transposed_board[i]) or transposed_board[i][index+1] != 0:
-                    #if get_placement(board, index)[1] == i:
+                    if i+1 >= len(transposed_board) or transposed_board[i+1][index] != 0:
                         print(index,i)
                         unbroken_x_spaces = unbroken_x_spaces + 1
                         unbroken_y_spaces = unbroken_y_spaces + 1
