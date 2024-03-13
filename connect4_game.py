@@ -116,13 +116,18 @@ def check_verticals(board):
 
 # Check for three in a row with open spaces to either side
 def double_open_three(board, col, row, available_moves):
-    pattern = [0, 1, 1, 1, 0]
-    for i in range(len(col) - len(pattern) + 1):
-        if tuple(col[i:i+len(pattern)]) == tuple(pattern):
+    x_pattern = [0, 1, 1, 1, 0]
+    y_pattern = [0, 2, 2, 2, 0]
+    for i in range(len(col) - len(x_pattern) + 1):
+        if tuple(col[i:i+len(x_pattern)]) == tuple(x_pattern):
             if i in available_moves:
-                if get_placement(board, i)[1] == row and get_placement(board, i+len(pattern)-1)[1] == row:
-                    return True
-    return False
+                if get_placement(board, i)[1] == row and get_placement(board, i+len(x_pattern)-1)[1] == row:
+                    return math.inf
+        elif tuple(col[i:i+len(y_pattern)]) == tuple(y_pattern.replace(1,2)):
+            if i in available_moves:
+                if get_placement(board, i)[1] == row and get_placement(board, i+len(y_pattern)-1)[1] == row:
+                    return -math.inf
+    return 0
 
 # Get heuristics for horizontal connections
 def check_horizontals(board):
@@ -139,7 +144,7 @@ def check_horizontals(board):
 
         # Calculate the value of each row
         if double_open_three(board, transposed_board[i], i, available_moves):
-            return math.inf
+            return double_open_three(board, transposed_board[i], i, available_moves)
         for index, space in enumerate(transposed_board[i]):
             if space == 1:
                 unbroken_x_pieces = unbroken_x_pieces + 1
@@ -356,9 +361,7 @@ def play_connect_four(board, player1, player2):
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
         print(f"\n{board}\n")
-        print("vert score: ", check_verticals(board))
-        print("horz score: ", check_horizontals(board))
-        print("diag score: ", check_diagonals(board))
+        print("Board Heuristic:", get_state_heuristic(board))
         
     # Print the winner
     if board.result() == 1:
@@ -368,10 +371,10 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-#player1 = Human_player()
+playa1 = Human_player()
 #playa1 = Random_player()
 playa2 = Random_player()
-playa1 = Minimax_player()
+#playa1 = Minimax_player()
 #playa2 = Qlearning_player(policy_name='Q_learning_agent')
 #player1.train_Qlearning_agent(10000)
 #print("total score:", get_state_heuristic(tictactoe_board))
