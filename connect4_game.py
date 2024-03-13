@@ -47,14 +47,15 @@ class Default_player:
         available_moves = get_available_moves(board)
         best_move = None
         random_num = random.randint(0,int(1/self.optimality)-1)
+        print(random_num)
         
         # Check for winning moves
         for move in available_moves:
             new_board = board.copy()
-            new_board.push(move)
+            new_board.push(get_placement(new_board, move))
             result = self.get_state_reward(new_board)
-            if result > 0 and random_num==1:
-                return move
+            if result > 0 and random_num==0:
+                return get_placement(board, move)
             
         # Block loosing moves
         for move in available_moves:
@@ -62,12 +63,12 @@ class Default_player:
             if self.is_player_1:
                 new_board.turn = 2
             else: new_board.turn = 1
-            new_board.push(move)
+            new_board.push(get_placement(new_board, move))
             result = self.get_state_reward(new_board)
-            if result < 0 and random_num==1:
-                return move
+            if result < 0 and random_num==0:
+                return get_placement(board, move)
             else: best_move = move
-        return best_move
+        return get_placement(board, best_move)
 
 class Random_player:
     def __init__(self):
@@ -337,7 +338,7 @@ class Minimax_player:
             else: print(f"A minimax Error Occured: {e}")
         
         # If max depth is reached, check heuristics
-        if depth == 6:
+        if depth == 5:
             return None, get_state_heuristic(board)
                 
         # Calculate move for maximiser
@@ -595,7 +596,7 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-playa2 = Default_player(is_player_1=False)
+playa2 = Default_player(optimality=1, is_player_1=False)
 #playa1 = Human_player()
 #playa1 = Random_player()
 playa1 = Minimax_player()

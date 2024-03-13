@@ -46,7 +46,7 @@ class Default_player:
             new_board = board.copy()
             new_board.push(move)
             result = self.get_state_reward(new_board)
-            if result > 0 and random_num==1:
+            if result > 0 and random_num==0:
                 return move
         
         # Block loosing moves
@@ -57,7 +57,7 @@ class Default_player:
             else: new_board.turn = 1
             new_board.push(move)
             result = self.get_state_reward(new_board)
-            if result < 0 and random_num==1:
+            if result < 0 and random_num==0:
                 return move
             else: best_move = move
         return best_move
