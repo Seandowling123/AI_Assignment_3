@@ -123,7 +123,7 @@ def double_open_three(board, col, row, available_moves):
             if i in available_moves:
                 if get_placement(board, i)[1] == row and get_placement(board, i+len(x_pattern)-1)[1] == row:
                     return math.inf
-        elif tuple(col[i:i+len(y_pattern)]) == tuple(y_pattern.replace(1,2)):
+        elif tuple(col[i:i+len(y_pattern)]) == tuple(y_pattern):
             if i in available_moves:
                 if get_placement(board, i)[1] == row and get_placement(board, i+len(y_pattern)-1)[1] == row:
                     return -math.inf
