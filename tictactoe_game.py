@@ -255,7 +255,7 @@ class Qlearning_player:
 
 # Get a string representation of the board
 def get_board_hash(board):
-    hash = str(board.board.flatten())
+    hash = ' '.join(map(str, board.board.flatten()))
     return hash
     
 def update_policies(board, agent1, agent2):
