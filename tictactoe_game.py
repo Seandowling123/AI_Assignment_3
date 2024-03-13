@@ -153,7 +153,6 @@ class Q_learning_player:
         progress = iteration/iterations
         arrow = '-' * int(progress * bar_length - 1) + '>'
         spaces = ' ' * (bar_length - len(arrow))
-
         print(f'\rTraining Q-learning Agent: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
     
     # Get the reward for taking an action

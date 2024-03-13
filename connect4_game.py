@@ -378,7 +378,6 @@ class Q_learning_player:
         progress = iteration/iterations
         arrow = '-' * int(progress * bar_length - 1) + '>'
         spaces = ' ' * (bar_length - len(arrow))
-
         print(f'\rTraining Q-learning Agent: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
     
     # Get the reward for taking an action
@@ -431,7 +430,7 @@ class Q_learning_player:
                 
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
-                board.push(agent1_move)
+                board.push(get_placement(board, agent1_move))
                 agent1.prev_states.append(get_board_hash(board))
                 
                 # Check if the game is over
@@ -444,7 +443,7 @@ class Q_learning_player:
                 # play Agent 2's move and update past states
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
-                board.push(agent2_move)
+                board.push(get_placement(board, agent2_move))
                 agent2.prev_states.append(get_board_hash(board))
                 
                 # Check if the game is over
@@ -467,7 +466,7 @@ class Q_learning_player:
         # Check the value of each available move
         for move in available_moves:
             new_board = board.copy()
-            new_board.push(move)
+            new_board.push(get_placement(board, move))
             
             # Check if move leads to a terminal state
             if self.get_state_reward(new_board) != None:
