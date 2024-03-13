@@ -14,7 +14,7 @@ def get_available_moves(board):
                 zero_indices.append([i, j])
     return zero_indices
 
-class random_player:
+class Random_player:
     def __init__(self):
         self.name = "Random Player"
         
@@ -24,7 +24,7 @@ class random_player:
         return move
 
 # Human contolled player
-class human_player:
+class Human_player:
     def __init__(self):
         self.name = "Sean"
     
@@ -46,7 +46,7 @@ class human_player:
                 print("Invalid Move.")
 
 # Player using minimax
-class minimax_player:
+class Minimax_player:
     def __init__(self):
         self.name = "Minimax"
         
@@ -123,9 +123,9 @@ class minimax_player:
         #print(move)
         return move[0]
     
-class Qlearning_player:
+class Q_learning_player:
     def __init__(self, policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
-        self.name = "Q_learning_agent"
+        self.name = "Tictactoe_Q_learning_agent"
         self.alpha = alpha
         self.gamma = gamma
         self.policy_name = policy_name
@@ -147,6 +147,14 @@ class Qlearning_player:
         policy = pickle.load(file)
         file.close()
         return policy
+    
+    # Print a progress bar during training
+    def print_progress_bar(self, iteration, iterations, bar_length=50):
+        progress = iteration/iterations
+        arrow = '-' * int(progress * bar_length - 1) + '>'
+        spaces = ' ' * (bar_length - len(arrow))
+
+        print(f'\rTraining Q-learning Agent: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
     
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
@@ -189,9 +197,9 @@ class Qlearning_player:
         
         # Play a new game for each iteration
         for iteration in range(iterations):
-            progress = "{:.2f}".format((iteration/iterations)*100)
             if (iteration % 10) == 0:
-                print(f"Trainging Q-learning Agent: {progress}%\r", end='', flush=True)
+                self.print_progress_bar(iteration, iterations)
+                
             board = Board(dimensions=(3, 3))
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
@@ -295,9 +303,9 @@ def play_tictactoe(board, player1, player2):
     else: print("Tie Game")
 
 tictactoe_board = Board(dimensions=(3, 3))
-player1 = minimax_player()
-#playa2 = random_player()
-playa2 = Qlearning_player(policy_name='Q_learning_agent')
-#player1.train_Qlearning_agent(10000)
+#player1 = Minimax_player()
+#playa2 = Random_player()
+playa2 = Q_learning_player()
+playa2.train_Qlearning_agent(10000)
 
-play_tictactoe(tictactoe_board, player1, playa2)
+#play_tictactoe(tictactoe_board, player1, playa2)
