@@ -186,11 +186,13 @@ class Minimax_player:
         return move[0]
     
 class Q_learning_player:
-    def __init__(self, policy_name=None, alpha=.2, gamma=.9, epsilon=.3, training=False, is_player_1=True):
+    def __init__(self, policy_name=None, alpha=.2, gamma=.9, epsilon=.5, training=False, is_player_1=True):
         self.name = "Tictactoe_Q_learning_agent"
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
+        self.decay_rate = .0002
+        self.final_epsilon = .0001
         self.policy_name = policy_name
         self.training = training
         self.is_player_1 = is_player_1
@@ -222,6 +224,9 @@ class Q_learning_player:
         arrow = '-' * int(progress * bar_length - 1) + '>'
         spaces = ' ' * (bar_length - len(arrow))
         print(f'\rTraining Q-learning Agent: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
+        
+    def decay_epsilon(self):
+        self.epsilon = max(self.final_epsilon, self.epsilon * (1 / (1 + self.decay_rate)))
     
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
@@ -310,6 +315,7 @@ class Q_learning_player:
         if self.training:
             if random.random() < self.epsilon:
                 return random.choice(available_moves)
+            self.decay_epsilon()
         
         # Check the value of each available move
         for move in available_moves:
@@ -453,13 +459,12 @@ human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=False)
-qlearning = Q_learning_player(training=True)#(policy_name="Tictactoe_Q_learning_agent9900", is_player_1=True)
-print(qlearning.policy)
-qlearning.train_Qlearning_agent(10000)
+qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
+#qlearning.train_Qlearning_agent(100000)
 
 play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
 
-#test_Q_learning_agents(qlearning, default, 10)
+#test_Q_learning_agents(qlearning, default, 10) (training=True)#
 
 # NOTE TO SELF: THE QLEARNING PLAYER 2 NLY KNOWS HOW TO PLAY FROM NIDDLE BOX BEING OCCUPIED
