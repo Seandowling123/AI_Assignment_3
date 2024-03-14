@@ -38,7 +38,6 @@ class Default_player:
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
-        best_move = None
         optimal = random.random() < self.optimality
         
         if len(available_moves) == 9:
@@ -62,8 +61,7 @@ class Default_player:
             result = self.get_state_reward(new_board)
             if result < 0 and optimal:
                 return move
-            else: best_move = move
-        return best_move
+        return random.choice(available_moves)
 
 class Random_player:
     def __init__(self):
@@ -270,7 +268,7 @@ class Q_learning_player:
                 self.print_progress_bar(iteration, iterations)
                 
             # Save model training progress 
-            if (iteration % 100) == 0:
+            if (iteration % 10) == 0:
                 self.save_policy(self.name + str(iteration))
                 
             board = Board(dimensions=(3, 3))
@@ -433,7 +431,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
     for i in range(100):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
+        policy_name = "Tictactoe_Q_learning_agents_old/Tictactoe_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
@@ -450,7 +448,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
     for i in range(100):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
+        policy_name = "Tictactoe_Q_learning_agents_old/Tictactoe_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
@@ -463,8 +461,8 @@ human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=False)
-qlearning = Q_learning_player(training=True)#(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
-qlearning.train_Qlearning_agent(10000)
+qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
+#qlearning.train_Qlearning_agent(1000)
 
 #play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
