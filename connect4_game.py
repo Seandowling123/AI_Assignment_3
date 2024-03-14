@@ -45,14 +45,14 @@ class Default_player:
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
-        random_num = random.randint(0,int(1/self.optimality)-1)
+        optimal = random.random() < self.optimality
         
         # Check for winning moves
         for move in available_moves:
             new_board = board.copy()
             new_board.push(get_placement(new_board, move))
             result = self.get_state_reward(new_board)
-            if result > 0 and random_num==0:
+            if result > 0 and optimal:
                 return get_placement(board, move)
             
         # Block loosing moves
@@ -63,7 +63,7 @@ class Default_player:
             else: new_board.turn = 1
             new_board.push(get_placement(new_board, move))
             result = self.get_state_reward(new_board)
-            if result < 0 and random_num==0:
+            if result < 0 and optimal:
                 return get_placement(board, move)
         return get_placement(board, random.choice(available_moves))
 
@@ -402,12 +402,16 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, name="XXConnect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
+    def __init__(self, name="XXConnect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, epsilon=.2, training=False, is_player_1=True):
         self.name = name
         self.alpha = alpha
         self.gamma = gamma
+        self.epsilon = epsilon
+        self.decay_rate = .0001
+        self.final_epsilon = .00001
         self.policy_name = policy_name
         self.is_player_1 = is_player_1
+        self.training = training
         self.prev_states = []
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
@@ -526,12 +530,11 @@ class Q_learning_player:
         if self.played_moves == 0 and not self.is_player_1:
             self.played_moves = self.played_moves+1
             return get_placement(board, 4)
-        if self.played_moves == 1 and self.is_player_1:
-            self.played_moves = self.played_moves+1
-            return get_placement(board, 2)
-        if self.played_moves == 1 and not self.is_player_1:
-            self.played_moves = self.played_moves+1
-            return get_placement(board, 3)
+        
+        if self.training:
+            if random.random() < self.epsilon:
+                return random.choice(available_moves)
+            self.decay_epsilon()
         
         # Check the value of each available move
         for move in available_moves:
@@ -604,13 +607,13 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-#playa2 = Default_player(is_player_1=False)
+playa2 = Default_player(is_player_1=False, optimality = .5)
 #playa1 = Human_player()
 #playa1 = Random_player()
-#playa1 = Minimax_player()
-#playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-playa1 = Q_learning_player()#(policy_name="Connect_Four_Q_learning_agent", is_player_1=True)
+minimax = Minimax_player()
+playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900", is_player_1=True)
 playa1.train_Qlearning_agent(10000)
 #print(playa2.policy)
 
-#play_connect_four(tictactoe_board, playa1, playa2)
+play_connect_four(tictactoe_board, minimax, playa2)
