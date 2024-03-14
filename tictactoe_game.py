@@ -454,3 +454,5 @@ qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_pl
 #results = run_games(minimax, default, 1000)
 
 test_Q_learning_agents(qlearning, default, 10)
+
+# NOTE TO SELF: THE QLEARNING PLAYER 2 NLY KNOWS HOW TO PLAY FROM NIDDLE BOX BEING OCCUPIED
