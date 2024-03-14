@@ -484,6 +484,7 @@ class Q_learning_player:
         # Play a new game for each iteration
         for iteration in range(iterations):
             if (iteration % 10) == 0:
+                print(self.epsilon)
                 self.print_progress_bar(iteration, iterations)
             
             # Save model training progress
