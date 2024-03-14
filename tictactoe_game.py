@@ -372,9 +372,10 @@ def print_progress_bar(iteration, iterations, bar_length=50):
     spaces = ' ' * (bar_length - len(arrow))
     print(f'\rPlaying Games: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
 
-def run_games(board, player1, player2, num_games):
+def run_games(player1, player2, num_games):
     results = [0, 0, 0]
     for i in range(num_games):
+        board = Board(dimensions=(3, 3))
         print_progress_bar(i, num_games)
         result = get_tictactoe_winner(board, player1, player2)
         results[result] = results[result]+1
