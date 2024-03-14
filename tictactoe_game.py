@@ -184,7 +184,7 @@ class Minimax_player:
         return move[0]
     
 class Q_learning_player:
-    def __init__(self, policy_name=None, alpha=.2, gamma=.9, epsilon=.5, training=False, is_player_1=True):
+    def __init__(self, policy_name=None, alpha=.2, gamma=.9, epsilon=.3, training=False, is_player_1=True):
         self.name = "Tictactoe_Q_learning_agent"
         self.alpha = alpha
         self.gamma = gamma
@@ -265,9 +265,10 @@ class Q_learning_player:
         # Play a new game for each iteration
         for iteration in range(iterations):
             if (iteration % 100) == 0:
+                print(self.epsilon)
                 self.print_progress_bar(iteration, iterations)
                 
-            # Save model training progress 
+            # Save model training progress
             if (iteration % 1000) == 0:
                 self.save_policy(self.name + str(iteration))
                 
@@ -460,9 +461,9 @@ human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=True)
-qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent99000", is_player_1=True)
-qlearning.train_Qlearning_agent(50000)
-#play_tictactoe(tictactoe_board, qlearning, default)
+qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent6000", is_player_1=True)
+#qlearning.train_Qlearning_agent(50000)
+play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
 
 #test_Q_learning_agents(qlearning, default, 1000)

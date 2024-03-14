@@ -312,9 +312,24 @@ def get_state_heuristic(board):
             
 # Player using minimax
 class Minimax_player:
-    def __init__(self):
+    def __init__(self, is_player_1=True):
         self.name = "Minimax"
+        self.is_player_1 = is_player_1
         self.played_moves = 0
+        
+    # Get the reward for taking an action
+    def get_state_reward(self, board_state):
+        is_player_1 = self.is_player_1
+        result = board_state.result()
+        if result == 1 and is_player_1:
+            return None, math.inf
+        elif result == 1 and not is_player_1:
+            return None, -math.inf
+        elif result == 2 and is_player_1:
+            return None, -math.inf
+        elif result == 2 and not is_player_1:
+            return None, math.inf
+        return None, 0
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
@@ -323,16 +338,8 @@ class Minimax_player:
             return 3, 0
         
         # Check if the game is over
-        try:
-            result = board.result()
-            if result == 1:
-                return None, math.inf
-            elif result == 2:
-                return None, -math.inf
-        except Exception as e:
-            if str(e) == "Both X and O have 3 pieces in a row.":
-                return None, 0
-            else: print(f"A minimax Error Occured: {e}")
+        if board.result() != None:
+            return self.get_state_reward(board)
         
         # If max depth is reached, check heuristics
         if depth == 5:
