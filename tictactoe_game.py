@@ -41,6 +41,9 @@ class Default_player:
         best_move = None
         optimal = random.random() < self.optimality
         
+        if len(available_moves) == 9:
+            return [1,1]
+        
         # Check for winning moves
         for move in available_moves:
             new_board = board.copy()
@@ -263,7 +266,7 @@ class Q_learning_player:
                 self.print_progress_bar(iteration, iterations)
                 
             # Save model training progress 
-            if (iteration % 100) == 0:
+            if (iteration % 1000) == 0:
                 self.save_policy(self.name + str(iteration))
                 
             board = Board(dimensions=(3, 3))
@@ -446,13 +449,14 @@ tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
-default = Default_player(optimality=.5, is_player_1=False)
+default = Default_player(optimality=.5, is_player_1=True)
 qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
-#qlearning.train_Qlearning_agent(10000)
+print(qlearning.policy)
+qlearning.train_Qlearning_agent(100000)
 
-#play_tictactoe(tictactoe_board, default, human)
+play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
 
-test_Q_learning_agents(qlearning, default, 10)
+#test_Q_learning_agents(qlearning, default, 10)
 
 # NOTE TO SELF: THE QLEARNING PLAYER 2 NLY KNOWS HOW TO PLAY FROM NIDDLE BOX BEING OCCUPIED
