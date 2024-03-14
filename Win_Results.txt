@@ -1,2 +1,4 @@
+
 DEFAULT PLAYER 50% OPTIMALITY
-Minimax: [0.23, 0.45, 0.32]
+Player 1: Minimax: [0.23, 0.45, 0.32]
+PLayer 2: Minimax: [0.0, 0.44, 0.56]

@@ -118,6 +118,10 @@ class Minimax_player:
         available_moves = get_available_moves(board)
         if len(available_moves) == 9:
             return [1,1], 0
+        elif len(available_moves) == 8:
+            if [0,0] in available_moves:
+                return [0,0], 0
+            else: return [1,1], 0
         
         # Check if the game is over
         if board.result() != None:
@@ -360,6 +364,13 @@ def play_tictactoe(board, player1, player2):
     elif board.result() == 2: print(f"Winner = {player2.name}")
     else: print("Tie Game")
     
+# Print a progress bar during training
+def print_progress_bar(iteration, iterations, bar_length=50):
+    progress = iteration/iterations
+    arrow = '-' * int(progress * bar_length - 1) + '>'
+    spaces = ' ' * (bar_length - len(arrow))
+    print(f'\rPlaying Games: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
+    
 # Silently play tictactoe and return the winner
 def get_tictactoe_winner(board, player1, player2):
     while board.result() == None:
@@ -371,13 +382,7 @@ def get_tictactoe_winner(board, player1, player2):
         board.push(player2_move)
     return board.result()
 
-# Print a progress bar during training
-def print_progress_bar(iteration, iterations, bar_length=50):
-    progress = iteration/iterations
-    arrow = '-' * int(progress * bar_length - 1) + '>'
-    spaces = ' ' * (bar_length - len(arrow))
-    print(f'\rPlaying Games: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
-
+# Run a number of games and get results (FOR REPORT)
 def run_games(player1, player2, num_games):
     results = [0, 0, 0]
     for i in range(num_games):
@@ -386,12 +391,15 @@ def run_games(player1, player2, num_games):
         result = get_tictactoe_winner(board, player1, player2)
         results[result] = results[result]+1
     relative_results = [num / num_games for num in results]
+    print(f"Ties: {relative_results[0]}\n{player1.name} wins: {relative_results[0]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
-    
+
+# Run a number of games with Q-learning agents with different trainging (FOR REPORT)
+#def test_Q_learning_agents()
 
 tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
-minimax = Minimax_player()
+minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=False)
 qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
@@ -400,3 +408,5 @@ qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_pl
 #play_tictactoe(tictactoe_board, default, human)
 results = run_games(minimax, default, 100)
 print(f"\n{results}")
+
+# Tictactoe_Q_learning_agent0
