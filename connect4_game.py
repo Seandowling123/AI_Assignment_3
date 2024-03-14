@@ -45,7 +45,6 @@ class Default_player:
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
-        best_move = None
         random_num = random.randint(0,int(1/self.optimality)-1)
         
         # Check for winning moves
@@ -66,8 +65,7 @@ class Default_player:
             result = self.get_state_reward(new_board)
             if result < 0 and random_num==0:
                 return get_placement(board, move)
-            else: best_move = move
-        return get_placement(board, best_move)
+        return get_placement(board, random.choice(available_moves))
 
 class Random_player:
     def __init__(self):
