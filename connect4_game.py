@@ -691,13 +691,15 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-playa2 = Default_player(optimality = .5)
-#playa1 = Human_player()
-#playa1 = Random_player()
+default = Default_player(optimality = .5)
+human = Human_player()
+rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(training=True)#(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900")
-qlearning.train_Qlearning_agent(10000)
+qlearning = Q_learning_player()#policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
+#qlearning.train_Qlearning_agent(10000)
 #print(playa2.policy)
 
-#play_connect_four(tictactoe_board, qlearning, minimax)
+test_Q_learning_agents(qlearning, rand, 1000)
+
+#play_connect_four(tictactoe_board, human, qlearning)
