@@ -186,11 +186,13 @@ class Minimax_player:
         return move[0]
     
 class Q_learning_player:
-    def __init__(self, policy_name=None, alpha=.2, gamma=.9, is_player_1=True):
+    def __init__(self, policy_name=None, alpha=.2, gamma=.9, epsilon=.3, training=False, is_player_1=True):
         self.name = "Tictactoe_Q_learning_agent"
         self.alpha = alpha
         self.gamma = gamma
+        self.epsilon = epsilon
         self.policy_name = policy_name
+        self.training = training
         self.is_player_1 = is_player_1
         self.prev_states = []
         if policy_name != None:
@@ -224,20 +226,17 @@ class Q_learning_player:
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
         is_player_1 = self.is_player_1
-        try:
-            result = board_state.result()
-            if result == 1 and is_player_1:
-                return 1
-            elif result == 1 and not is_player_1:
-                return -1
-            elif result == 2 and is_player_1:
-                return -1
-            elif result == 2 and not is_player_1:
-                return 1
-        except Exception as e:
-            if str(e) == "Both X and O have 3 pieces in a row.":
-                return 0
-            else: print(f"A Q Learning state reward Error Occured: {e}")
+        result = board_state.result()
+        if result == 1 and is_player_1:
+            return 1
+        elif result == 1 and not is_player_1:
+            return -1
+        elif result == 2 and is_player_1:
+            return -1
+        elif result == 2 and not is_player_1:
+            return 1
+        elif result == 0:
+            return 0
         return None
     
     def delete_prev_states(self):
@@ -307,6 +306,10 @@ class Q_learning_player:
         max_value = -math.inf
         Q_table = self.policy
         available_moves = get_available_moves(board)
+        
+        if self.training:
+            if random.random() < self.optimality:
+                return random.choice(available_moves)
         
         # Check the value of each available move
         for move in available_moves:
@@ -449,10 +452,10 @@ tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
-default = Default_player(optimality=.5, is_player_1=True)
-qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_player_1=False)
+default = Default_player(optimality=.5, is_player_1=False)
+qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agent22000", is_player_1=True)
 print(qlearning.policy)
-qlearning.train_Qlearning_agent(100000)
+#qlearning.train_Qlearning_agent(100000)
 
 play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
