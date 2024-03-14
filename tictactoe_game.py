@@ -433,7 +433,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
-        training_iterations = training_iterations+100
+        training_iterations = training_iterations+1000
     write_to_csv(titles, results, filename)
     print(results)
     
@@ -450,7 +450,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
-        training_iterations = training_iterations+100
+        training_iterations = training_iterations+1000
     write_to_csv(titles, results, filename)
     print(results)
 
@@ -459,12 +459,12 @@ human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=False)
-qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
+qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
 #qlearning.train_Qlearning_agent(100000)
 
 play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
 
-#test_Q_learning_agents(qlearning, default, 10) (training=True)#
+test_Q_learning_agents(qlearning, default, 1000) (training=True)#
 
 # NOTE TO SELF: THE QLEARNING PLAYER 2 NLY KNOWS HOW TO PLAY FROM NIDDLE BOX BEING OCCUPIED
