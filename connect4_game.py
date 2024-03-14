@@ -421,7 +421,7 @@ class Q_learning_player:
     
     # Save Qtable
     def save_policy(self, policy_name):
-        filehandler = open(policy_name, 'wb')
+        filehandler = open("Connect_four_Q_learning_agents/"+policy_name, 'wb')
         pickle.dump(self.policy, filehandler)
         filehandler.close()
     
@@ -438,6 +438,9 @@ class Q_learning_player:
         arrow = '-' * int(progress * bar_length - 1) + '>'
         spaces = ' ' * (bar_length - len(arrow))
         print(f'\rTraining Q-learning Agent: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
+        
+    def decay_epsilon(self):
+        self.epsilon = max(self.final_epsilon, self.epsilon * (1 / (1 + self.decay_rate)))
     
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
@@ -484,7 +487,7 @@ class Q_learning_player:
                 self.print_progress_bar(iteration, iterations)
             
             # Save model training progress
-            if (iteration % 10000) == 0:
+            if (iteration % 1000) == 0:
                 agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
             
@@ -535,7 +538,7 @@ class Q_learning_player:
         
         if self.training:
             if random.random() < self.epsilon:
-                return random.choice(available_moves)
+                return get_placement(board, random.choice(available_moves))
             self.decay_epsilon()
         
         # Check the value of each available move
@@ -641,7 +644,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
-        training_iterations = training_iterations+10000
+        training_iterations = training_iterations+1000
     write_to_csv(titles, results, filename)
     print(results)
     
@@ -658,7 +661,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
-        training_iterations = training_iterations+10000
+        training_iterations = training_iterations+1000
     write_to_csv(titles, results, filename)
     print(results)
                 
@@ -691,9 +694,9 @@ playa2 = Default_player(optimality = .5)
 #playa1 = Human_player()
 #playa1 = Random_player()
 minimax = Minimax_player()
-playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
+#playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
 qlearning = Q_learning_player(training=True)#(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900")
-qlearning.train_Qlearning_agent(100000)
+qlearning.train_Qlearning_agent(10000)
 #print(playa2.policy)
 
 #play_connect_four(tictactoe_board, qlearning, minimax)
