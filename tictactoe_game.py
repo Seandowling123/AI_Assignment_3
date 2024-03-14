@@ -270,7 +270,7 @@ class Q_learning_player:
                 self.print_progress_bar(iteration, iterations)
                 
             # Save model training progress 
-            if (iteration % 1000) == 0:
+            if (iteration % 100) == 0:
                 self.save_policy(self.name + str(iteration))
                 
             board = Board(dimensions=(3, 3))
@@ -412,12 +412,15 @@ def run_games(player1, player2, num_games):
     print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
 
-# Save game results to csv (FOR REPORT)
 def write_to_csv(titles, results, filename):
-    with open(filename, 'a', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(titles)
-        writer.writerows([map(str, row) for row in results])
+    try:
+        with open(filename + '.csv', 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(titles)
+            writer.writerows(map(str, row) for row in results)
+        print("CSV file successfully written:", filename)
+    except Exception as e:
+        print("Error writing CSV file:", e)
 
 # Run a number of games with Q-learning agents with different training (FOR REPORT)
 def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
@@ -433,7 +436,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
-        training_iterations = training_iterations+1000
+        training_iterations = training_iterations+100
     write_to_csv(titles, results, filename)
     print(results)
     
@@ -450,7 +453,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
-        training_iterations = training_iterations+1000
+        training_iterations = training_iterations+100
     write_to_csv(titles, results, filename)
     print(results)
 
@@ -458,9 +461,9 @@ tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
-default = Default_player(optimality=.5, is_player_1=False)
+default = Default_player(optimality=.75, is_player_1=False)
 qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
-#qlearning.train_Qlearning_agent(100000)
+qlearning.train_Qlearning_agent(10000)
 
 play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
