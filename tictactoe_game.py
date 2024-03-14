@@ -370,6 +370,7 @@ def play_tictactoe(board, player1, player2):
         print(board, "\n")
         if board.result() != None:
             break
+        print(player2.policy[get_board_hash(board)])
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
         print(board, "\n")
@@ -460,12 +461,11 @@ human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=False)
-qlearning = Q_learning_player(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent900", is_player_1=True)
-qlearning.train_Qlearning_agent(100000)
-
-#play_tictactoe(tictactoe_board, qlearning, human)
+qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent90000", is_player_1=False)
+#qlearning.train_Qlearning_agent(100000)
+#play_tictactoe(tictactoe_board, human, qlearning)
 #results = run_games(minimax, default, 1000)
 
-#test_Q_learning_agents(qlearning, default, 1000)
+test_Q_learning_agents(qlearning, default, 1000)
 
 # (training=True)#
