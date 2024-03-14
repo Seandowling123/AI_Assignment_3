@@ -3,6 +3,7 @@ import pickle
 import math
 import random
 import csv
+import os
 
 agent1_wins = 0
 
@@ -201,10 +202,14 @@ class Q_learning_player:
     
     # Load a Qtable
     def load_policy(self, policy_name):
-        file = open(policy_name,'rb')
-        policy = pickle.load(file)
-        file.close()
-        return policy
+        if os.path.exists(policy_name):
+            file = open(policy_name, 'rb')
+            policy = pickle.load(file)
+            file.close()
+            return policy
+        else:
+            print("Error: File does not exist")
+            return None
     
     # Print a progress bar during training
     def print_progress_bar(self, iteration, iterations, bar_length=50):
@@ -395,26 +400,29 @@ def run_games(player1, player2, num_games):
     print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
 
-# Save game results to csv
-def write_to_csv(results, filename):
+# Save game results to csv (FOR REPORT)
+def write_to_csv(titles, results, filename):
     with open(filename, 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerows(results)
+        writer.writerow(titles)
+        writer.writerows([map(str, row) for row in results])
 
-# Run a number of games with Q-learning agents with different trainging (FOR REPORT)
+# Run a number of games with Q-learning agents with different training (FOR REPORT)
 def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     results = []
     training_iterations = 0
     Q_learning_agent.is_player_1=True
     opponent.is_player_1=False
     filename = f"Q_learning_agent_P1_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
     for i in range(100):
-        policy_name = "Tictactoe_Q_learning_agent"+str(training_iterations)
+        print(f"Testing {training_iterations} iterations Q-learning agent")
+        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
         training_iterations = training_iterations+100
-        write_to_csv(result, filename)
+    write_to_csv(titles, results, filename)
     print(results)
     
     # Switch player order
@@ -423,13 +431,15 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     Q_learning_agent.is_player_1=False
     opponent.is_player_1=True
     filename = f"Q_learning_agent_P2_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
     for i in range(100):
-        policy_name = "Tictactoe_Q_learning_agent"+str(training_iterations)
+        print(f"Testing {training_iterations} iterations Q-learning agent")
+        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
         training_iterations = training_iterations+100
-        write_to_csv(result, filename)
+    write_to_csv(titles, results, filename)
     print(results)
 
 tictactoe_board = Board(dimensions=(3, 3))
@@ -441,6 +451,6 @@ qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_pl
 #qlearning.train_Qlearning_agent(10000)
 
 #play_tictactoe(tictactoe_board, default, human)
-results = run_games(minimax, default, 1000)
+#results = run_games(minimax, default, 1000)
 
-# Tictactoe_Q_learning_agent0
+test_Q_learning_agents(qlearning, default, 10)
