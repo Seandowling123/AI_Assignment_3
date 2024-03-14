@@ -578,13 +578,45 @@ def update_policies(board, agent1, agent2):
         agent1.update_policy(0)
         agent2.update_policy(0)
 
+# Merge two Q_learning policies
 def merge_policies(policy1, policy2):
     merged_policy = policy1.copy()
     merged_policy.update(policy2)
     return merged_policy
+
+# Print a progress bar
+def print_progress_bar(iteration, iterations, bar_length=50):
+    progress = iteration/iterations
+    arrow = '-' * int(progress * bar_length - 1) + '>'
+    spaces = ' ' * (bar_length - len(arrow))
+    print(f'\rPlaying Games: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
+
+# Silently play tictactoe and return the winner (FOR REPORT)
+def get_tictactoe_winner(board, player1, player2):
+    while board.result() == None:
+        player1_move = player1.get_next_move(board)
+        board.push(player1_move)
+        if board.result() != None:
+            return board.result()
+        player2_move = player2.get_next_move(board)
+        board.push(player2_move)
+    return board.result()
+
+# Run a number of games and get results (FOR REPORT)
+def run_games(player1, player2, num_games):
+    results = [0, 0, 0]
+    for i in range(num_games):
+        board = Board(dimensions=(3, 3))
+        print_progress_bar(i, num_games)
+        result = get_tictactoe_winner(board, player1, player2)
+        results[result] = results[result]+1
+    relative_results = [num / num_games for num in results]
+    print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
+    return relative_results
                 
 def play_connect_four(board, player1, player2):
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
+    player2.is_player_1 = False
     
     # While the game is not over let each player move
     while board.result() == None:
@@ -607,13 +639,13 @@ def play_connect_four(board, player1, player2):
     
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
-playa2 = Default_player(is_player_1=False, optimality = .5)
+playa2 = Default_player(optimality = .5)
 #playa1 = Human_player()
 #playa1 = Random_player()
 minimax = Minimax_player()
 playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900", is_player_1=True)
-playa1.train_Qlearning_agent(10000)
+qlearning = Q_learning_player(training=True)(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900")
+#playa1.train_Qlearning_agent(10000)
 #print(playa2.policy)
 
-play_connect_four(tictactoe_board, minimax, playa2)
+#play_connect_four(tictactoe_board, qlearning, minimax)

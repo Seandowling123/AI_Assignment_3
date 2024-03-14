@@ -270,6 +270,7 @@ class Q_learning_player:
                 
             # Save model training progress
             if (iteration % 10000) == 0:
+                agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
                 
             board = Board(dimensions=(3, 3))
@@ -362,6 +363,7 @@ def merge_policies(policy1, policy2):
 
 # Play a game of tictactoe
 def play_tictactoe(board, player1, player2):
+    player2.is_player_1 = False
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
     
     # While the game is not over let each player move
@@ -381,14 +383,14 @@ def play_tictactoe(board, player1, player2):
     elif board.result() == 2: print(f"Winner = {player2.name}")
     else: print("Tie Game")
     
-# Print a progress bar during training
+# Print a progress bar
 def print_progress_bar(iteration, iterations, bar_length=50):
     progress = iteration/iterations
     arrow = '-' * int(progress * bar_length - 1) + '>'
     spaces = ' ' * (bar_length - len(arrow))
     print(f'\rPlaying Games: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
     
-# Silently play tictactoe and return the winner
+# Silently play tictactoe and return the winner (FOR REPORT)
 def get_tictactoe_winner(board, player1, player2):
     while board.result() == None:
         player1_move = player1.get_next_move(board)
@@ -411,6 +413,7 @@ def run_games(player1, player2, num_games):
     print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
 
+# Save game results (FOR REPORT)
 def write_to_csv(titles, results, filename):
     try:
         with open(filename + '.csv', 'a', newline='') as csvfile:
@@ -458,14 +461,14 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
 
 tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
-minimax = Minimax_player(is_player_1=False)
+minimax = Minimax_player()
 rand = Random_player()
-default = Default_player(optimality=.5, is_player_1=True)
-qlearning = Q_learning_player(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000", is_player_1=True)
-qlearning.train_Qlearning_agent(100000)
+default = Default_player(optimality=.5)
+qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000")
+#qlearning.train_Qlearning_agent(100000)
 #play_tictactoe(tictactoe_board, qlearning, human)
 #results = run_games(minimax, default, 1000)
 
-test_Q_learning_agents(qlearning, default, 100)
+test_Q_learning_agents(qlearning, minimax, 100)
 
 # (training=True)#
