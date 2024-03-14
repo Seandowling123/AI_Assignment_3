@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 import math
 import random
+import csv
 
 # Place the counter at the bottom of the selected column
 def get_placement(board, index):
@@ -402,7 +403,7 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, name="XXConnect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, epsilon=.2, training=False, is_player_1=True):
+    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, epsilon=.2, training=False, is_player_1=True):
         self.name = name
         self.alpha = alpha
         self.gamma = gamma
@@ -482,8 +483,9 @@ class Q_learning_player:
             if (iteration % 10) == 0:
                 self.print_progress_bar(iteration, iterations)
             
-            # Save model training progress 
-            if (iteration % 100) == 0:
+            # Save model training progress
+            if (iteration % 10000) == 0:
+                agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
             
             board = Board(dimensions=(7, 6), x_in_a_row=4)
@@ -592,7 +594,7 @@ def print_progress_bar(iteration, iterations, bar_length=50):
     print(f'\rPlaying Games: [{arrow + spaces}] {progress:.2%}', end='', flush=True)
 
 # Silently play tictactoe and return the winner (FOR REPORT)
-def get_tictactoe_winner(board, player1, player2):
+def get_connect_four_winner(board, player1, player2):
     while board.result() == None:
         player1_move = player1.get_next_move(board)
         board.push(player1_move)
@@ -606,13 +608,59 @@ def get_tictactoe_winner(board, player1, player2):
 def run_games(player1, player2, num_games):
     results = [0, 0, 0]
     for i in range(num_games):
-        board = Board(dimensions=(3, 3))
+        board = Board(dimensions=(7, 6), x_in_a_row=4)
         print_progress_bar(i, num_games)
-        result = get_tictactoe_winner(board, player1, player2)
+        result = get_connect_four_winner(board, player1, player2)
         results[result] = results[result]+1
     relative_results = [num / num_games for num in results]
     print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
+
+# Save game results (FOR REPORT)
+def write_to_csv(titles, results, filename):
+    try:
+        with open(filename + '.csv', 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(titles)
+            writer.writerows(map(str, row) for row in results)
+        print("CSV file successfully written:", filename)
+    except Exception as e:
+        print("Error writing CSV file:", e)
+
+# Run a number of games with Q-learning agents with different training (FOR REPORT)
+def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
+    results = []
+    training_iterations = 0
+    Q_learning_agent.is_player_1=True
+    opponent.is_player_1=False
+    filename = f"CF_Q_learning_agent_P1_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
+    for i in range(10):
+        print(f"Testing {training_iterations} iterations Q-learning agent")
+        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
+        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
+        result = run_games(Q_learning_agent, opponent, num_games)
+        results.append(result)
+        training_iterations = training_iterations+10000
+    write_to_csv(titles, results, filename)
+    print(results)
+    
+    # Switch player order
+    results = []
+    training_iterations = 0
+    Q_learning_agent.is_player_1=False
+    opponent.is_player_1=True
+    filename = f"CF_Q_learning_agent_P2_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
+    for i in range(10):
+        print(f"Testing {training_iterations} iterations Q-learning agent")
+        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
+        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
+        result = run_games(opponent, Q_learning_agent, num_games)
+        results.append(result)
+        training_iterations = training_iterations+10000
+    write_to_csv(titles, results, filename)
+    print(results)
                 
 def play_connect_four(board, player1, player2):
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
@@ -644,8 +692,8 @@ playa2 = Default_player(optimality = .5)
 #playa1 = Random_player()
 minimax = Minimax_player()
 playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(training=True)(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900")
-#playa1.train_Qlearning_agent(10000)
+qlearning = Q_learning_player(training=True)#(policy_name="Connect_four_Q_learning_agents/XXConnect_Four_Q_learning_agent9900")
+qlearning.train_Qlearning_agent(100000)
 #print(playa2.policy)
 
 #play_connect_four(tictactoe_board, qlearning, minimax)
