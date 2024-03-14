@@ -189,7 +189,7 @@ class Q_learning_player:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.decay_rate = .0002
+        self.decay_rate = .00002
         self.final_epsilon = .0001
         self.policy_name = policy_name
         self.training = training
@@ -264,11 +264,11 @@ class Q_learning_player:
         
         # Play a new game for each iteration
         for iteration in range(iterations):
-            if (iteration % 10) == 0:
+            if (iteration % 100) == 0:
                 self.print_progress_bar(iteration, iterations)
                 
             # Save model training progress 
-            if (iteration % 10) == 0:
+            if (iteration % 1000) == 0:
                 self.save_policy(self.name + str(iteration))
                 
             board = Board(dimensions=(3, 3))
@@ -370,7 +370,6 @@ def play_tictactoe(board, player1, player2):
         print(board, "\n")
         if board.result() != None:
             break
-        print(player2.policy[get_board_hash(board)])
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
         print(board, "\n")
@@ -460,12 +459,12 @@ tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
-default = Default_player(optimality=.5, is_player_1=False)
-qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent90000", is_player_1=False)
-#qlearning.train_Qlearning_agent(100000)
-#play_tictactoe(tictactoe_board, human, qlearning)
+default = Default_player(optimality=.5, is_player_1=True)
+qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent99000", is_player_1=True)
+qlearning.train_Qlearning_agent(50000)
+#play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
 
-test_Q_learning_agents(qlearning, default, 1000)
+#test_Q_learning_agents(qlearning, default, 1000)
 
 # (training=True)#
