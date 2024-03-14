@@ -21,10 +21,8 @@ class Default_player:
         self.is_player_1 = is_player_1
         
     # Get the reward for taking an action
-    def get_state_reward(self, board_state, opposing_player=False):
+    def get_state_reward(self, board_state):
         is_player_1 = self.is_player_1
-        if opposing_player:
-            is_player_1 = is_player_1
         result = board_state.result()
         if result == 1 and is_player_1:
             return 1
@@ -95,9 +93,25 @@ class Human_player:
 
 # Player using minimax
 class Minimax_player:
-    def __init__(self):
+    def __init__(self, is_player_1=True):
         self.name = "Minimax"
+        self.is_player_1 = is_player_1
         
+    # Get the reward for taking an action
+    def get_state_reward(self, board_state):
+        is_player_1 = self.is_player_1
+        result = board_state.result()
+        if result == 1 and is_player_1:
+            return None, 1
+        elif result == 1 and not is_player_1:
+            return None, -1
+        elif result == 2 and is_player_1:
+            return None, -1
+        elif result == 2 and not is_player_1:
+            return None, 1
+        return None, 0
+    
+    # Use minimax algorithm to decide the next move
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
         # Speed up for first move
@@ -106,16 +120,8 @@ class Minimax_player:
             return [1,1], 0
         
         # Check if the game is over
-        try:
-            result = board.result()
-            if result == 1:
-                return None, 1
-            elif result == 2:
-                return None, -1
-        except Exception as e:
-            if str(e) == "Both X and O have 3 pieces in a row.":
-                return None, 0
-            else: print(f"A minimax Error Occured: {e}")
+        if board.result() != None:
+            return self.get_state_reward(board)
         
         # Calculate move for maximiser
         if is_maximising:
@@ -392,5 +398,5 @@ qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_pl
 #qlearning.train_Qlearning_agent(10000)
 
 #play_tictactoe(tictactoe_board, default, human)
-results = run_games(tictactoe_board, minimax, default, 100)
+results = run_games(minimax, default, 100)
 print(f"\n{results}")
