@@ -2,6 +2,7 @@ from tictactoe import Board
 import pickle
 import math
 import random
+import csv
 
 agent1_wins = 0
 
@@ -391,11 +392,45 @@ def run_games(player1, player2, num_games):
         result = get_tictactoe_winner(board, player1, player2)
         results[result] = results[result]+1
     relative_results = [num / num_games for num in results]
-    print(f"Ties: {relative_results[0]}\n{player1.name} wins: {relative_results[0]}\n{player2.name} wins: {relative_results[2]}")
+    print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
 
+# Save game results to csv
+def write_to_csv(results, filename):
+    with open(filename, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(results)
+
 # Run a number of games with Q-learning agents with different trainging (FOR REPORT)
-#def test_Q_learning_agents()
+def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
+    results = []
+    training_iterations = 0
+    Q_learning_agent.is_player_1=True
+    opponent.is_player_1=False
+    filename = f"Q_learning_agent_P1_vs_{opponent.name}_Results"
+    for i in range(100):
+        policy_name = "Tictactoe_Q_learning_agent"+str(training_iterations)
+        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
+        result = run_games(Q_learning_agent, opponent, num_games)
+        results.append(result)
+        training_iterations = training_iterations+100
+        write_to_csv(result, filename)
+    print(results)
+    
+    # Switch player order
+    results = []
+    training_iterations = 0
+    Q_learning_agent.is_player_1=False
+    opponent.is_player_1=True
+    filename = f"Q_learning_agent_P2_vs_{opponent.name}_Results"
+    for i in range(100):
+        policy_name = "Tictactoe_Q_learning_agent"+str(training_iterations)
+        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
+        result = run_games(opponent, Q_learning_agent, num_games)
+        results.append(result)
+        training_iterations = training_iterations+100
+        write_to_csv(result, filename)
+    print(results)
 
 tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
@@ -406,7 +441,6 @@ qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent", is_pl
 #qlearning.train_Qlearning_agent(10000)
 
 #play_tictactoe(tictactoe_board, default, human)
-results = run_games(minimax, default, 100)
-print(f"\n{results}")
+results = run_games(minimax, default, 1000)
 
 # Tictactoe_Q_learning_agent0

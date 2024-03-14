@@ -1,4 +1,10 @@
 
 DEFAULT PLAYER 50% OPTIMALITY
-Player 1: Minimax: [0.23, 0.45, 0.32]
+Player 1: Minimax:
+    Ties: 0.23
+    Default Player wins: 0.269
+    Minimax wins: 0.501
 PLayer 2: Minimax: [0.0, 0.44, 0.56]
+    Ties: 0.23
+    Default Player wins: 0.269
+    Minimax wins: 0.501
