@@ -308,7 +308,7 @@ class Q_learning_player:
         available_moves = get_available_moves(board)
         
         if self.training:
-            if random.random() < self.optimality:
+            if random.random() < self.epsilon:
                 return random.choice(available_moves)
         
         # Check the value of each available move
@@ -453,9 +453,9 @@ human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
 default = Default_player(optimality=.5, is_player_1=False)
-qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agent22000", is_player_1=True)
+qlearning = Q_learning_player(training=True)#(policy_name="Tictactoe_Q_learning_agent9900", is_player_1=True)
 print(qlearning.policy)
-#qlearning.train_Qlearning_agent(100000)
+qlearning.train_Qlearning_agent(10000)
 
 play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
