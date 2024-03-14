@@ -409,6 +409,7 @@ def run_games(player1, player2, num_games):
         result = get_tictactoe_winner(board, player1, player2)
         results[result] = results[result]+1
     relative_results = [num / num_games for num in results]
+    print(board)
     print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
 
@@ -461,13 +462,15 @@ tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
 minimax = Minimax_player(is_player_1=True)
 rand = Random_player()
-default = Default_player(optimality=.75, is_player_1=False)
-qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
+default = Default_player(optimality=.5, is_player_1=False)
+qlearning = Q_learning_player(training=True)#(policy_name="Tictactoe_Q_learning_agent50000", is_player_1=True)
 qlearning.train_Qlearning_agent(10000)
 
-play_tictactoe(tictactoe_board, qlearning, default)
+#play_tictactoe(tictactoe_board, qlearning, default)
 #results = run_games(minimax, default, 1000)
 
-test_Q_learning_agents(qlearning, default, 1000) (training=True)#
+test_Q_learning_agents(qlearning, default, 1000) 
+
+# (training=True)#
 
 # NOTE TO SELF: THE QLEARNING PLAYER 2 NLY KNOWS HOW TO PLAY FROM NIDDLE BOX BEING OCCUPIED
