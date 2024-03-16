@@ -457,6 +457,6 @@ qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learni
 #play_tictactoe(tictactoe_board, qlearning, human)
 #results = run_games(minimax, default, 1000)
 
-test_agents(minimax, default, 1000)
+#test_agents(minimax, default, 1000)
 
 # (training=True)#

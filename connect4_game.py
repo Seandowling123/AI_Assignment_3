@@ -736,10 +736,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent20000")
+#qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent20000")
 #qlearning.train_Qlearning_agent(100000)
 #print(playa2.policy)
 
-test_agents(minimax, default, 1000)
+#test_agents(minimax, default, 1000)
 
 #play_connect_four(tictactoe_board, default, qlearning)
