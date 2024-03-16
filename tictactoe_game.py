@@ -425,37 +425,25 @@ def write_to_csv(titles, results, filename):
         print("Error writing CSV file:", e)
 
 # Run a number of games with Q-learning agents with different training (FOR REPORT)
-def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
+def test_agents(agent, opponent, num_games):
     results = []
-    training_iterations = 0
-    Q_learning_agent.is_player_1=True
+    agent.is_player_1=True
     opponent.is_player_1=False
-    filename = f"Q_learning_agent_P1_vs_{opponent.name}_Results"
-    titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
-    for i in range(10):
-        print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
-        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
-        result = run_games(Q_learning_agent, opponent, num_games)
-        results.append(result)
-        training_iterations = training_iterations+10000
+    filename = f"Minimax_agent_P1_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{agent.name} wins", f"{opponent.name} wins"]
+    result = run_games(agent, opponent, num_games)
+    results.append(result)
     write_to_csv(titles, results, filename)
     print(results)
     
     # Switch player order
     results = []
-    training_iterations = 0
-    Q_learning_agent.is_player_1=False
+    agent.is_player_1=False
     opponent.is_player_1=True
-    filename = f"Q_learning_agent_P2_vs_{opponent.name}_Results"
-    titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
-    for i in range(10):
-        print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
-        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
-        result = run_games(opponent, Q_learning_agent, num_games)
-        results.append(result)
-        training_iterations = training_iterations+10000
+    filename = f"Minimax_agent_P2_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{opponent.name} wins", f"{agent.name} wins"]
+    result = run_games(opponent, agent, num_games)
+    results.append(result)
     write_to_csv(titles, results, filename)
     print(results)
 
@@ -469,6 +457,6 @@ qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learni
 #play_tictactoe(tictactoe_board, qlearning, human)
 #results = run_games(minimax, default, 1000)
 
-test_Q_learning_agents(qlearning, minimax, 1)
+test_agents(minimax, default, 1000)
 
 # (training=True)#
