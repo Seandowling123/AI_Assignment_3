@@ -27,6 +27,7 @@ class Default_player:
         self.name = "Default Player"
         self.optimality = optimality
         self.is_player_1 = is_player_1
+        self.played_moves = 0
         
     # Get the reward for taking an action
     def get_state_reward(self, board_state, opposing_player=False):
@@ -337,6 +338,9 @@ class Minimax_player:
         # Speed up for first move
         if self.played_moves == 0:
             return 3, 0
+        # Speed up for first move
+        if self.played_moves == 1:
+            return 3, 0
         
         # Check if the game is over
         if board.result() != None:
@@ -562,9 +566,18 @@ class Q_learning_player:
             if value > max_value:
                 max_value = value
                 best_move = move
+        self.played_moves = self.played_moves+1
         return get_placement(board, best_move)
 
-# Get a string representation of the board
+"""# Get a string representation of the board
+def get_board_hash(board):
+    horizontal_score = check_horizontals(board)
+    vertical_score = check_verticals(board)
+    diagonal_score = check_diagonals(board)
+    heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
+    hash = ','.join(map(str, heuristic_scores))
+    return hash"""
+    
 def get_board_hash(board):
     horizontal_score = check_horizontals(board)
     vertical_score = check_verticals(board)
@@ -639,6 +652,8 @@ def run_games(player1, player2, num_games):
         print_progress_bar(i, num_games)
         result = get_connect_four_winner(board, player1, player2)
         results[result] = results[result]+1
+        player1.played_moves = 0
+        player2.played_moves = 0
     relative_results = [num / num_games for num in results]
     print(f"\nTies: {relative_results[0]}\n{player1.name} wins: {relative_results[1]}\n{player2.name} wins: {relative_results[2]}")
     return relative_results
@@ -664,7 +679,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents_10k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
@@ -681,11 +696,34 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents_10k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
         training_iterations = training_iterations+1000
+    write_to_csv(titles, results, filename)
+    print(results)
+    
+    # Run a number of games with agents(FOR REPORT)
+def test_agents(agent, opponent, num_games):
+    results = []
+    agent.is_player_1=True
+    opponent.is_player_1=False
+    filename = f"Minimax_agent_P1_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{agent.name} wins", f"{opponent.name} wins"]
+    result = run_games(agent, opponent, num_games)
+    results.append(result)
+    write_to_csv(titles, results, filename)
+    print(results)
+    
+    # Switch player order
+    results = []
+    agent.is_player_1=False
+    opponent.is_player_1=True
+    filename = f"Minimax_agent_P2_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{opponent.name} wins", f"{agent.name} wins"]
+    result = run_games(opponent, agent, num_games)
+    results.append(result)
     write_to_csv(titles, results, filename)
     print(results)
                 
@@ -696,10 +734,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(training=True)#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
-qlearning.train_Qlearning_agent(100000)
+#qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent10000")
+#qlearning.train_Qlearning_agent(100000)
 #print(playa2.policy)
 
-#test_Q_learning_agents(qlearning, rand, 10)
+test_agents(minimax, rand, 1000)
 
-play_connect_four(tictactoe_board, rand, qlearning)
+#play_connect_four(tictactoe_board, rand, minimax)

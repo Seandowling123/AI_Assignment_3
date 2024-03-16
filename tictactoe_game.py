@@ -424,7 +424,7 @@ def write_to_csv(titles, results, filename):
     except Exception as e:
         print("Error writing CSV file:", e)
 
-# Run a number of games with Q-learning agents with different training (FOR REPORT)
+# Run a number of games with agents(FOR REPORT)
 def test_agents(agent, opponent, num_games):
     results = []
     agent.is_player_1=True
