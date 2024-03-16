@@ -403,13 +403,13 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, epsilon=.2, training=False, is_player_1=True):
+    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, epsilon=.3, training=False, is_player_1=True):
         self.name = name
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.decay_rate = .0001
-        self.final_epsilon = .00001
+        self.decay_rate = .00001
+        self.final_epsilon = .0001
         self.policy_name = policy_name
         self.is_player_1 = is_player_1
         self.training = training
@@ -488,7 +488,7 @@ class Q_learning_player:
                 self.print_progress_bar(iteration, iterations)
             
             # Save model training progress
-            if (iteration % 1000) == 0:
+            if (iteration % 10000) == 0:
                 agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
             
@@ -696,10 +696,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player()#policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
-#qlearning.train_Qlearning_agent(10000)
+qlearning = Q_learning_player(training=True)#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
+qlearning.train_Qlearning_agent(100000)
 #print(playa2.policy)
 
 #test_Q_learning_agents(qlearning, rand, 10)
 
-play_connect_four(tictactoe_board, human, qlearning)
+play_connect_four(tictactoe_board, rand, qlearning)
