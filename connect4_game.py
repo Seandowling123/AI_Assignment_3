@@ -590,6 +590,29 @@ def merge_policies(policy1, policy2):
     merged_policy.update(policy2)
     return merged_policy
 
+def play_connect_four(board, player1, player2):
+    print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
+    player2.is_player_1 = False
+    
+    # While the game is not over let each player move
+    while board.result() == None:
+        player1_move = player1.get_next_move(board)
+        #print(player1_move)
+        board.push(player1_move)
+        print(f"\n{board}\n")
+        if board.result() != None:
+            break
+        player2_move = player2.get_next_move(board)
+        board.push(player2_move)
+        print(f"\n{board}\n")
+        print("Board Heuristic:", get_state_heuristic(board))
+        
+    # Print the winner
+    if board.result() == 1:
+        print(f"Winner = {player1.name}")
+    elif board.result() == 2: print(f"Winner = {player2.name}")
+    else: print("Tie Game")
+
 # Print a progress bar
 def print_progress_bar(iteration, iterations, bar_length=50):
     progress = iteration/iterations
@@ -666,29 +689,6 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     write_to_csv(titles, results, filename)
     print(results)
                 
-def play_connect_four(board, player1, player2):
-    print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
-    player2.is_player_1 = False
-    
-    # While the game is not over let each player move
-    while board.result() == None:
-        player1_move = player1.get_next_move(board)
-        #print(player1_move)
-        board.push(player1_move)
-        print(f"\n{board}\n")
-        if board.result() != None:
-            break
-        player2_move = player2.get_next_move(board)
-        board.push(player2_move)
-        print(f"\n{board}\n")
-        print("Board Heuristic:", get_state_heuristic(board))
-        
-    # Print the winner
-    if board.result() == 1:
-        print(f"Winner = {player1.name}")
-    elif board.result() == 2: print(f"Winner = {player2.name}")
-    else: print("Tie Game")
-    
 tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
 default = Default_player(optimality = .5)
@@ -700,6 +700,6 @@ qlearning = Q_learning_player()#policy_name="Connect_four_Q_learning_agents/Conn
 #qlearning.train_Qlearning_agent(10000)
 #print(playa2.policy)
 
-test_Q_learning_agents(qlearning, rand, 1000)
+#test_Q_learning_agents(qlearning, rand, 10)
 
-#play_connect_four(tictactoe_board, human, qlearning)
+play_connect_four(tictactoe_board, human, qlearning)
