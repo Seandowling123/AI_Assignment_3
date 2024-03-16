@@ -314,10 +314,11 @@ def get_state_heuristic(board):
             
 # Player using minimax
 class Minimax_player:
-    def __init__(self, is_player_1=True):
+    def __init__(self, is_player_1=True, depth=4):
         self.name = "Minimax"
         self.is_player_1 = is_player_1
         self.played_moves = 0
+        self.depth = depth
         
     # Get the reward for taking an action
     def get_state_reward(self, board_state):
@@ -348,7 +349,7 @@ class Minimax_player:
             return self.get_state_reward(board)
         
         # If max depth is reached, check heuristics
-        if depth == 5:
+        if depth == self.depth:
             return None, get_state_heuristic(board)
                 
         # Calculate move for maximiser
@@ -735,10 +736,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent10000")
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent20000")
 #qlearning.train_Qlearning_agent(100000)
 #print(playa2.policy)
 
-#test_agents(minimax, rand, 1000)
+test_agents(minimax, default, 1000)
 
 #play_connect_four(tictactoe_board, default, qlearning)
