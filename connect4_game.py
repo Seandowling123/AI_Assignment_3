@@ -335,12 +335,13 @@ class Minimax_player:
         
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
-        # Speed up for first move
+        # Speed up for first moves
         if self.played_moves == 0:
             return 3, 0
-        # Speed up for first move
         if self.played_moves == 1:
-            return 3, 0
+            return 4, 0
+        if  self.played_moves == 2 and self.is_player_1:
+            return 5, 0
         
         # Check if the game is over
         if board.result() != None:
@@ -734,10 +735,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-#qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent10000")
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent10000")
 #qlearning.train_Qlearning_agent(100000)
 #print(playa2.policy)
 
-test_agents(minimax, rand, 1000)
+#test_agents(minimax, rand, 1000)
 
-#play_connect_four(tictactoe_board, rand, minimax)
+#play_connect_four(tictactoe_board, default, qlearning)
