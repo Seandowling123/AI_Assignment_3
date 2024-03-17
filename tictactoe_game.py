@@ -196,10 +196,10 @@ class Q_learning_player:
         self.training = training
         self.is_player_1 = is_player_1
         self.prev_states = []
-        self.prev_actions - []
+        self.prev_actions = []
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
-        else: self.policy = defaultdict(list)
+        else: self.policy = defaultdict(dict)
     
     # Save Qtable
     def save_policy(self, policy_name):
@@ -246,16 +246,19 @@ class Q_learning_player:
     
     def delete_prev_states(self):
         self.prev_states = []
+        self.prev_actions = []
         
-    # Update Q-values 
+    # Update Q-table 
     def update_policy(self, reward):
-        for prev_state in reversed(self.prev_states):
+        for i in range(len(self.prev_states)):
+            prev_state = reversed(self.prev_states)[i]
+            prev_action = reversed(self.prev_actions)[i]
             if prev_state in self.policy:
                 old_value = self.policy[prev_state]
             else: old_value = 0
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
-            self.policy[prev_state] = new_value
-            reward = self.policy[prev_state]
+            self.policy[prev_state][prev_action] = new_value
+            reward = self.policy[prev_state][prev_action]
             
     # Train Q-learning agent
     def train_Qlearning_agent(self, iterations):
@@ -283,6 +286,7 @@ class Q_learning_player:
                 agent1_move = agent1.get_next_move(board)
                 board.push(agent1_move)
                 agent1.prev_states.append(get_board_hash(board))
+                agent1.prev_actions.append(agent1_move)
                 
                 # Check if the game is over
                 if board.result() != None:
@@ -296,6 +300,7 @@ class Q_learning_player:
                 agent2_move = agent2.get_next_move(board)
                 board.push(agent2_move)
                 agent2.prev_states.append(get_board_hash(board))
+                agent2.prev_actions.append(agent2_move)
                 
                 # Check if the game is over
                 if board.result() != None:
