@@ -326,19 +326,14 @@ class Q_learning_player:
         
         # Check the value of each available move
         for move in available_moves:
-            new_board = board.copy()
-            new_board.push(move)
             
-            # Check if move leads to a terminal state
-            if self.get_state_reward(new_board) != None:
-                value = self.get_state_reward(new_board)
-                
             # Check if state is in table
-            elif get_board_hash(new_board) in Q_table:
-                value = Q_table[get_board_hash(new_board)]
-            else:
-                value = 0
-                Q_table[get_board_hash(new_board)] = 0
+            if get_board_hash(board) in Q_table:
+                if move in Q_table[get_board_hash(board)]:
+                    value = Q_table[get_board_hash(board)]
+                else:
+                    value = 0
+                    Q_table[get_board_hash(board)][move] = value
             
             # Select the highest value move
             if value > max_value:
