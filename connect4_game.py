@@ -414,7 +414,7 @@ class Q_learning_player:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.decay_rate = .00001
+        self.decay_rate = .0001
         self.final_epsilon = .0001
         self.policy_name = policy_name
         self.is_player_1 = is_player_1
@@ -486,6 +486,8 @@ class Q_learning_player:
         # Create an agent to compete against
         agent1 = self
         agent2 = Q_learning_player(is_player_1=False)
+        agent1.training = True
+        agent2.training = True
         
         # Play a new game for each iteration
         for iteration in range(iterations):
@@ -536,6 +538,8 @@ class Q_learning_player:
         max_value = -math.inf
         Q_table = self.policy
         available_moves = get_available_moves(board)
+        
+        # Shortcut for first moves
         if self.played_moves == 0 and self.is_player_1:
             self.played_moves = self.played_moves+1
             return get_placement(board, 3)
@@ -579,13 +583,37 @@ def get_board_hash(board):
     heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
     hash = ','.join(map(str, heuristic_scores))
     return hash"""
+
+# Count the number of pieces in each row and column
+def get_x_and_o_counts(matrix):
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
     
+    row_counts_x = [0] * num_rows
+    row_counts_o = [0] * num_rows
+    col_counts_x = [0] * num_cols
+    col_counts_o = [0] * num_cols
+    
+    for i in range(num_rows):
+        for j in range(num_cols):
+            if matrix[i][j] == 1:
+                row_counts_x[i] += 1
+                col_counts_x[j] += 1
+            elif matrix[i][j] == 2:
+                row_counts_o[i] += 1
+                col_counts_o[j] += 1
+                
+    return row_counts_x, col_counts_x, row_counts_o, col_counts_o
+
+# Get a string representation of the board
 def get_board_hash(board):
     horizontal_score = check_horizontals(board)
     vertical_score = check_verticals(board)
     diagonal_score = check_diagonals(board)
     heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
     hash = ','.join(map(str, heuristic_scores))
+    row_counts_x, col_counts_x, row_counts_o, col_counts_o = get_x_and_o_counts(matrix)
+    hash = ''.join(map(str, row_counts_x, col_counts_x, row_counts_o, col_counts_o))
     return hash
     
 def update_policies(board, agent1, agent2):
@@ -681,11 +709,11 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents_10k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
-        training_iterations = training_iterations+1000
+        training_iterations = training_iterations+10000
     write_to_csv(titles, results, filename)
     print(results)
     
@@ -698,11 +726,11 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents_10k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
-        training_iterations = training_iterations+1000
+        training_iterations = training_iterations+10000
     write_to_csv(titles, results, filename)
     print(results)
     
@@ -736,10 +764,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-#qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent20000")
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
 #qlearning.train_Qlearning_agent(100000)
-#print(playa2.policy)
 
+#test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
 
-#play_connect_four(tictactoe_board, default, qlearning)
+play_connect_four(tictactoe_board, default, qlearning)
