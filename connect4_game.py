@@ -414,7 +414,7 @@ class Q_learning_player:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.decay_rate = .0001
+        self.decay_rate = .00001
         self.final_epsilon = .0001
         self.policy_name = policy_name
         self.is_player_1 = is_player_1
@@ -607,13 +607,8 @@ def get_x_and_o_counts(matrix):
 
 # Get a string representation of the board
 def get_board_hash(board):
-    horizontal_score = check_horizontals(board)
-    vertical_score = check_verticals(board)
-    diagonal_score = check_diagonals(board)
-    heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
-    hash = ','.join(map(str, heuristic_scores))
-    row_counts_x, col_counts_x, row_counts_o, col_counts_o = get_x_and_o_counts(matrix)
-    hash = ''.join(map(str, row_counts_x, col_counts_x, row_counts_o, col_counts_o))
+    row_counts_x, col_counts_x, row_counts_o, col_counts_o = get_x_and_o_counts(board.board)
+    hash = ''.join(map(str, row_counts_x + col_counts_x + row_counts_o + col_counts_o))
     return hash
     
 def update_policies(board, agent1, agent2):
@@ -709,7 +704,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents_100k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
@@ -726,7 +721,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents_100k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
@@ -764,10 +759,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
-#qlearning.train_Qlearning_agent(100000)
+qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
+qlearning.train_Qlearning_agent(100000)
 
-#test_Q_learning_agents(qlearning, default, 1000)
+test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
 
-play_connect_four(tictactoe_board, default, qlearning)
+play_connect_four(tictactoe_board, qlearning, default)

@@ -25,5 +25,6 @@ matrix = [
 ]
 
 row_counts_x, col_counts_x, row_counts_o, col_counts_o = get_x_and_o_counts(matrix)
-combined_counts = ''.join(map(str, row_counts_x, col_counts_x, row_counts_o, col_counts_o))
+print(row_counts_x, col_counts_x, row_counts_o, col_counts_o)
+combined_counts = ''.join(map(str, row_counts_x + col_counts_x + row_counts_o + col_counts_o))
 print("Combined Counts:", combined_counts)

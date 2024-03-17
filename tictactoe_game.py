@@ -454,7 +454,7 @@ rand = Random_player()
 default = Default_player(optimality=.5)
 qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000")
 #qlearning.train_Qlearning_agent(100000)
-#play_tictactoe(tictactoe_board, qlearning, human)
+play_tictactoe(tictactoe_board, rand, minimax)
 #results = run_games(minimax, default, 1000)
 
 #test_agents(minimax, default, 1000)
