@@ -1,4 +1,5 @@
 from tictactoe import Board
+from collections import defaultdict
 import pickle
 import math
 import random
@@ -195,9 +196,10 @@ class Q_learning_player:
         self.training = training
         self.is_player_1 = is_player_1
         self.prev_states = []
+        self.prev_actions - []
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
-        else: self.policy = {}
+        else: self.policy = defaultdict(list)
     
     # Save Qtable
     def save_policy(self, policy_name):
