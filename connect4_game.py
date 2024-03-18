@@ -420,6 +420,7 @@ class Q_learning_player:
         self.is_player_1 = is_player_1
         self.training = training
         self.prev_states = []
+        self.prev_actions = []
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
         else: self.policy = {}
@@ -469,16 +470,21 @@ class Q_learning_player:
     
     def delete_prev_states(self):
         self.prev_states = []
+        self.prev_actions = []
         
-    # Update Q-values 
+    # Update Q-table 
     def update_policy(self, reward):
-        for prev_state in reversed(self.prev_states):
+        prev_states = list(reversed(self.prev_states))
+        prev_actions = list(reversed(self.prev_actions))
+        for i in range(len(self.prev_states)):
+            prev_state = prev_states[i]
+            prev_action = prev_actions[i]
             if prev_state in self.policy:
-                old_value = self.policy[prev_state]
+                old_value = self.policy[prev_state][prev_action]
             else: old_value = 0
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
-            self.policy[prev_state] = new_value
-            reward = self.policy[prev_state]
+            self.policy[prev_state][prev_action] = new_value
+            reward = self.policy[prev_state][prev_action]
             
     # Train Q-learning agent
     def train_Qlearning_agent(self, iterations):

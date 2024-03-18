@@ -262,11 +262,13 @@ class Q_learning_player:
         # Create an agent to compete against
         agent1 = self
         agent2 = Q_learning_player(is_player_1=False)
+        agent1.training = True
+        agent2.training = True
         
         # Play a new game for each iteration
         for iteration in range(iterations):
             if (iteration % 100) == 0:
-                print(self.epsilon)
+                print(f" Epsilon: {self.epsilon}", end='', flush=True)
                 self.print_progress_bar(iteration, iterations)
                 
             # Save model training progress
@@ -304,7 +306,6 @@ class Q_learning_player:
                     break
                 
         # Merge & save the policies
-        print(agent2.policy)
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
         agent1.save_policy(self.name)
     
@@ -314,20 +315,12 @@ class Q_learning_player:
         Q_table = self.policy
         available_moves = get_available_moves(board)
         
-        # Epsilon greedy
-        if self.training:
-            if random.random() < self.epsilon:
-                return random.choice(available_moves)
-            self.decay_epsilon()
-        
         # Check the value of each available move
         for move in available_moves:
             
             # Check if state is in table
             if get_board_hash(board) in Q_table:
                 if move in Q_table[get_board_hash(board)]:
-                    if get_board_hash(board) == '121210000':
-                        print(move)
                     value = Q_table[get_board_hash(board)][move]
                 else:
                     value = 0
@@ -340,6 +333,13 @@ class Q_learning_player:
             if value > max_value:
                 max_value = value
                 best_move = move
+                
+        # Epsilon greedy
+        if self.training:
+            if random.random() < self.epsilon:
+                return random.choice(available_moves)
+            self.decay_epsilon()
+            
         return best_move
 
 # Get a string representation of the board
@@ -455,9 +455,9 @@ human = Human_player()
 minimax = Minimax_player()
 rand = Random_player()
 default = Default_player(optimality=.5)
-qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000")
-qlearning.train_Qlearning_agent(100)
-#play_tictactoe(tictactoe_board, rand, minimax)
+qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent")
+qlearning.train_Qlearning_agent(100000)
+#play_tictactoe(tictactoe_board, rand, qlearning)
 #results = run_games(minimax, default, 1000)
 
 #test_agents(minimax, default, 1000)
