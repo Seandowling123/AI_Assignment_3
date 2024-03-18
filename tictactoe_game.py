@@ -244,24 +244,15 @@ class Q_learning_player:
             return 0
         return None
         
-    def get_max_value(self, state):
-        if get_board_hash(state) in self.policy:
-            print("vdfnjvfdjvfjfjfjfj k")
-            max_value = max(self.policy[get_board_hash(state)].values())
-        else: max_value = 0
-        return max_value
-        
     # Update Q-table 
     def update_policy(self, reward):
         for i in range(len(self.prev_states)):
-            prev_state = reversed(self.prev_states)[i]
-            prev_action = reversed(self.prev_actions)[i]
+            prev_state = list(reversed(self.prev_states))[i]
+            prev_action = list(reversed(self.prev_actions))[i]
             if prev_state in self.policy:
-                old_value = self.policy[prev_state]
+                old_value = self.policy[prev_state][prev_action]
             else: old_value = 0
             new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
-            self.policy[prev_state] = new_value
-            reward = self.policy[prev_state]
             self.policy[prev_state][prev_action] = new_value
             reward = self.policy[prev_state][prev_action]
             
@@ -287,12 +278,13 @@ class Q_learning_player:
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
                 
-                #print("\n", board)
+                print("\n", board)
                 
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
+                prev_board = board.copy()
                 board.push(agent1_move)
-                agent1.prev_states.append(get_board_hash(board))
+                agent1.prev_states.append(get_board_hash(prev_board))
                 agent1.prev_actions.append(agent1_move)
                 
                 # Check if the game is over
@@ -302,8 +294,9 @@ class Q_learning_player:
                 
                 # play Agent 2's move and update past states
                 agent2_move = agent2.get_next_move(board)
+                prev_board = board.copy()
                 board.push(agent2_move)
-                agent2.prev_states.append(get_board_hash(board))
+                agent2.prev_states.append(get_board_hash(prev_board))
                 agent2.prev_actions.append(agent2_move)
                 
                 # Check if the game is over
@@ -312,8 +305,8 @@ class Q_learning_player:
                     break
                 
         # Merge & save the policies
-        agent1.policy = merge_policies(agent1.policy, agent2.policy)
         print(agent1.policy)
+        agent1.policy = merge_policies(agent1.policy, agent2.policy)
         agent1.save_policy(self.name)
     
     def get_next_move(self, board):
@@ -334,6 +327,8 @@ class Q_learning_player:
             # Check if state is in table
             if get_board_hash(board) in Q_table:
                 if move in Q_table[get_board_hash(board)]:
+                    if get_board_hash(board) == '121210000':
+                        print(move)
                     value = Q_table[get_board_hash(board)][move]
                 else:
                     value = 0
@@ -355,14 +350,14 @@ def get_board_hash(board):
     
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
-        agent1.update_policy(board, 1)
-        agent2.update_policy(board, -1)
+        agent1.update_policy(1)
+        agent2.update_policy(-1)
     elif board.result() == 2:
-        agent1.update_policy(board, -1)
-        agent2.update_policy(board, 1)
+        agent1.update_policy(-1)
+        agent2.update_policy(1)
     else:
-        agent1.update_policy(board, 0)
-        agent2.update_policy(board, 0)
+        agent1.update_policy(0)
+        agent2.update_policy(0)
 
 # Combine two Q-learning policies
 def merge_policies(policy1, policy2):
