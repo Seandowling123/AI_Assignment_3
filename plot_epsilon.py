@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-epsilon = .3
+epsilon = .5
 decay_rate = .00001
 final_epsilon = .0001
 
