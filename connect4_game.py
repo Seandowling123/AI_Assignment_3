@@ -410,7 +410,7 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.2, gamma=.9, epsilon=.3, training=False, is_player_1=True):
+    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
         self.name = name
         self.alpha = alpha
         self.gamma = gamma
@@ -554,15 +554,16 @@ class Q_learning_player:
         for move in available_moves:
             
             # Check if state is in table
-            if get_board_hash(board) in Q_table:
-                if move in Q_table[get_board_hash(board)]:
-                    value = Q_table[get_board_hash(board)][move]
+            board_hash = get_board_hash(board)
+            if board_hash in Q_table:
+                if move in Q_table[board_hash]:
+                    value = Q_table[board_hash][move]
                 else:
                     value = 0
-                    Q_table[get_board_hash(board)][move] = value
+                    Q_table[board_hash][move] = value
             else:
                 value = 0
-                Q_table[get_board_hash(board)][move] = value
+                Q_table[board_hash][move] = value
             
             # Select the highest value move
             if value > max_value:
@@ -577,16 +578,16 @@ class Q_learning_player:
             
         return get_placement(board, best_move)
         
-"""# Get a string representation of the board
+# Get a string representation of the board
 def get_board_hash(board):
     horizontal_score = check_horizontals(board)
     vertical_score = check_verticals(board)
     diagonal_score = check_diagonals(board)
     heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
     hash = ','.join(map(str, heuristic_scores))
-    return hash"""
+    return hash
 
-# Count the number of pieces in each row and column
+"""# Count the number of pieces in each row and column
 def get_x_and_o_counts(matrix):
     num_rows = len(matrix)
     num_cols = len(matrix[0])
@@ -611,7 +612,7 @@ def get_x_and_o_counts(matrix):
 def get_board_hash(board):
     row_counts_x, col_counts_x, row_counts_o, col_counts_o = get_x_and_o_counts(board.board)
     hash = ''.join(map(str, row_counts_x + col_counts_x + row_counts_o + col_counts_o))
-    return hash
+    return hash"""
     
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
@@ -761,10 +762,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
+qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent40000")
 qlearning.train_Qlearning_agent(100001)
 
-test_Q_learning_agents(qlearning, default, 1000)
+#test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
 
 play_connect_four(tictactoe_board, qlearning, default)

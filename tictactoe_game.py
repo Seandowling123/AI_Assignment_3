@@ -186,7 +186,7 @@ class Minimax_player:
         return move[0]
     
 class Q_learning_player:
-    def __init__(self, policy_name=None, alpha=.2, gamma=.9, epsilon=.3, training=False, is_player_1=True):
+    def __init__(self, policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
         self.name = "Tictactoe_Q_learning_agent"
         self.alpha = alpha
         self.gamma = gamma
