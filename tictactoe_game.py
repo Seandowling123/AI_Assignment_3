@@ -273,12 +273,11 @@ class Q_learning_player:
             if (iteration % 10000) == 0:
                 agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
-                
+            
+            # PLay each game
             board = Board(dimensions=(3, 3))
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
-                
-                print("\n", board)
                 
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
@@ -305,7 +304,7 @@ class Q_learning_player:
                     break
                 
         # Merge & save the policies
-        print(agent1.policy)
+        print(agent2.policy)
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
         agent1.save_policy(self.name)
     
@@ -457,7 +456,7 @@ minimax = Minimax_player()
 rand = Random_player()
 default = Default_player(optimality=.5)
 qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000")
-qlearning.train_Qlearning_agent(10)
+qlearning.train_Qlearning_agent(100)
 #play_tictactoe(tictactoe_board, rand, minimax)
 #results = run_games(minimax, default, 1000)
 
