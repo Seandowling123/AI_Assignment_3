@@ -287,29 +287,23 @@ class Q_learning_player:
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
                 board.push(agent1_move)
-                agent1.prev_states.append(get_board_hash(board))
-                agent1.prev_actions.append(agent1_move)
                 
                 # Check if the game is over
                 if board.result() != None:
-                    update_policies(board, agent1, agent2)
-                    agent1.delete_prev_states()
-                    agent2.delete_prev_states()
+                    update_policies(board, agent1, agent1_move, agent2, agent2_move)
                     break
+                else: agent1.update_policy(board, agent1_move, 0)
                 
                 # play Agent 2's move and update past states
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
                 board.push(agent2_move)
-                agent2.prev_states.append(get_board_hash(board))
-                agent2.prev_actions.append(agent2_move)
                 
                 # Check if the game is over
                 if board.result() != None:
-                    update_policies(board, agent1, agent2)
-                    agent1.delete_prev_states()
-                    agent2.delete_prev_states()
+                    update_policies(board, agent1, agent1_move, agent2, agent2_move)
                     break
+                else: agent2.update_policy(board, agent2_move, 0)
                 
         # Merge & save the policies
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
@@ -321,6 +315,7 @@ class Q_learning_player:
         Q_table = self.policy
         available_moves = get_available_moves(board)
         
+        # Epsilon greedy
         if self.training:
             if random.random() < self.epsilon:
                 return random.choice(available_moves)
@@ -332,7 +327,7 @@ class Q_learning_player:
             # Check if state is in table
             if get_board_hash(board) in Q_table:
                 if move in Q_table[get_board_hash(board)]:
-                    value = Q_table[get_board_hash(board)]
+                    value = Q_table[get_board_hash(board)][move]
                 else:
                     value = 0
                     Q_table[get_board_hash(board)][move] = value
@@ -348,16 +343,16 @@ def get_board_hash(board):
     hash = ''.join(map(str, board.board.flatten()))
     return hash
     
-def update_policies(board, agent1, agent2):
+def update_policies(board, agent1, agent1_move, agent2, agent2_move):
     if board.result() == 1:
-        agent1.update_policy(1)
-        agent2.update_policy(-1)
+        agent1.update_policy(board, agent1_move, 1)
+        agent2.update_policy(board, agent2_move, -1)
     elif board.result() == 2:
-        agent1.update_policy(-1)
-        agent2.update_policy(1)
+        agent1.update_policy(board, agent1_move, -1)
+        agent2.update_policy(board, agent2_move, 1)
     else:
-        agent1.update_policy(0)
-        agent2.update_policy(0)
+        agent1.update_policy(board, agent1_move, 0)
+        agent2.update_policy(board, agent2_move, 0)
 
 # Combine two Q-learning policies
 def merge_policies(policy1, policy2):
