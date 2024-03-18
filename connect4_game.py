@@ -512,8 +512,10 @@ class Q_learning_player:
                 
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
+                prev_board = board.copy()
                 board.push(agent1_move)
-                agent1.prev_states.append(get_board_hash(board))
+                agent1.prev_states.append(get_board_hash(prev_board))
+                agent1.prev_actions.append(agent1_move)
                 
                 # Check if the game is over
                 if board.result() != None:
@@ -525,8 +527,10 @@ class Q_learning_player:
                 # play Agent 2's move and update past states
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
+                prev_board = board.copy()
                 board.push(agent2_move)
-                agent2.prev_states.append(get_board_hash(board))
+                agent2.prev_states.append(get_board_hash(prev_board))
+                agent2.prev_actions.append(agent2_move)
                 
                 # Check if the game is over
                 if board.result() != None:
@@ -545,42 +549,33 @@ class Q_learning_player:
         Q_table = self.policy
         available_moves = get_available_moves(board)
         
-        # Shortcut for first moves
-        if self.played_moves == 0 and self.is_player_1:
-            self.played_moves = self.played_moves+1
-            return get_placement(board, 3)
-        if self.played_moves == 0 and not self.is_player_1:
-            self.played_moves = self.played_moves+1
-            return get_placement(board, 4)
-        
-        if self.training:
-            if random.random() < self.epsilon:
-                return get_placement(board, random.choice(available_moves))
-            self.decay_epsilon()
-        
         # Check the value of each available move
         for move in available_moves:
-            new_board = board.copy()
-            new_board.push(get_placement(board, move))
             
-            # Check if move leads to a terminal state
-            if self.get_state_reward(new_board) != None:
-                value = self.get_state_reward(new_board)
-                
             # Check if state is in table
-            elif get_board_hash(new_board) in Q_table:
-                value = Q_table[get_board_hash(new_board)]
+            if get_board_hash(board) in Q_table:
+                if move in Q_table[get_board_hash(board)]:
+                    value = Q_table[get_board_hash(board)][move]
+                else:
+                    value = 0
+                    Q_table[get_board_hash(board)][move] = value
             else:
                 value = 0
-                Q_table[get_board_hash(new_board)] = 0
+                Q_table[get_board_hash(board)][move] = value
             
             # Select the highest value move
             if value > max_value:
                 max_value = value
                 best_move = move
-        self.played_moves = self.played_moves+1
+                
+            # Epsilon greedy
+        if self.training:
+            if random.random() < self.epsilon:
+                return random.choice(available_moves)
+            self.decay_epsilon()
+            
         return get_placement(board, best_move)
-
+        
 """# Get a string representation of the board
 def get_board_hash(board):
     horizontal_score = check_horizontals(board)

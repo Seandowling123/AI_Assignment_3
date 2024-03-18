@@ -250,9 +250,11 @@ class Q_learning_player:
     
     # Update Q-table 
     def update_policy(self, reward):
+        prev_states = list(reversed(self.prev_states))
+        prev_actions = list(reversed(self.prev_actions))
         for i in range(len(self.prev_states)):
-            prev_state = list(reversed(self.prev_states))[i]
-            prev_action = list(reversed(self.prev_actions))[i]
+            prev_state = prev_states[i]
+            prev_action = prev_actions[i]
             if prev_state in self.policy:
                 old_value = self.policy[prev_state][prev_action]
             else: old_value = 0
