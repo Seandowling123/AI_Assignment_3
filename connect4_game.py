@@ -513,7 +513,7 @@ class Q_learning_player:
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
                 prev_board = board.copy()
-                board.push(agent1_move)
+                board.push(get_placement(board, agent1_move))
                 agent1.prev_states.append(get_board_hash(prev_board))
                 agent1.prev_actions.append(agent1_move)
                 
@@ -528,7 +528,7 @@ class Q_learning_player:
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
                 prev_board = board.copy()
-                board.push(agent2_move)
+                board.push(get_placement(board, agent2_move))
                 agent2.prev_states.append(get_board_hash(prev_board))
                 agent2.prev_actions.append(agent2_move)
                 
@@ -761,7 +761,7 @@ rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
 qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent9000")
-qlearning.train_Qlearning_agent(100000)
+qlearning.train_Qlearning_agent(100001)
 
 test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
