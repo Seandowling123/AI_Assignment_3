@@ -53,7 +53,7 @@ plt.plot(df.index, df['Tictactoe_Q_learning_agent wins'], label="Q-Learning Agen
 plt.plot(df.index, df['Default Player wins'], label="Default Player Wins", marker='o', color='#2980b9')
 plt.ylim(0, 1)
 plt.legend(fontsize=11, loc='upper left', prop={'family': 'serif', 'size': 11})
-plt.title('Win Ratios of Q-learning & Default Player with The Default Player As Player 2', fontsize=12, fontfamily='serif')
+plt.title('Win Ratios of Q-learning & Default Player with The Default Player As Player 1', fontsize=12, fontfamily='serif')
 plt.xlabel('Number of Training Iterations For Q-Learning Player (e+5)', fontsize=11, fontname='Times New Roman')
 plt.ylabel('Ratio', fontsize=11, fontname='Times New Roman')
 plt.savefig('Plots/Q_learning_agent_P2_vs_Default.png', bbox_inches='tight')
