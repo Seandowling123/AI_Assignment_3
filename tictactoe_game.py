@@ -14,7 +14,7 @@ def get_available_moves(board):
     for i, row in enumerate(board.board):
         for j, value in enumerate(row):
             if value == 0:
-                zero_indices.append([i, j])
+                zero_indices.append((i, j))
     return zero_indices
 
 class Default_player:
@@ -243,24 +243,22 @@ class Q_learning_player:
         elif result == 0:
             return 0
         return None
-    
-    def delete_prev_states(self):
-        self.prev_states = []
-        self.prev_actions = []
         
     def get_max_value(self, state):
-        max_value = max(max(action.values()) for action in state.values())
+        if get_board_hash(state) in self.policy:
+            max_value = max(self.policy[get_board_hash(state)].values())
+        else: max_value = 0
         return max_value
         
     # Update Q-table 
     def update_policy(self, board, action, reward):
         new_state = board.copy()
         new_state.push(action)
-        if new_state in self.policy:
-            old_value = self.policy[new_state][action]
+        if get_board_hash(new_state) in self.policy:
+            old_value = self.policy[get_board_hash(new_state)][action]
         else: old_value = 0
         new_value = (1-self.alpha)*old_value + self.alpha*(reward + self.gamma*(self.get_max_value(new_state)))
-        self.policy[board][action] = new_value
+        self.policy[get_board_hash(board)][action] = new_value
             
     # Train Q-learning agent
     def train_Qlearning_agent(self, iterations):
@@ -284,26 +282,31 @@ class Q_learning_player:
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
                 
+                print("\n", board)
+                
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
+                print(agent1.policy)
+                agent1_old_state = board.copy()
                 board.push(agent1_move)
                 
                 # Check if the game is over
                 if board.result() != None:
-                    update_policies(board, agent1, agent1_move, agent2, agent2_move)
+                    update_policies(agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move)
                     break
-                else: agent1.update_policy(board, agent1_move, 0)
+                else: agent1.update_policy(agent1_old_state, agent1_move, 0)
                 
                 # play Agent 2's move and update past states
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
+                agent2_old_state = board.copy()
                 board.push(agent2_move)
                 
                 # Check if the game is over
                 if board.result() != None:
-                    update_policies(board, agent1, agent1_move, agent2, agent2_move)
+                    update_policies(agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move)
                     break
-                else: agent2.update_policy(board, agent2_move, 0)
+                else: agent2.update_policy(agent2_old_state, agent2_move, 0)
                 
         # Merge & save the policies
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
@@ -331,6 +334,9 @@ class Q_learning_player:
                 else:
                     value = 0
                     Q_table[get_board_hash(board)][move] = value
+            else:
+                value = 0
+                Q_table[get_board_hash(board)][move] = value
             
             # Select the highest value move
             if value > max_value:
@@ -343,16 +349,16 @@ def get_board_hash(board):
     hash = ''.join(map(str, board.board.flatten()))
     return hash
     
-def update_policies(board, agent1, agent1_move, agent2, agent2_move):
+def update_policies(agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move):
     if board.result() == 1:
-        agent1.update_policy(board, agent1_move, 1)
-        agent2.update_policy(board, agent2_move, -1)
+        agent1.update_policy(agent1_old_state, agent1_move, 1)
+        agent2.update_policy(agent2_old_state, agent2_move, -1)
     elif board.result() == 2:
-        agent1.update_policy(board, agent1_move, -1)
-        agent2.update_policy(board, agent2_move, 1)
+        agent1.update_policy(agent1_old_state, agent1_move, -1)
+        agent2.update_policy(agent2_old_state, agent2_move, 1)
     else:
-        agent1.update_policy(board, agent1_move, 0)
-        agent2.update_policy(board, agent2_move, 0)
+        agent1.update_policy(agent1_old_state, agent1_move, 0)
+        agent2.update_policy(agent2_old_state, agent2_move, 0)
 
 # Combine two Q-learning policies
 def merge_policies(policy1, policy2):
@@ -452,8 +458,8 @@ minimax = Minimax_player()
 rand = Random_player()
 default = Default_player(optimality=.5)
 qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000")
-#qlearning.train_Qlearning_agent(100000)
-play_tictactoe(tictactoe_board, rand, minimax)
+qlearning.train_Qlearning_agent(1)
+#play_tictactoe(tictactoe_board, rand, minimax)
 #results = run_games(minimax, default, 1000)
 
 #test_agents(minimax, default, 1000)
