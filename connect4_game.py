@@ -416,7 +416,7 @@ class Q_learning_player:
         self.gamma = gamma
         self.epsilon = epsilon
         self.decay_rate = .00001
-        self.final_epsilon = .0001
+        self.final_epsilon = .001
         self.policy_name = policy_name
         self.is_player_1 = is_player_1
         self.training = training
@@ -762,10 +762,10 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent30000")
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent40000")
 #qlearning.train_Qlearning_agent(100001)
 
 #test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
 
-play_connect_four(tictactoe_board, qlearning, default)
+play_connect_four(tictactoe_board, qlearning, rand)

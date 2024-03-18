@@ -192,7 +192,7 @@ class Q_learning_player:
         self.gamma = gamma
         self.epsilon = epsilon
         self.decay_rate = .00001
-        self.final_epsilon = .0001
+        self.final_epsilon = .001
         self.policy_name = policy_name
         self.training = training
         self.is_player_1 = is_player_1
