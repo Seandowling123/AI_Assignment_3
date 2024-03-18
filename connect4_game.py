@@ -768,4 +768,4 @@ qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connec
 #test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
 
-play_connect_four(tictactoe_board, default, qlearning)
+play_connect_four(tictactoe_board, qlearning, default)
