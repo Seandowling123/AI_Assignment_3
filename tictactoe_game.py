@@ -459,15 +459,51 @@ def test_agents(agent, opponent, num_games):
     results.append(result)
     write_to_csv(titles, results, filename)
     print(results)
+    
+    # Run a number of games with Q-learning agents with different training (FOR REPORT)
+def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
+    results = []
+    training_iterations = 0
+    Q_learning_agent.is_player_1=True
+    opponent.is_player_1=False
+    filename = f"Q_learning_agent_P1_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
+    for i in range(10):
+        print(f"Testing {training_iterations} iterations Q-learning agent")
+        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
+        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
+        result = run_games(Q_learning_agent, opponent, num_games)
+        results.append(result)
+        training_iterations = training_iterations+10000
+    write_to_csv(titles, results, filename)
+    print(results)
+    
+    # Switch player order
+    results = []
+    training_iterations = 0
+    Q_learning_agent.is_player_1=False
+    opponent.is_player_1=True
+    filename = f"CF_Q_learning_agent_P2_vs_{opponent.name}_Results"
+    titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
+    for i in range(10):
+        print(f"Testing {training_iterations} iterations Q-learning agent")
+        policy_name = "Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent"+str(training_iterations)
+        Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
+        result = run_games(opponent, Q_learning_agent, num_games)
+        results.append(result)
+        training_iterations = training_iterations+10000
+    write_to_csv(titles, results, filename)
+    print(results)
 
 tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
 minimax = Minimax_player()
 rand = Random_player()
 default = Default_player(optimality=.5)
-qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent80000")
+qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent80000")
 #qlearning.train_Qlearning_agent(100000)
-play_tictactoe(tictactoe_board, default, qlearning)
+test_Q_learning_agents(qlearning, default, 1000)
+#play_tictactoe(tictactoe_board, default, qlearning)
 #results = run_games(minimax, default, 1000)
 
 #test_agents(minimax, default, 1000)
