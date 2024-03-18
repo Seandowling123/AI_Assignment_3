@@ -292,7 +292,7 @@ class Q_learning_player:
                 
                 # Check if the game is over
                 if board.result() != None:
-                    update_policies(agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move)
+                    update_policies(board, agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move)
                     break
                 else: agent1.update_policy(agent1_old_state, agent1_move, 0)
                 
@@ -304,7 +304,7 @@ class Q_learning_player:
                 
                 # Check if the game is over
                 if board.result() != None:
-                    update_policies(agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move)
+                    update_policies(board, agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move)
                     break
                 else: agent2.update_policy(agent2_old_state, agent2_move, 0)
                 
@@ -349,7 +349,7 @@ def get_board_hash(board):
     hash = ''.join(map(str, board.board.flatten()))
     return hash
     
-def update_policies(agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move):
+def update_policies(board, agent1_old_state, agent2_old_state, agent1, agent1_move, agent2, agent2_move):
     if board.result() == 1:
         agent1.update_policy(agent1_old_state, agent1_move, 1)
         agent2.update_policy(agent2_old_state, agent2_move, -1)
