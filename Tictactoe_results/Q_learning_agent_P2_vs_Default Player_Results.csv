@@ -1,4 +1,4 @@
-Ties,Default Player wins,Tictactoe_Q_learning_agent wins 1000 games
+Ties,Default Player wins,Tictactoe_Q_learning_agent wins
 0.016,0.664,0.32
 0.586,0.0,0.414
 0.564,0.0,0.436
@@ -9,3 +9,4 @@ Ties,Default Player wins,Tictactoe_Q_learning_agent wins 1000 games
 0.615,0.0,0.385
 0.593,0.0,0.407
 0.57,0.0,0.43
+0.589,0.0,0.411
