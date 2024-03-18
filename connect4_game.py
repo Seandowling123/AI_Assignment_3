@@ -1,4 +1,5 @@
 from tictactoe import Board
+from collections import defaultdict
 import numpy as np
 import pickle
 import math
@@ -423,7 +424,7 @@ class Q_learning_player:
         self.prev_actions = []
         if policy_name != None:
             self.policy = self.load_policy(policy_name)
-        else: self.policy = {}
+        else: self.policy = defaultdict(dict)
         self.played_moves = 0
     
     # Save Qtable
@@ -513,9 +514,9 @@ class Q_learning_player:
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
                 prev_board = board.copy()
-                board.push(get_placement(board, agent1_move))
+                board.push(agent1_move)
                 agent1.prev_states.append(get_board_hash(prev_board))
-                agent1.prev_actions.append(agent1_move)
+                agent1.prev_actions.append(agent1_move[0])
                 
                 # Check if the game is over
                 if board.result() != None:
@@ -528,9 +529,9 @@ class Q_learning_player:
                 available_moves = get_available_moves(board)
                 agent2_move = agent2.get_next_move(board)
                 prev_board = board.copy()
-                board.push(get_placement(board, agent2_move))
+                board.push(agent2_move)
                 agent2.prev_states.append(get_board_hash(prev_board))
-                agent2.prev_actions.append(agent2_move)
+                agent2.prev_actions.append(agent2_move[0])
                 
                 # Check if the game is over
                 if board.result() != None:
@@ -571,7 +572,7 @@ class Q_learning_player:
             # Epsilon greedy
         if self.training:
             if random.random() < self.epsilon:
-                return random.choice(available_moves)
+                return  get_placement(board, random.choice(available_moves))
             self.decay_epsilon()
             
         return get_placement(board, best_move)
