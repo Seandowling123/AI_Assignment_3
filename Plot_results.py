@@ -25,7 +25,7 @@ labels = ['Ties','Minimax wins','Default Player wins']
 colors = ['#27ae60', '#e74c3c', '#2980b9']
 
 plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-plt.title('Win Ratios of Minimax Vs Default Player with Minimax As Player 2', fontsize=12, fontfamily='serif')
+plt.title('Win Ratios of Minimax Vs Default Player with The Default Player As Player 1', fontsize=12, fontfamily='serif')
 plt.axis('equal')
 plt.savefig('Plots/Minimax_P2_vs_Default.png', bbox_inches='tight')
 #plt.show()
