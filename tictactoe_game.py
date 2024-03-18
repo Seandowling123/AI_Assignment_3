@@ -246,6 +246,7 @@ class Q_learning_player:
         
     def get_max_value(self, state):
         if get_board_hash(state) in self.policy:
+            print("vdfnjvfdjvfjfjfjfj k")
             max_value = max(self.policy[get_board_hash(state)].values())
         else: max_value = 0
         return max_value
@@ -254,8 +255,10 @@ class Q_learning_player:
     def update_policy(self, board, action, reward):
         new_state = board.copy()
         new_state.push(action)
+        print(get_board_hash(new_state), self.policy.keys())
         if get_board_hash(new_state) in self.policy:
             old_value = self.policy[get_board_hash(new_state)][action]
+            print("svrvrdvrdvfldvf")
         else: old_value = 0
         new_value = (1-self.alpha)*old_value + self.alpha*(reward + self.gamma*(self.get_max_value(new_state)))
         self.policy[get_board_hash(board)][action] = new_value
@@ -282,11 +285,10 @@ class Q_learning_player:
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
                 
-                print("\n", board)
+                #print("\n", board)
                 
                 # play Agent 1's move and update past states
                 agent1_move = agent1.get_next_move(board)
-                print(agent1.policy)
                 agent1_old_state = board.copy()
                 board.push(agent1_move)
                 
@@ -310,6 +312,7 @@ class Q_learning_player:
                 
         # Merge & save the policies
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
+        print(agent1.policy)
         agent1.save_policy(self.name)
     
     def get_next_move(self, board):
@@ -458,7 +461,7 @@ minimax = Minimax_player()
 rand = Random_player()
 default = Default_player(optimality=.5)
 qlearning = Q_learning_player()#(training=True)#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent48000")
-qlearning.train_Qlearning_agent(1)
+qlearning.train_Qlearning_agent(10)
 #play_tictactoe(tictactoe_board, rand, minimax)
 #results = run_games(minimax, default, 1000)
 
