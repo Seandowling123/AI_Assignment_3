@@ -243,7 +243,11 @@ class Q_learning_player:
         elif result == 0:
             return 0
         return None
-        
+    
+    def delete_prev_states(self):
+        self.prev_states = []
+        self.prev_actions = []
+    
     # Update Q-table 
     def update_policy(self, reward):
         for i in range(len(self.prev_states)):
@@ -291,6 +295,8 @@ class Q_learning_player:
                 # Check if the game is over
                 if board.result() != None:
                     update_policies(board, agent1, agent2)
+                    agent1.delete_prev_states()
+                    agent2.delete_prev_states()
                     break
                 
                 # play Agent 2's move and update past states
@@ -303,6 +309,8 @@ class Q_learning_player:
                 # Check if the game is over
                 if board.result() != None:
                     update_policies(board, agent1, agent2)
+                    agent1.delete_prev_states()
+                    agent2.delete_prev_states()
                     break
                 
         # Merge & save the policies
