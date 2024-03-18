@@ -248,17 +248,19 @@ class Q_learning_player:
         self.prev_states = []
         self.prev_actions = []
         
+    def get_max_value(self, state):
+        max_value = max(max(action.values()) for action in state.values())
+        return max_value
+        
     # Update Q-table 
-    def update_policy(self, reward):
-        for i in range(len(self.prev_states)):
-            prev_state = reversed(self.prev_states)[i]
-            prev_action = reversed(self.prev_actions)[i]
-            if prev_state in self.policy:
-                old_value = self.policy[prev_state]
-            else: old_value = 0
-            new_value = (1-self.alpha)*old_value + self.alpha*(self.gamma*(reward))
-            self.policy[prev_state][prev_action] = new_value
-            reward = self.policy[prev_state][prev_action]
+    def update_policy(self, board, action, reward):
+        new_state = board.copy()
+        new_state.push(action)
+        if new_state in self.policy:
+            old_value = self.policy[new_state][action]
+        else: old_value = 0
+        new_value = (1-self.alpha)*old_value + self.alpha*(reward + self.gamma*(self.get_max_value(new_state)))
+        self.policy[board][action] = new_value
             
     # Train Q-learning agent
     def train_Qlearning_agent(self, iterations):
