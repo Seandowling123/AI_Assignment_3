@@ -351,7 +351,9 @@ class Minimax_player:
         
         # If max depth is reached, check heuristics
         if depth == self.depth:
-            return None, get_state_heuristic(board)
+            if self.is_player_1:
+                return None, get_state_heuristic(board)
+            else: return None, (-1)*get_state_heuristic(board)
                 
         # Calculate move for maximiser
         if is_maximising:
