@@ -507,7 +507,7 @@ class Q_learning_player:
                 agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
             
-            board = Board(dimensions=(7, 6), x_in_a_row=4)
+            board = Board(dimensions=(5, 4), x_in_a_row=4)
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
                 
@@ -578,41 +578,19 @@ class Q_learning_player:
             
         return get_placement(board, best_move)
         
-# Get a string representation of the board
+"""# Get a string representation of the board
 def get_board_hash(board):
     horizontal_score = check_horizontals(board)
     vertical_score = check_verticals(board)
     diagonal_score = check_diagonals(board)
     heuristic_scores = [horizontal_score, vertical_score, diagonal_score]
     hash = ','.join(map(str, heuristic_scores))
-    return hash
-
-"""# Count the number of pieces in each row and column
-def get_x_and_o_counts(matrix):
-    num_rows = len(matrix)
-    num_cols = len(matrix[0])
-    
-    row_counts_x = [0] * num_rows
-    row_counts_o = [0] * num_rows
-    col_counts_x = [0] * num_cols
-    col_counts_o = [0] * num_cols
-    
-    for i in range(num_rows):
-        for j in range(num_cols):
-            if matrix[i][j] == 1:
-                row_counts_x[i] += 1
-                col_counts_x[j] += 1
-            elif matrix[i][j] == 2:
-                row_counts_o[i] += 1
-                col_counts_o[j] += 1
-                
-    return row_counts_x, col_counts_x, row_counts_o, col_counts_o
+    return hash"""
 
 # Get a string representation of the board
 def get_board_hash(board):
-    row_counts_x, col_counts_x, row_counts_o, col_counts_o = get_x_and_o_counts(board.board)
-    hash = ''.join(map(str, row_counts_x + col_counts_x + row_counts_o + col_counts_o))
-    return hash"""
+    hash = ''.join(map(str, board.board.flatten()))
+    return hash
     
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
@@ -676,7 +654,7 @@ def get_connect_four_winner(board, player1, player2):
 def run_games(player1, player2, num_games):
     results = [0, 0, 0]
     for i in range(num_games):
-        board = Board(dimensions=(7, 6), x_in_a_row=4)
+        board = Board(dimensions=(5, 4), x_in_a_row=4)
         print_progress_bar(i, num_games)
         result = get_connect_four_winner(board, player1, player2)
         results[result] = results[result]+1
@@ -707,7 +685,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents_100k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(Q_learning_agent, opponent, num_games)
         results.append(result)
@@ -724,7 +702,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
     for i in range(10):
         print(f"Testing {training_iterations} iterations Q-learning agent")
-        policy_name = "Connect_four_Q_learning_agents_100k_iter/Connect_four_Q_learning_agent"+str(training_iterations)
+        policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
         result = run_games(opponent, Q_learning_agent, num_games)
         results.append(result)
@@ -755,17 +733,17 @@ def test_agents(agent, opponent, num_games):
     write_to_csv(titles, results, filename)
     print(results)
                 
-tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
+tictactoe_board = Board(dimensions=(5, 4), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
 default = Default_player(optimality = .5)
 human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent60000")
-#qlearning.train_Qlearning_agent(100001)
+qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent60000")
+qlearning.train_Qlearning_agent(100001)
 
-#test_Q_learning_agents(qlearning, default, 1000)
+test_Q_learning_agents(qlearning, default, 10)
 #test_agents(minimax, default, 1000)
 
-play_connect_four(tictactoe_board, qlearning, rand)
+#play_connect_four(tictactoe_board, qlearning, default)
