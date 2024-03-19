@@ -5,6 +5,12 @@ import pickle
 import math
 import random
 import csv
+import time
+
+explored_moves = 0
+total_moves = 0
+start_time = 0
+time_limit = 30 * 60
 
 # Place the counter at the bottom of the selected column
 def get_placement(board, index):
@@ -345,15 +351,27 @@ class Minimax_player:
         if  self.played_moves == 2 and self.is_player_1:
             return 3, 0
         
+        global explored_moves
+        global total_moves
+        global start_time
+        global time_limit
+        explored_moves + 1
+        total_moves + len(available_moves)
+        
+        current_time = time.time()
+        print(current_time - start_time, time_limit)
+        if (current_time - start_time) > time_limit:
+            return [0,0], 0
+        
         # Check if the game is over
         if board.result() != None:
             return self.get_state_reward(board)
         
-        # If max depth is reached, check heuristics
+        """# If max depth is reached, check heuristics
         if depth == self.depth:
             if self.is_player_1:
                 return None, get_state_heuristic(board)
-            else: return None, (-1)*get_state_heuristic(board)
+            else: return None, (-1)*get_state_heuristic(board)"""
                 
         # Calculate move for maximiser
         if is_maximising:
@@ -407,8 +425,13 @@ class Minimax_player:
          
     # Return the next move for the player
     def get_next_move(self, board):
+        global start_time
+        global explored_moves
+        global total_moves
+        start_time = time.time()
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         self.played_moves = self.played_moves+1
+        print(explored_moves, total_moves)
         return get_placement(board, move[0])
     
 class Q_learning_player:
@@ -744,7 +767,7 @@ minimax = Minimax_player()
 qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
 #qlearning.train_Qlearning_agent(100001)
 
-test_Q_learning_agents(qlearning, minimax, 1)
+#test_Q_learning_agents(qlearning, minimax, 1000)
 #test_agents(minimax, default, 1000)
 
-#play_connect_four(tictactoe_board, qlearning, default)
+play_connect_four(tictactoe_board, minimax, default)

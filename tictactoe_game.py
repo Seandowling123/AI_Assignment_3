@@ -6,8 +6,6 @@ import random
 import csv
 import os
 
-agent1_wins = 0
-
 # Get all available moves
 def get_available_moves(board):
     zero_indices = []
@@ -127,7 +125,7 @@ class Minimax_player:
                 return [1,1], 0
             elif [0,0] in available_moves:
                 return [0,0], 0
-        
+
         # Check if the game is over
         if board.result() != None:
             return self.get_state_reward(board)
@@ -504,7 +502,7 @@ default = Default_player(optimality=.5)
 qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent80000")
 #qlearning.train_Qlearning_agent(100000)
 #test_Q_learning_agents(qlearning, minimax, 1)
-#play_tictactoe(tictactoe_board, default, minimax)
+play_tictactoe(tictactoe_board, default, minimax)
 #results = run_games(minimax, default, 1000)
 
 #test_agents(minimax, default, 1000)
