@@ -343,14 +343,7 @@ class Minimax_player:
         if self.played_moves == 1:
             return 2, 0
         if  self.played_moves == 2 and self.is_player_1:
-            return 3, 0
-        
-        global explored_moves
-        global total_moves
-        global start_time
-        global time_limit
-        explored_moves = explored_moves + 1
-        total_moves = total_moves + len(available_moves)
+            return 3, 
         
         # Check if the game is over
         if board.result() != None:
@@ -724,7 +717,7 @@ def test_agents(agent, opponent, num_games):
     results = []
     agent.is_player_1=True
     opponent.is_player_1=False
-    filename = f"Minimax_agent_P1_vs_{opponent.name}_Results"
+    filename = f"{agent.name}_P1_vs_{opponent.name}_Results"
     titles = ["Ties", f"{agent.name} wins", f"{opponent.name} wins"]
     result = run_games(agent, opponent, num_games)
     results.append(result)
@@ -735,7 +728,7 @@ def test_agents(agent, opponent, num_games):
     results = []
     agent.is_player_1=False
     opponent.is_player_1=True
-    filename = f"Minimax_agent_P2_vs_{opponent.name}_Results"
+    filename = f"{agent.name}_P2_vs_{opponent.name}_Results"
     titles = ["Ties", f"{opponent.name} wins", f"{agent.name} wins"]
     result = run_games(opponent, agent, num_games)
     results.append(result)
@@ -751,7 +744,7 @@ minimax = Minimax_player()
 qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
 #qlearning.train_Qlearning_agent(100001)
 
-#test_Q_learning_agents(qlearning, minimax, 1000)
-#test_agents(minimax, default, 1000)
+test_Q_learning_agents(qlearning, minimax, 1)
+#test_agents(qlearning, minimax, 1)
 
-play_connect_four(tictactoe_board, minimax, default)
+#play_connect_four(tictactoe_board, minimax, default)
