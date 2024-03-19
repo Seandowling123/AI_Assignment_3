@@ -685,7 +685,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     opponent.is_player_1=False
     filename = f"CF_Q_learning_agent_P1_vs_{opponent.name}_Results"
     titles = ["Ties", f"{Q_learning_agent.name} wins", f"{opponent.name} wins"]
-    for i in range(10):
+    for i in range(11):
         print(f"Testing {training_iterations} iterations Q-learning agent")
         policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
@@ -702,7 +702,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     opponent.is_player_1=True
     filename = f"CF_Q_learning_agent_P2_vs_{opponent.name}_Results"
     titles = ["Ties", f"{opponent.name} wins", f"{Q_learning_agent.name} wins"]
-    for i in range(10):
+    for i in range(11):
         print(f"Testing {training_iterations} iterations Q-learning agent")
         policy_name = "Connect_four_Q_learning_agents/Connect_four_Q_learning_agent"+str(training_iterations)
         Q_learning_agent.policy = Q_learning_agent.load_policy(policy_name)
@@ -735,17 +735,16 @@ def test_agents(agent, opponent, num_games):
     write_to_csv(titles, results, filename)
     print(results)
                 
-tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
+tictactoe_board = Board(dimensions=(5, 4), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
 default = Default_player(optimality = .5)
 human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
-#playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent30000")
+qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
 #qlearning.train_Qlearning_agent(100001)
 
-#test_Q_learning_agents(qlearning, default, 10)
+test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(minimax, default, 1000)
 
-play_connect_four(tictactoe_board, default, rand)
+#play_connect_four(tictactoe_board, qlearning, default)
