@@ -762,7 +762,7 @@ human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent40000")
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent60000")
 #qlearning.train_Qlearning_agent(100001)
 
 #test_Q_learning_agents(qlearning, default, 1000)
