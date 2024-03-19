@@ -744,7 +744,7 @@ minimax = Minimax_player()
 qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
 #qlearning.train_Qlearning_agent(100001)
 
-test_Q_learning_agents(qlearning, minimax, 1)
+test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(qlearning, minimax, 1)
 
 #play_connect_four(tictactoe_board, minimax, default)

@@ -7,7 +7,7 @@ import pandas as pd
 ###############
 
 # Minimax vs Default
-sizes = [0.234,0.572,0.194]
+sizes = [0.0,0.812,0.188]
 labels = ['Ties','Minimax wins','Default Player wins']
 colors = ['#27ae60', '#e74c3c', '#2980b9']
 
@@ -20,7 +20,7 @@ plt.savefig('C4_Plots/Minimax_P1_vs_Default.png', bbox_inches='tight')
 #plt.show()
 plt.close()
 
-sizes = [0.069,0.34,0.591]
+sizes = [0.001,0.69,0.309]
 labels = ['Ties','Minimax wins','Default Player wins']
 colors = ['#27ae60', '#e74c3c', '#2980b9']
 
@@ -33,10 +33,10 @@ plt.close()
 
 
 # Q-learning vs Default
-df = pd.read_csv("Tictactoe_results/Q_learning_agent_P1_vs_Default Player_Results.csv")
+df = pd.read_csv("Connect_four_results/CF_Q_learning_agent_P1_vs_Default Player_Results.csv")
 plt.figure(figsize=(10, 6))
 plt.plot(df.index, df['Ties'], label="Ties", marker='o', color='#27ae60')
-plt.plot(df.index, df['Tictactoe_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
+plt.plot(df.index, df['Connect_Four_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
 plt.plot(df.index, df['Default Player wins'], label="Default Player Wins", marker='o', color='#2980b9')
 plt.gca().set_ylim(0, 1)
 plt.legend(fontsize=11, loc='upper left', prop={'family': 'serif', 'size': 11})
@@ -46,10 +46,10 @@ plt.ylabel('Ratio', fontsize=13, fontname='Times New Roman')
 plt.savefig('C4_Plots/Q_learning_agent_P1_vs_Default.png', bbox_inches='tight')
 plt.close()
 
-df = pd.read_csv("Tictactoe_results/Q_learning_agent_P2_vs_Default Player_Results.csv")
+df = pd.read_csv("Connect_four_results/CF_Q_learning_agent_P2_vs_Default Player_Results.csv")
 plt.figure(figsize=(10, 6))
 plt.plot(df.index, df['Ties'], label="Ties", marker='o', color='#27ae60')
-plt.plot(df.index, df['Tictactoe_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
+plt.plot(df.index, df['Connect_Four_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
 plt.plot(df.index, df['Default Player wins'], label="Default Player Wins", marker='o', color='#2980b9')
 plt.ylim(0, 1)
 plt.legend(fontsize=11, loc='upper left', prop={'family': 'serif', 'size': 11})
@@ -61,10 +61,10 @@ plt.close()
 
 
 # Q-learning vs Minimax
-df = pd.read_csv("Tictactoe_results/Q_learning_agent_P1_vs_Minimax_Results.csv")
+df = pd.read_csv("Connect_four_results/CF_Q_learning_agent_P1_vs_Minimax_Results.csv")
 plt.figure(figsize=(10, 6))
 plt.plot(df.index, df['Ties'], label="Ties", marker='o', color='#27ae60')
-plt.plot(df.index, df['Tictactoe_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
+plt.plot(df.index, df['Connect_Four_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
 plt.plot(df.index, df['Minimax wins'], label="Minimax Wins", marker='o', color='#2980b9')
 plt.gca().set_ylim(0, 1)
 plt.legend(fontsize=11, loc='upper left', prop={'family': 'serif', 'size': 11})
@@ -74,10 +74,10 @@ plt.ylabel('Ratio', fontsize=13, fontname='Times New Roman')
 plt.savefig('C4_Plots/Q_learning_agent_P1_vs_Minimax.png', bbox_inches='tight')
 plt.close()
 
-df = pd.read_csv("Tictactoe_results/Q_learning_agent_P2_vs_Minimax_Results.csv")
+df = pd.read_csv("Connect_four_results/CF_Q_learning_agent_P2_vs_Minimax_Results.csv")
 plt.figure(figsize=(10, 6))
 plt.plot(df.index, df['Ties'], label="Ties", marker='o', color='#27ae60')
-plt.plot(df.index, df['Tictactoe_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
+plt.plot(df.index, df['Connect_Four_Q_learning_agent wins'], label="Q-Learning Agent Wins", marker='o', color='#e74c3c')
 plt.plot(df.index, df['Minimax wins'], label="Minimax Wins", marker='o', color='#2980b9')
 plt.ylim(0, 1)
 plt.legend(fontsize=11, loc='upper left', prop={'family': 'serif', 'size': 11})
