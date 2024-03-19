@@ -339,11 +339,11 @@ class Minimax_player:
         
         # Speed up for first moves
         if self.played_moves == 0:
-            return 3, 0
+            return 1, 0
         if self.played_moves == 1:
-            return 4, 0
+            return 2, 0
         if  self.played_moves == 2 and self.is_player_1:
-            return 5, 0
+            return 3, 0
         
         # Check if the game is over
         if board.result() != None:
@@ -733,17 +733,17 @@ def test_agents(agent, opponent, num_games):
     write_to_csv(titles, results, filename)
     print(results)
                 
-tictactoe_board = Board(dimensions=(5, 4), x_in_a_row=4)
+tictactoe_board = Board(dimensions=(7, 6), x_in_a_row=4)
 #print(get_available_moves(tictactoe_board))
 default = Default_player(optimality = .5)
 human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
 #playa1 = Q_learning_player(policy_name="Connect_Four_Q_learning_agent")
-qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent60000")
-qlearning.train_Qlearning_agent(100001)
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent30000")
+#qlearning.train_Qlearning_agent(100001)
 
-test_Q_learning_agents(qlearning, default, 10)
+#test_Q_learning_agents(qlearning, default, 10)
 #test_agents(minimax, default, 1000)
 
-#play_connect_four(tictactoe_board, qlearning, default)
+play_connect_four(tictactoe_board, default, rand)
