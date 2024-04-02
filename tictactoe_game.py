@@ -415,6 +415,8 @@ def get_tictactoe_winner(board, player1, player2):
 
 # Run a number of games and get results (FOR REPORT)
 def run_games(player1, player2, num_games):
+    player1.is_player_1=True
+    player2.is_player_1=False
     results = [0, 0, 0]
     for i in range(num_games):
         board = Board(dimensions=(3, 3))
@@ -459,7 +461,7 @@ def test_agents(agent, opponent, num_games):
     write_to_csv(titles, results, filename)
     print(results)
     
-    # Run a number of games with Q-learning agents with different training (FOR REPORT)
+# Run a number of games with Q-learning agents with different training (FOR REPORT)
 def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     results = []
     training_iterations = 0
@@ -501,9 +503,9 @@ rand = Random_player()
 default = Default_player(optimality=.5)
 qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent80000")
 #qlearning.train_Qlearning_agent(100000)
-#test_Q_learning_agents(qlearning, minimax, 1)
-play_tictactoe(tictactoe_board, default, minimax)
-#results = run_games(minimax, default, 1000)
+#test_Q_learning_agents(minimax, default, 1000)
+#play_tictactoe(tictactoe_board, default, minimax)
+results = run_games(minimax, default, 1000)
 
 #test_agents(minimax, default, 1000)
 
