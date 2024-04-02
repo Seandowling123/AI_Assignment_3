@@ -281,7 +281,7 @@ class Q_learning_player:
                 agent1.policy = merge_policies(agent1.policy, agent2.policy)
                 self.save_policy(self.name + str(iteration))
             
-            # PLay each game
+            # Play each game
             board = Board(dimensions=(3, 3))
             available_moves = get_available_moves(board)
             while agent1.get_state_reward(board) == None and len(available_moves) > 0:
