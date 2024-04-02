@@ -20,7 +20,7 @@ plt.savefig('C4_Plots/CF_Minimax_P1_vs_Default.png', bbox_inches='tight')
 #plt.show()
 plt.close()
 
-sizes = [0.001,0.69,0.309]
+sizes = [0.353,0.468,0.179]
 labels = ['Ties','Minimax wins','Default Player wins']
 colors = ['#27ae60', '#e74c3c', '#2980b9']
 

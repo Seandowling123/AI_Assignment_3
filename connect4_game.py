@@ -743,12 +743,6 @@ default = Default_player(optimality = .5)
 human = Human_player()
 rand = Random_player()
 minimax = Minimax_player()
-qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
-#qlearning.train_Qlearning_agent(100001)
-
-#test_Q_learning_agents(qlearning, default, 1000)
-#test_agents(qlearning, minimax, 1)
-
-results = run_games(default, minimax, 1000)
+qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent100000")
 
 #play_connect_four(tictactoe_board, minimax, default)
