@@ -383,7 +383,7 @@ class Minimax_player:
                     alpha = max_value
                 if alpha >= beta:
                     ##############################################################################
-                    i=0
+                    ibhjv=0
                     #break
                     ##############################################################################
                     
@@ -411,7 +411,7 @@ class Minimax_player:
                     beta = min_value
                 if alpha >= beta:
                     ##############################################################################
-                    i=0
+                    ivhj=0
                     #break
                     ##############################################################################
                 
@@ -681,6 +681,8 @@ def get_connect_four_winner(board, player1, player2):
 
 # Run a number of games and get results (FOR REPORT)
 def run_games(player1, player2, num_games):
+    player1.is_player_1=True
+    player2.is_player_1=False
     results = [0, 0, 0]
     for i in range(num_games):
         board = Board(dimensions=(5, 4), x_in_a_row=4)
