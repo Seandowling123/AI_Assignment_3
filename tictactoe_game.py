@@ -83,11 +83,13 @@ class Human_player:
         # Get user input
         while move not in available_moves or move == None:
             try:
-                move_input = input("Enter a row and column:").split(' ')
-                row = int(move_input[1])
-                col = int(move_input[0])
-                move = [row, col]
+                move_row = input("Enter a row:  ")
+                move_col = input("Enter a column:")
+                row = int(move_row)
+                col = int(move_col)
+                move = (col, row)
                 if move in available_moves:
+                    print()
                     return move
                 else: print("Invalid Move.")
             except Exception as e:
@@ -534,4 +536,4 @@ while user_input not in list(agents.keys()):
     
 player2 = agents[user_input]
 
-play_tictactoe(tictactoe_board, default, minimax)
+play_tictactoe(tictactoe_board, player1, player2)

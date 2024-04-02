@@ -738,11 +738,40 @@ def test_agents(agent, opponent, num_games):
     print(results)
                 
 tictactoe_board = Board(dimensions=(5, 4), x_in_a_row=4)
-#print(get_available_moves(tictactoe_board))
-default = Default_player(optimality = .5)
 human = Human_player()
 rand = Random_player()
+default = Default_player(optimality=.5)
 minimax = Minimax_player()
 qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent100000")
+
+agents = {'H': human, 'D': default, 'R' : rand, 'M' : minimax, 'Q': qlearning}
+
+user_input = 0
+while user_input not in list(agents.keys()):
+    # Print the maze sizes in a visually appealing format
+    print("Please choose an agent type from the list below:")
+    print("  ┌────────────┬───────────────┐")
+    print("  │   Option   │   Size        │")
+    print("  ├────────────┼───────────────┤")
+    for option, agent in agents.items():
+        print(f"  │     {option:<7}│   {agent.name:<10}  │")
+    print("  └────────────┴───────────────┘")
+    user_input = (input()).upper()
+
+player1 = agents[user_input]
+
+user_input = 0
+while user_input not in list(agents.keys()):
+    # Print the maze sizes in a visually appealing format
+    print("Please choose another agent type from the list below:")
+    print("  ┌────────────┬───────────────┐")
+    print("  │   Option   │   Size        │")
+    print("  ├────────────┼───────────────┤")
+    for option, agent in agents.items():
+        print(f"  │     {option:<7}│   {agent.name:<10}  │")
+    print("  └────────────┴───────────────┘")
+    user_input = (input()).upper()
+    
+player2 = agents[user_input]
 
 #play_connect_four(tictactoe_board, minimax, default)
