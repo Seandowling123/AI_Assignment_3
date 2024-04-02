@@ -25,7 +25,7 @@ def get_available_moves(board):
 
 class Default_player:
     def __init__(self, optimality = 1, is_player_1 = True):
-        self.name = "Default Player"
+        self.name = "Default"
         self.optimality = optimality
         self.is_player_1 = is_player_1
         self.played_moves = 0
@@ -72,7 +72,7 @@ class Default_player:
 
 class Random_player:
     def __init__(self):
-        self.name = "Random Player"
+        self.name = "Random"
         
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
@@ -82,7 +82,7 @@ class Random_player:
 # Human contolled player
 class Human_player:
     def __init__(self):
-        self.name = "Sean"
+        self.name = "Human"
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
@@ -412,7 +412,7 @@ class Minimax_player:
         return get_placement(board, move[0])
     
 class Q_learning_player:
-    def __init__(self, name="Connect_Four_Q_learning_agent", policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
+    def __init__(self, name="Q-learning", policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
         self.name = name
         self.alpha = alpha
         self.gamma = gamma
@@ -626,7 +626,6 @@ def play_connect_four(board, player1, player2):
         player2_move = player2.get_next_move(board)
         board.push(player2_move)
         print(f"\n{board}\n")
-        print("Board Heuristic:", get_state_heuristic(board))
         
     # Print the winner
     if board.result() == 1:
@@ -774,4 +773,4 @@ while user_input not in list(agents.keys()):
     
 player2 = agents[user_input]
 
-#play_connect_four(tictactoe_board, minimax, default)
+play_connect_four(tictactoe_board, player1, player2)
