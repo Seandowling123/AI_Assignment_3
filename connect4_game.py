@@ -374,7 +374,7 @@ class Minimax_player:
                 next_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value > max_value:
+                if value >= max_value:
                     max_value = value
                     best_move = move
                 
@@ -402,7 +402,7 @@ class Minimax_player:
                 next_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
-                if value < min_value:
+                if value <= min_value:
                     min_value = value
                     best_move = move
                 
@@ -435,7 +435,7 @@ class Minimax_player:
         end_time = time.time()
         move_times.append(end_time - start_time)
         ###############################################################################################
-        print(move)
+        
         return get_placement(board, move[0])
     
 class Q_learning_player:
