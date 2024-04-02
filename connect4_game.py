@@ -382,10 +382,7 @@ class Minimax_player:
                 if max_value > alpha:
                     alpha = max_value
                 if alpha >= beta:
-                    ##############################################################################
-                    ibhjv=0
-                    #break
-                    ##############################################################################
+                    break
                     
             return best_move, max_value
         
@@ -410,10 +407,7 @@ class Minimax_player:
                 if min_value < beta:
                     beta = min_value
                 if alpha >= beta:
-                    ##############################################################################
-                    ivhj=0
-                    #break
-                    ##############################################################################
+                    break
                 
             return best_move, min_value
          
