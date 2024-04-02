@@ -6,12 +6,6 @@ import math
 import random
 import csv
 
-import numpy as np
-import time
-start_time = 0
-end_time = 0
-move_times = []
-
 # Place the counter at the bottom of the selected column
 def get_placement(board, index):
     column = board.board[index]
@@ -413,23 +407,8 @@ class Minimax_player:
          
     # Return the next move for the player
     def get_next_move(self, board):
-        
-        ###############################################################################################
-        global start_time
-        global end_time
-        global move_times
-        
-        start_time = time.time()
-        ###############################################################################################
-        
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         self.played_moves = self.played_moves+1
-        
-        ###############################################################################################
-        end_time = time.time()
-        move_times.append(end_time - start_time)
-        ###############################################################################################
-        
         return get_placement(board, move[0])
     
 class Q_learning_player:
@@ -770,10 +749,6 @@ qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Con
 #test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(qlearning, minimax, 1)
 
-results = run_games(minimax, default, 1000)
-
-###############################################################################################
-print("Average time:", np.mean(move_times))
-###############################################################################################
+results = run_games(default, minimax, 1000)
 
 #play_connect_four(tictactoe_board, minimax, default)

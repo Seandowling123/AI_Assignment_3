@@ -7,7 +7,7 @@ import pandas as pd
 ###############
 
 # Minimax vs Default
-sizes = [0.0,0.812,0.188]
+sizes = [0.305,0.596,0.099]
 labels = ['Ties','Minimax wins','Default Player wins']
 colors = ['#27ae60', '#e74c3c', '#2980b9']
 
