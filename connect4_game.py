@@ -371,7 +371,7 @@ class Minimax_player:
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(get_placement(board, move))
-                best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
+                next_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
                 if value > max_value:
@@ -399,7 +399,7 @@ class Minimax_player:
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(get_placement(board, move))
-                best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
+                next_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
                 if value < min_value:
@@ -435,7 +435,7 @@ class Minimax_player:
         end_time = time.time()
         move_times.append(end_time - start_time)
         ###############################################################################################
-        
+        print(move)
         return get_placement(board, move[0])
     
 class Q_learning_player:
@@ -776,7 +776,7 @@ qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Con
 #test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(qlearning, minimax, 1)
 
-results = run_games(minimax, default, 100)
+results = run_games(minimax, default, 1000)
 
 ###############################################################################################
 print("Average time:", np.mean(move_times))

@@ -139,7 +139,7 @@ class Minimax_player:
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(move)
-                best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
+                next_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
                 if value >= max_value:
@@ -163,7 +163,7 @@ class Minimax_player:
             for move in available_moves:
                 new_board = board.copy()
                 new_board.push(move)
-                best_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
+                next_move, value = self.minimax(new_board, alpha, beta, not is_maximising, depth+1)
                 
                 # Find the best move
                 if value <= min_value:
@@ -505,7 +505,7 @@ qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictac
 #qlearning.train_Qlearning_agent(100000)
 #test_Q_learning_agents(minimax, default, 1000)
 #play_tictactoe(tictactoe_board, default, minimax)
-results = run_games(minimax, default, 100)
+results = run_games( default, minimax,100)
 
 #test_agents(minimax, default, 1000)
 
