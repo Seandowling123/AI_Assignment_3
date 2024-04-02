@@ -6,6 +6,12 @@ import math
 import random
 import csv
 
+import numpy as np
+import time
+start_time = 0
+end_time = 0
+move_times = []
+
 # Place the counter at the bottom of the selected column
 def get_placement(board, index):
     column = board.board[index]
@@ -376,7 +382,10 @@ class Minimax_player:
                 if max_value > alpha:
                     alpha = max_value
                 if alpha >= beta:
-                    break
+                    ##############################################################################
+                    i=0
+                    #break
+                    ##############################################################################
                     
             return best_move, max_value
         
@@ -401,14 +410,32 @@ class Minimax_player:
                 if min_value < beta:
                     beta = min_value
                 if alpha >= beta:
-                    break
+                    ##############################################################################
+                    i=0
+                    #break
+                    ##############################################################################
                 
             return best_move, min_value
          
     # Return the next move for the player
     def get_next_move(self, board):
+        
+        ###############################################################################################
+        global start_time
+        global end_time
+        global move_times
+        
+        start_time = time.time()
+        ###############################################################################################
+        
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         self.played_moves = self.played_moves+1
+        
+        ###############################################################################################
+        end_time = time.time()
+        move_times.append(end_time - start_time)
+        ###############################################################################################
+        
         return get_placement(board, move[0])
     
 class Q_learning_player:
@@ -744,7 +771,13 @@ minimax = Minimax_player()
 qlearning = Q_learning_player()#(policy_name="Connect_four_Q_learning_agents/Connect_Four_Q_learning_agent90000")
 #qlearning.train_Qlearning_agent(100001)
 
-test_Q_learning_agents(qlearning, default, 1000)
+#test_Q_learning_agents(qlearning, default, 1000)
 #test_agents(qlearning, minimax, 1)
+
+results = run_games(minimax, default, 100)
+
+###############################################################################################
+print("Average time:", np.mean(move_times))
+###############################################################################################
 
 #play_connect_four(tictactoe_board, minimax, default)
