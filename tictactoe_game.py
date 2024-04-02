@@ -17,7 +17,7 @@ def get_available_moves(board):
 
 class Default_player:
     def __init__(self, optimality = 1, is_player_1 = True):
-        self.name = "Default Player"
+        self.name = "Default"
         self.optimality = optimality
         self.is_player_1 = is_player_1
         
@@ -64,7 +64,7 @@ class Default_player:
 
 class Random_player:
     def __init__(self):
-        self.name = "Random Player"
+        self.name = "Random"
         
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
@@ -74,7 +74,7 @@ class Random_player:
 # Human contolled player
 class Human_player:
     def __init__(self):
-        self.name = "Sean"
+        self.name = "Human"
     
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
@@ -185,7 +185,7 @@ class Minimax_player:
     
 class Q_learning_player:
     def __init__(self, policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
-        self.name = "Tictactoe_Q_learning_agent"
+        self.name = "Q-learning"
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
@@ -498,15 +498,40 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
 
 tictactoe_board = Board(dimensions=(3, 3))
 human = Human_player()
-minimax = Minimax_player()
 rand = Random_player()
 default = Default_player(optimality=.5)
-qlearning = Q_learning_player()#(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent80000")
+minimax = Minimax_player()
+qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe_Q_learning_agent10000")
 #qlearning.train_Qlearning_agent(100000)
-#test_Q_learning_agents(minimax, default, 1000)
-#play_tictactoe(tictactoe_board, default, minimax)
-results = run_games( default, minimax,100)
 
-#test_agents(minimax, default, 1000)
+agents = {'H': human, 'D': default, 'R' : rand, 'M' : minimax, 'Q': qlearning}
 
-# (training=True)#
+user_input = 0
+while user_input not in list(agents.keys()):
+    # Print the maze sizes in a visually appealing format
+    print("Please choose an agent type from the list below:")
+    print("  ┌────────────┬───────────────┐")
+    print("  │   Option   │   Size        │")
+    print("  ├────────────┼───────────────┤")
+    for option, agent in agents.items():
+        print(f"  │     {option:<7}│   {agent.name:<10}  │")
+    print("  └────────────┴───────────────┘")
+    user_input = (input()).upper()
+
+player1 = agents[user_input]
+
+user_input = 0
+while user_input not in list(agents.keys()):
+    # Print the maze sizes in a visually appealing format
+    print("Please choose another agent type from the list below:")
+    print("  ┌────────────┬───────────────┐")
+    print("  │   Option   │   Size        │")
+    print("  ├────────────┼───────────────┤")
+    for option, agent in agents.items():
+        print(f"  │     {option:<7}│   {agent.name:<10}  │")
+    print("  └────────────┴───────────────┘")
+    user_input = (input()).upper()
+    
+player2 = agents[user_input]
+
+play_tictactoe(tictactoe_board, default, minimax)
