@@ -15,6 +15,7 @@ def get_available_moves(board):
                 zero_indices.append((i, j))
     return zero_indices
 
+# A default agent 
 class Default_player:
     def __init__(self, optimality = 1, is_player_1 = True):
         self.name = "Default"
@@ -35,6 +36,7 @@ class Default_player:
             return 1
         return 0
     
+    # Get the agents next move
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
         optimal = random.random() < self.optimality
@@ -62,6 +64,7 @@ class Default_player:
                 return move
         return random.choice(available_moves)
 
+# A player to make random moves
 class Random_player:
     def __init__(self):
         self.name = "Random"
@@ -184,7 +187,8 @@ class Minimax_player:
     def get_next_move(self, board):
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         return move[0]
-    
+
+# Q-learning agent 
 class Q_learning_player:
     def __init__(self, policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
         self.name = "Q-learning"
@@ -245,6 +249,7 @@ class Q_learning_player:
             return 0
         return None
     
+    # Remove states list after a training game
     def delete_prev_states(self):
         self.prev_states = []
         self.prev_actions = []
@@ -320,6 +325,7 @@ class Q_learning_player:
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
         agent1.save_policy(self.name)
     
+    # Get the agents next move
     def get_next_move(self, board):
         value = None
         max_value = -math.inf
@@ -357,7 +363,8 @@ class Q_learning_player:
 def get_board_hash(board):
     hash = ''.join(map(str, board.board.flatten()))
     return hash
-    
+
+# Update agents policies after a training game
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
         agent1.update_policy(1)
@@ -375,7 +382,7 @@ def merge_policies(policy1, policy2):
     merged_policy.update(policy2)
     return merged_policy
 
-# Play a game of tictactoe
+# Play a game of Tic Tac Toe
 def play_tictactoe(board, player1, player2):
     player2.is_player_1 = False
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
@@ -508,6 +515,7 @@ qlearning = Q_learning_player(policy_name="Tictactoe_Q_learning_agents/Tictactoe
 
 agents = {'H': human, 'D': default, 'R' : rand, 'M' : minimax, 'Q': qlearning}
 
+# UI
 user_input = 0
 while user_input not in list(agents.keys()):
     # Print the maze sizes in a visually appealing format

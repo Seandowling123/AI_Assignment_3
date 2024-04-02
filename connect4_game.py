@@ -23,6 +23,7 @@ def get_available_moves(board):
             zero_indices.append(i)
     return zero_indices
 
+# A default agent 
 class Default_player:
     def __init__(self, optimality = 1, is_player_1 = True):
         self.name = "Default"
@@ -46,6 +47,7 @@ class Default_player:
             return 1
         return 0
     
+    # Get the agents next move
     def get_next_move(self, board):
         available_moves = get_available_moves(board)
         optimal = random.random() < self.optimality
@@ -70,6 +72,7 @@ class Default_player:
                 return get_placement(board, move)
         return get_placement(board, random.choice(available_moves))
 
+# A player to make random moves
 class Random_player:
     def __init__(self):
         self.name = "Random"
@@ -335,6 +338,7 @@ class Minimax_player:
             return None, math.inf
         return None, 0
         
+    # Use minimax algorithm to decide the next move
     def minimax(self, board, alpha, beta, is_maximising, depth):
         
         # Speed up for first moves
@@ -410,7 +414,8 @@ class Minimax_player:
         move = self.minimax(board, -math.inf, math.inf, True, 0)
         self.played_moves = self.played_moves+1
         return get_placement(board, move[0])
-    
+
+# Q-learning agent 
 class Q_learning_player:
     def __init__(self, name="Q-learning", policy_name=None, alpha=.1, gamma=.9, epsilon=.5, training=False, is_player_1=True):
         self.name = name
@@ -471,6 +476,7 @@ class Q_learning_player:
             else: print(f"A Q Learning state reward Error Occured: {e}")
         return None
     
+    # Remove states list after a training game
     def delete_prev_states(self):
         self.prev_states = []
         self.prev_actions = []
@@ -546,6 +552,7 @@ class Q_learning_player:
         agent1.policy = merge_policies(agent1.policy, agent2.policy)
         agent1.save_policy(self.name)
     
+     # Get the agents next move
     def get_next_move(self, board):
         value = None
         max_value = -math.inf
@@ -593,7 +600,8 @@ def get_board_hash(board):
 def get_board_hash(board):
     hash = ''.join(map(str, board.board.flatten()))
     return hash
-    
+
+# Update agents policies after a training game
 def update_policies(board, agent1, agent2):
     if board.result() == 1:
         agent1.update_policy(1)
@@ -611,6 +619,7 @@ def merge_policies(policy1, policy2):
     merged_policy.update(policy2)
     return merged_policy
 
+# # Play a game of Connect 4
 def play_connect_four(board, player1, player2):
     print(f"Game Starting. \nPlayers: {player1.name}, {player2.name}\n")
     player2.is_player_1 = False
@@ -745,6 +754,7 @@ qlearning = Q_learning_player(policy_name="Connect_four_Q_learning_agents/Connec
 
 agents = {'H': human, 'D': default, 'R' : rand, 'M' : minimax, 'Q': qlearning}
 
+# UI
 user_input = 0
 while user_input not in list(agents.keys()):
     # Print the maze sizes in a visually appealing format
