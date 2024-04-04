@@ -521,7 +521,7 @@ while user_input not in list(agents.keys()):
     # Print the maze sizes in a visually appealing format
     print("Please choose an agent type from the list below:")
     print("  ┌────────────┬───────────────┐")
-    print("  │   Option   │   Size        │")
+    print("  │   Option   │   Agent       │")
     print("  ├────────────┼───────────────┤")
     for option, agent in agents.items():
         print(f"  │     {option:<7}│   {agent.name:<10}  │")
@@ -535,7 +535,7 @@ while user_input not in list(agents.keys()):
     # Print the maze sizes in a visually appealing format
     print("Please choose another agent type from the list below:")
     print("  ┌────────────┬───────────────┐")
-    print("  │   Option   │   Size        │")
+    print("  │   Option   │   Agent       │")
     print("  ├────────────┼───────────────┤")
     for option, agent in agents.items():
         print(f"  │     {option:<7}│   {agent.name:<10}  │")

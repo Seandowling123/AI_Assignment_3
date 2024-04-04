@@ -722,7 +722,7 @@ def test_Q_learning_agents(Q_learning_agent, opponent, num_games):
     write_to_csv(titles, results, filename)
     print(results)
     
-    # Run a number of games with agents(FOR REPORT)
+# Run a number of games with agents(FOR REPORT)
 def test_agents(agent, opponent, num_games):
     results = []
     agent.is_player_1=True
@@ -760,7 +760,7 @@ while user_input not in list(agents.keys()):
     # Print the maze sizes in a visually appealing format
     print("Please choose an agent type from the list below:")
     print("  ┌────────────┬───────────────┐")
-    print("  │   Option   │   Size        │")
+    print("  │   Option   │   Agent       │")
     print("  ├────────────┼───────────────┤")
     for option, agent in agents.items():
         print(f"  │     {option:<7}│   {agent.name:<10}  │")
@@ -774,7 +774,7 @@ while user_input not in list(agents.keys()):
     # Print the maze sizes in a visually appealing format
     print("Please choose another agent type from the list below:")
     print("  ┌────────────┬───────────────┐")
-    print("  │   Option   │   Size        │")
+    print("  │   Option   │   Agent       │")
     print("  ├────────────┼───────────────┤")
     for option, agent in agents.items():
         print(f"  │     {option:<7}│   {agent.name:<10}  │")
